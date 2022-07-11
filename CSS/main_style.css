@@ -1,0 +1,240 @@
+html {
+    color: black;
+    font-family: "Times New Roman", sans-serif;
+    scroll-behavior: smooth;
+}
+
+.bg1{
+    background-color: white; 
+    width:30px; 
+    height: 30px; 
+    border: 2px solid grey; 
+    border-radius: 50%;
+}
+
+.bg2{
+    background-color: lightcyan; 
+    width:30px; 
+    height: 30px; 
+    border: 2px solid grey; 
+    border-radius: 50%
+}
+
+.bg3{
+    background-color: lightcoral; 
+    width:30px; 
+    height: 30px; 
+    border: 2px solid grey; 
+    border-radius: 50%
+}
+
+.bg4{
+    background-color: lightgoldenrodyellow; 
+    width:30px; 
+    height: 30px; 
+    border: 2px solid grey; 
+    border-radius: 50%
+}
+
+.bg5{
+    background-color: lightpink; 
+    width:30px; 
+    height: 30px; 
+    border: 2px solid grey; 
+    border-radius: 50%
+}
+
+.bg1:hover{
+    border: 2px solid black; 
+}
+
+.bg2:hover{
+    border: 2px solid black; 
+}
+
+.bg3:hover{
+    border: 2px solid black; 
+}
+
+.bg4:hover{
+    border: 2px solid black; 
+}
+
+.bg5:hover{
+    border: 2px solid black; 
+}
+
+.px1{
+    background-color: transparent; 
+    border: none;
+    font-size:20px;
+    width:80px;
+    height:50px;
+}
+.px2{
+    background-color: transparent; 
+    border: none;
+    font-size:30px;
+    width:80px;
+    height:50px;
+}
+
+.px3{
+    background-color: transparent; 
+    border: none;
+    font-size:35px;
+    width:80px;
+    height:50px;
+}
+
+.px1:hover{
+    font-weight: bold;
+    color: #143d59;
+    background-color: transparent; 
+    border: none;
+    font-size:20px;
+    width:80px;
+    height:50px;
+}
+
+.px2:hover{
+    font-weight: bold;
+    color: #143d59;
+    background-color: transparent; 
+    border: none;
+    font-size:30px;
+    width:80px;
+    height:50px;
+}
+
+
+.px3:hover{
+    font-weight: bold;
+    color: #143d59;
+    background-color: transparent; 
+    border: none;
+    font-size:35px;
+    width:80px;
+    height:50px;
+}
+
+
+.flex-container{
+    display: flex;
+}
+
+.top_heading{
+    height: 38px;
+    background-color: #fcc729;
+    color: #143d59;
+    border: 1px solid blue;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.top_heading p span{
+    background-color: transparent;
+    position: absolute;
+    top:5px;
+}
+
+.top_link {
+    background-color: transparent;
+    text-decoration: none;
+    color: #143d59;
+    margin-right: 12px;
+}
+
+.top_link:hover {
+    background-color: transparent;
+    text-decoration: none;
+    color:green;
+}
+
+.image_next {
+    height: 100vh;
+    width: 100%;
+    background-image: url(../Media/my_img.png);
+    background-size: cover; 
+    background-attachment: fixed;
+    background-image: no-repeat;
+}
+
+.main_table{
+    background: transparent;
+    position: relative;
+    width:80vw;
+    top: 5vh;
+    left: 10vw;
+    font-size: 25px;
+
+}
+
+.main_table table{
+    border: 1px solid #143d59;
+    border-collapse: collapse;
+    border-left: 1px solid #143d59;
+}
+
+.main_table th{
+    text-align: center;
+    font-size: inherit;
+    font-style: italic;
+}
+
+.main_table td{
+    text-align: justify;
+    padding: 3px;
+    vertical-align:top;
+    border-left: 1px solid #143d59;
+}
+
+.add_button{
+    background-color: transparent; 
+    width:40px; 
+    height: 40px; 
+    border: 3px solid grey; 
+    border-radius: 50%;
+    font-size: 40px;
+    color: grey;
+    text-align: center;
+    line-height: 30px;
+}
+
+.add_button:hover{
+    border: 3px solid black;
+    color: black;
+}
+
+.news_class{
+    text-align:center; 
+    position: relative; 
+    top:10px;
+    overflow: hidden;
+}
+
+.news_list{
+    position: relative; 
+    top:10px;
+    overflow: hidden;
+}
+
+.del_button{
+    background-color: transparent; 
+    border: 2px dotted black; 
+    font-size: inherit;
+    color: grey;
+}
+
+.del_button:hover{
+    border: 2px solid red;
+    color: red;
+}
+
+#news_table {
+    width: 80vw;
+    table-layout: fixed;
+    word-wrap: break-word;
+}

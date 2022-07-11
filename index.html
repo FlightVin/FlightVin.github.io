@@ -1,7 +1,334 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>
-            Vineeth Bhat
-        </title>
+        <title>Vineeth Bhat</title>
+        <link rel="stylesheet" href="./CSS/main_style.css">
+
+        <style>
+            *{
+                background-color: transparent;
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        </style>
+
+        
     </head>
+
+    <body>
+
+        <script type="text/javascript" src="./JS/script.js">
+        </script>
+
+        <div class="top_heading">
+            <p>
+                <span style="font-size:25px; left:3vw; font-weight: bold;">Vineeth Bhat</span>
+                <span style="font-size:24px; left:53vw; right:0vw; overflow: auto;">
+                <a href="#top_head" class="top_link">Home</a>
+                <a href="#about" class="top_link">About Me</a>
+                <a href="#education" class="top_link">Education</a>
+                <a href="#achievements" class="top_link">Achievements</a>
+                <a href="#skills" class="top_link">Skills</a>
+                <a href="#news" class="top_link">News</a>
+                </span>
+
+            </p>
+        </div>
+
+        <div class="image_next" id="top_head">
+        
+            <p style="background-color: transparent; font-size: 50px; color: 
+            whitesmoke; position: absolute;
+            top:40vh; left:10vw; font-style: italic;">  
+                Hello There!<br>
+                I am Vineeth Bhat. <br>
+            </p>
+
+
+        </div>
+
+
+
+        <div>
+            <p style="background-color: transparent; font-size: 20px;text-align: center; margin: 10px;">  
+                <button onclick="whitebg()" class="bg1"></button> 
+                <button onclick="cyanbg()" class="bg2"></button> 
+                <button onclick="coralbg()" class="bg3"></button> 
+                <button onclick="yellowbg()" class="bg4"></button> 
+                <button onclick="pinkbg()" class="bg5"></button> 
+
+            <br>
+                <button onclick="px25()" class="px1">25px</button>
+                <button onclick="px30()" class="px2">30px</button>
+                <button onclick="px35()" class="px3">35px</button>
+            </p>
+            <br>
+            <hr style="width: 30vw; color:#e29060; margin-left: 35vw;">
+        </div>
+
+
+        <div class="main_table" id="main">
+            <table >
+                <tr id="about" style="margin-top: 0px; padding-top: 0px;" >
+                    <th colspan="5" style="border: 1px solid #143d59; margin-left: 0px;
+                    ">
+                        About Myself
+                    </th>
+                </tr>
+
+                <tr>
+                    <td colspan="1" width="10%">
+                        <img src="Media/face.jpg" style="width:10vw; border: 1px solid black;">
+                    </td>
+
+                    <td colspan="4">
+                        Introverted. Ambitious. These two words define my character.
+                        <br>
+                        On the face value of things, I am just your average guy pursuing CSE at International
+                        Institute of Information Technology. Hakuna Matata.
+                    </td>
+                </tr>
+
+
+                <tr id="education">
+                    <th colspan="5" style="border: 1px solid #143d59; margin-left: 0px;">
+                        Education Background
+                    </th>
+                </tr>
+
+                <tr style="height: 10px; text-align: left;">
+                    <td  style="text-align: center; font-style: italic; 
+                    border: 1px solid #143d59; margin-left: 0px;"> 
+                       Year 
+                    </td>
+                    <td colspan="2" style="text-align: center; font-style: italic;
+                    border: 1px solid #143d59; margin-left: 0px;">
+                        Institution
+                    </td>
+                    <td colspan="2" style="text-align: center; font-style: italic;
+                    border: 1px solid #143d59; margin-left: 0px;">
+                        Qualification
+                    </td>
+                </tr>
+
+                <tr>
+                    <td  style="text-align: center;">
+                       2019
+                    </td>
+                    <td colspan="2">
+                        New Horizon Gurukul - Bengaluru
+                    </td>
+                    <td colspan="2">
+                        AISSE (Xth Grade CBSE Board Exam) - 98.0%
+                    </td>
+                </tr>
+
+                <tr>
+                    <td  style="text-align: center;">
+                       2021
+                    </td>
+                    <td colspan="2">
+                        Ekya ITPL - Bengaluru
+                    </td>
+                    <td colspan="2">
+                        AISSCE (XIIth Grade CBSE Board Exam) - 98.2%
+                    </td>
+                </tr>
+
+                <tr style="border-bottom: 1px solid #143d59;">
+                    <td  style="text-align: center;">
+                       2021
+                    </td>
+                    <td colspan="2">
+                        IIIT Hyderabad
+                    </td>
+                    <td colspan="2">
+                        B.Tech. In CSE (Semester 1 - 10.0 CGPA)
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="5" style = "visibility: hidden;">
+                        Placeholder text
+                    </td>
+                </tr>
+
+                <tr id="achievements">
+                    <th colspan="5" style="border: 1px solid #143d59; margin-left: 0px;"> 
+                        Achievements
+                    </th>
+                </tr>
+
+                <tr >
+                    <td  style="text-align: center; font-style: italic;border: 1px solid #143d59;"> 
+                       Year 
+                    </td>
+                    <td colspan="4" style="text-align: center; font-style: italic;border: 1px solid #143d59;">
+                        Description
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: center;">
+                        2021
+                    </td>
+                    <td colspan="4">
+                    Kishore Vaigyanik Protsahan Yojana (KVPY) SX Scholar | Issued by Indian Institute of Science (IISc) <br>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: center;">
+                        2021
+                    </td>
+                    <td colspan="4">
+                        Top 1% (National) in Indian Olympiad Qualifier in Chemistry (NSEC) | Issued by Tata Institute of Fundamental Research (TIFR)                   </td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: center;">
+                        2021
+                    </td>
+                    <td colspan="4">
+                        Placed 877th in JEE Advanced | Issued by Indian Institution of Technology, Kharagpur                 </td>
+                </tr>
+
+                <tr style="border-bottom: 1px solid #143d59;">
+                    <td style="text-align: center;">
+                        2021
+                    </td>
+                    <td colspan="4">
+                        Placed 610th in JEE Main | Issued by National Testing Agency                </td>
+                </tr>
+
+                <tr>
+                    <td colspan="5" style = "visibility: hidden;">
+                        Placeholder text
+                    </td>
+                </tr>
+
+                <tr id="skills" style="border: 1px solid #143d59; margin-left: 0px;">
+                    <th colspan="5">
+                        Skills
+                    </th>
+                </tr>
+
+                <tr>
+                    <td colspan="5">
+                        <ol style="list-style-position: inside;">
+                            <li> 
+                                Programming languages 
+                                <ul style = "position: relative; left: 20px;">
+                                	<li>C++ (<i>Beginner</i>) 
+                                	<li>C (<i>Amatuer</i>)
+                                	<li>Python (<i>Amatuer</i>)
+                                </ul>
+                            </li>
+                            <li>
+                                  
+                                 
+                                
+				Web development
+                                <ul style = "position: relative; left: 20px;">
+                                	<li>HTML (<i>Amatuer</i>)
+                                	<li>CSS (<i>Beginner</i>)
+                                	<li>Python (<i>Amatuer</i>)
+                                </ul>
+                            </li>
+                            <li>
+                                Digital Electronics (<i>Beginner</i>)
+                            </li>
+                        </ol>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="5" style = "visibility: hidden;">
+                        Placeholder text
+                    </td>
+                </tr>
+
+                <tr>
+                    <th colspan="5" style="border: 1px solid #143d59; margin-left: 0px;">
+                        Misc
+                    </th>
+                </tr>
+
+                <tr style = "overflow: auto;">
+                    <td colspan="5">
+                        <!--External Link-->
+                        I have started pushing things on <a href = "https://github.com/FlightVin">GitHub</a>. Do visit :)
+                        <!--Internal Link-->
+                        <br>
+                        And for the vibes, here's a poem I wrote -  <a href="./Media/poem.pdf">Poem</a>.
+                    </td>
+                </tr>
+                
+            </table>
+            <p  class="news_class" id="news">
+
+                <form style = "text-align: center;">
+                    <br>
+                    <i><b><label>Would you like to enter an update?</label></b></i>
+
+                    <br>
+
+                    <input type="text" id="news_input" name="news_input"
+                    style="font-size:inherit; font-family: 'Times New Roman', sans-serif;
+                    width:70vw; height: 10vh; text-align:justify; vertical-align: top;">
+                    <br>
+                    <label>Press enter or click the button below</label>
+                    <br>
+                    <button class="add_button" onclick="add_func()">+</button>
+                </form>
+
+                    <br><br>
+
+                    <span style="text-align: center; font-style: italic;
+                    font-weight: bold; width: 100vw;">News and Updates</span>
+            </p>
+
+            <p class="news_list">
+                <table id="news_table">
+                <tr>
+                    <th style="width:30vw">Date</th>
+                    <th style="width:50vw">Update</th>
+                </tr>
+                </table>
+                <script>
+
+                    var table_obj = document.getElementById('news_table');
+                    for (let i = localStorage.getItem("news_count") -1; i>=0; i--){
+                        var row = document.createElement('tr');
+                        var date_data = document.createElement('td');
+                        var info_data = document.createElement('td')
+
+                        row.style.border = "1px solid black";
+
+                        date_data.innerHTML = localStorage.getItem(i+'date')+": ";
+                        row.appendChild(date_data);
+                        info_data.innerHTML = localStorage.getItem(i);
+                        row.appendChild(info_data);
+
+                        table_obj.appendChild(row);
+                    }
+         
+                </script>
+                <br>
+                <span style="font-weight: bold; color: rebeccapurple; font-style: italic;">Danger Zone:</span> Click 
+                <button class="del_button" onclick="del_func()">this</button> to delete all updates:
+                <br>
+            </p>        
+        </div>
+
+        <script>
+            //Adding here so that getElementById doesn't return NULL
+            if (sessionStorage.getItem("bg_font_size") == null){
+                px25();
+            }else{
+                document.getElementById("main").style.fontSize = sessionStorage.getItem("bg_font_size");
+            }
+        </script>
+    </body>
 </html>
