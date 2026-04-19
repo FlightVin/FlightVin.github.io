@@ -21,6 +21,7 @@
     "authors": "Pranjal Paul*, <strong>Vineeth Bhat*</strong>, Tejas Salian, Mohammad Omama, <br>Krishna Murthy Jatavallabhula, Naveen Arulselvan, K. Madhava Krishna",
     "venue": "IROS",
     "year": "2025",
+    "paperType": "Oral",
     "highlight": false,
     "links": [
       { "label": "project page", "url": "https://reachpranjal.com/sparseloc/" },
