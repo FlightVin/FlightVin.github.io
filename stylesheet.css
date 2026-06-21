@@ -441,6 +441,7 @@ span.highlight {
 .footer-email {
   color: var(--link-color) !important;
   transition: color 0.2s ease;
+  font-size: inherit;
 }
 
 .footer-email:hover {
