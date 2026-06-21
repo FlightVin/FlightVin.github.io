@@ -352,3 +352,9 @@ span.highlight {
     flex: none;
   }
 }
+
+/* News Dates Alignment */
+.news-date {
+  font-family: monospace;
+  font-size: 13px;
+}

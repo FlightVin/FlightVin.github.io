@@ -23,10 +23,10 @@ def test_news_date_format():
 
     news_block = news_match.group(0)
     
-    # Find all date strings enclosed in <strong>[...]</strong> inside the News block
-    dates = re.findall(r'<strong>\[(.*?)\]</strong>', news_block)
+    # Find all date strings enclosed in <strong class="news-date">[...]</strong> inside the News block
+    dates = re.findall(r'<strong class="news-date">\[(.*?)\]</strong>', news_block)
     if not dates:
-        print("Error: No news dates found in index.html (expected dates in format <strong>[Date]</strong>)")
+        print("Error: No news dates found in index.html (expected dates in format <strong class=\"news-date\">[Date]</strong>)")
         sys.exit(1)
 
     valid_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
