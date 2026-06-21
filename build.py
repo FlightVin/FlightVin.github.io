@@ -8,7 +8,7 @@ def build_site():
     # 2. Generate the HTML for the papers
     papers_html = ""
     for paper in papers:
-        print(paper)
+        # print(paper)
         bg_style = 'bgcolor="#ffffd0"' if paper.get('highlight') else ''
         
         # Format the links
@@ -22,6 +22,9 @@ def build_site():
                   <source src="{paper['videoSrc']}" type="video/mp4">
                 </video>
             """
+            
+        # Format the optional paper_type parameter
+        paper_type_html = f" (<i>{paper.get('paperType')}</i>)" if paper.get('paperType') else ""
 
         # Append the specific paper HTML
         papers_html += f"""
@@ -41,7 +44,7 @@ def build_site():
             <br>
             {paper['authors']}
             <br>
-            <em>{paper['venue']}</em>, {paper['year']}
+            <em>{paper['venue']}</em>, {paper['year']}{paper_type_html}
             <br>
             {links_html}
             <p></p>
