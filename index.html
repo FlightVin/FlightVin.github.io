@@ -111,9 +111,11 @@
 
               <!-- Category Filters -->
               <div class="filter-container">
-                <button class="filter-btn active" onclick="filterCategory('all', this)">All</button>
-                <button class="filter-btn" onclick="filterCategory('robotics', this)">Robotics</button>
-                <button class="filter-btn" onclick="filterCategory('ai-safety', this)">AI safety</button>
+                <a href="javascript:void(0)" class="filter-link active" onclick="filterCategory('all', this)">All</a>
+                <span class="filter-separator">—</span>
+                <a href="javascript:void(0)" class="filter-link" onclick="filterCategory('robotics', this)">Robotics</a>
+                <span class="filter-separator">—</span>
+                <a href="javascript:void(0)" class="filter-link" onclick="filterCategory('ai-safety', this)">AI safety</a>
               </div>
 
               <table style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;">
@@ -324,7 +326,7 @@
 
       // Interactive Category Filtering (Instant)
       function filterCategory(category, button) {
-        const buttons = document.querySelectorAll('.filter-btn');
+        const buttons = document.querySelectorAll('.filter-link');
         buttons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
 
@@ -359,7 +361,7 @@
           }
         });
 
-        const buttons = document.querySelectorAll('.filter-btn');
+        const buttons = document.querySelectorAll('.filter-link');
         buttons.forEach(btn => {
           const onclickAttr = btn.getAttribute('onclick') || '';
           const match = onclickAttr.match(/filterCategory\('([^']+)'/);
