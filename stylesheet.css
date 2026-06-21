@@ -221,8 +221,6 @@ span.highlight {
 
 .filter-link.active {
   color: var(--link-color);
-  font-weight: 600;
-  text-decoration: underline;
 }
 
 .filter-separator {
