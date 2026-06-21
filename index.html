@@ -235,10 +235,10 @@
             `;
           }
 
-          // Dynamic Badges (e.g. Oral, Robotics)
+          // Dynamic Badges (e.g. [Oral], [Robotics])
           let badgesHtml = '';
           if (paper.paperType) {
-            badgesHtml += `<span class="paper-badge badge-type">${paper.paperType}</span>`;
+            badgesHtml += ` <strong class="paper-badge">[${paper.paperType}]</strong>`;
           }
           if (paper.categories) {
             paper.categories.forEach(cat => {
@@ -248,7 +248,7 @@
               else {
                 label = cat.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
               }
-              badgesHtml += `<span class="paper-badge badge-${cat}">${label}</span>`;
+              badgesHtml += ` <strong class="paper-badge">[${label}]</strong>`;
             });
           }
 
