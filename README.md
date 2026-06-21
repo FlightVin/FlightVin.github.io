@@ -1,1 +1,1 @@
-Appropriated and modified from source code to Jon Barron's public academic website: https://jonbarron.info/, and added a tonne of JS and CSS.
+The template for this website was appropriated and modified from the source code of [Jon Barron's public academic website](https://jonbarron.info/). Significant custom JavaScript and CSS have been added to tailor the design and functionality.
