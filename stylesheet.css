@@ -291,7 +291,7 @@ span.highlight {
 .abstract-container.collapsed .abstract-text {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 4;
   overflow: hidden;
 }
 
