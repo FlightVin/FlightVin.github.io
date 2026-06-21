@@ -21,8 +21,8 @@
   --primary-hover: #ff758f;
   --bg-color: #121212;
   --text-color: #e0e0e0;
-  --link-color: #7b1fa2; /* Dark Violet */
-  --link-hover: #ba68c8;
+  --link-color: #ba68c8; /* Lighter Purple */
+  --link-hover: #e1bee7; /* Even Lighter Purple */
   --border-color: #333333;
   --card-bg: #1e1e1e;
   --bibtex-bg: #2d2d2d;
@@ -36,8 +36,8 @@
     --primary-hover: #ff758f;
     --bg-color: #121212;
     --text-color: #e0e0e0;
-    --link-color: #7b1fa2; /* Dark Violet */
-    --link-hover: #ba68c8;
+    --link-color: #ba68c8; /* Lighter Purple */
+    --link-hover: #e1bee7; /* Even Lighter Purple */
     --border-color: #333333;
     --card-bg: #1e1e1e;
     --bibtex-bg: #2d2d2d;
