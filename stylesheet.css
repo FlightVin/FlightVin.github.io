@@ -297,22 +297,6 @@ span.highlight {
   font-size: 13px;
 }
 
-/* Timeline External Link Indicators */
-.news-list a::after {
-  content: " ↗";
-  font-size: 7px;
-  vertical-align: super;
-  display: inline-block;
-  margin-left: 1px;
-  transform: scale(0.6);
-  transform-origin: bottom left;
-  transition: transform 0.15s ease;
-  text-decoration: none;
-}
-
-.news-list a:hover::after {
-  transform: scale(0.6) translate(1.5px, -1.5px);
-}
 
 /* Dark Mode Profile Image Blending */
 [data-theme="dark"] img.hoverZoomLink {
