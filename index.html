@@ -284,7 +284,7 @@
         });
       }
 
-      // Interactive Category Filtering
+      // Interactive Category Filtering with smooth transitions
       function filterCategory(category, button) {
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(btn => btn.classList.remove('active'));
@@ -292,15 +292,67 @@
 
         const rows = document.querySelectorAll('.paper-row');
         rows.forEach(row => {
-          if (category === 'all') {
-            row.style.display = '';
-          } else {
-            const categories = (row.getAttribute('data-categories') || '').split(' ');
-            if (categories.includes(category)) {
-              row.style.display = '';
-            } else {
-              row.style.display = 'none';
+          const match = category === 'all' || (row.getAttribute('data-categories') || '').split(' ').includes(category);
+          
+          if (match) {
+            if (row.fadeTimeout) {
+              clearTimeout(row.fadeTimeout);
+              row.fadeTimeout = null;
             }
+            row.style.display = '';
+            // Force reflow
+            void row.offsetHeight;
+            row.classList.remove('hidden-paper');
+          } else {
+            row.classList.add('hidden-paper');
+            if (!row.fadeTimeout) {
+              row.fadeTimeout = setTimeout(() => {
+                if (row.classList.contains('hidden-paper')) {
+                  row.style.display = 'none';
+                }
+                row.fadeTimeout = null;
+              }, 300); // matches the 0.3s CSS transition
+            }
+          }
+        });
+      }
+
+      // Calculate and display active paper counts next to category buttons
+      function updateCategoryCounters() {
+        if (typeof papersData === 'undefined') return;
+
+        const counts = {
+          all: papersData.length,
+          robotics: 0,
+          'ai-safety': 0
+        };
+
+        papersData.forEach(paper => {
+          if (paper.categories) {
+            paper.categories.forEach(cat => {
+              if (counts[cat] !== undefined) {
+                counts[cat]++;
+              }
+            });
+          }
+        });
+
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => {
+          const onclickAttr = btn.getAttribute('onclick') || '';
+          const match = onclickAttr.match(/filterCategory\('([^']+)'/);
+          if (match) {
+            const catName = match[1];
+            const count = counts[catName] !== undefined ? counts[catName] : 0;
+            
+            let label = '';
+            if (catName === 'all') label = 'All';
+            else if (catName === 'robotics') label = 'Robotics';
+            else if (catName === 'ai-safety') label = 'AI Safety';
+            else {
+              label = catName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            }
+            btn.innerHTML = `${label} (${count})`;
           }
         });
       }
@@ -362,6 +414,7 @@
       document.addEventListener('DOMContentLoaded', () => {
         if (typeof papersData !== 'undefined') {
           renderPapers(papersData);
+          updateCategoryCounters();
         }
         initNewsToggle();
       });

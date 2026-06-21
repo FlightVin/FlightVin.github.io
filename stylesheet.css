@@ -225,6 +225,19 @@ span.highlight {
   border-color: var(--primary-color);
 }
 
+/* Publications Smooth Filtering */
+.paper-row {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.paper-row.hidden-paper {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+
 /* BibTeX copy block adjustments */
 .bibtex-block {
   margin-top: 10px;
