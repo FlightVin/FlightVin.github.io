@@ -298,29 +298,23 @@ span.highlight {
 
 .abstract-toggle-more {
   display: inline-block;
-  background-color: var(--highlight-bg);
-  color: var(--primary-color);
-  padding: 0 6px;
-  border-radius: 4px;
-  font-weight: bold;
+  font-size: 13px;
   cursor: pointer;
+  font-family: var(--font-family);
+  color: var(--link-color);
+  transition: color 0.2s ease;
   text-decoration: none;
-  font-size: 11px;
-  border: 1px solid rgba(196, 18, 48, 0.2);
-  transition: all 0.2s ease;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .abstract-container.collapsed .abstract-toggle-more {
   position: absolute;
-  bottom: 1px;
+  bottom: 0;
   right: 0;
 }
 
 .abstract-toggle-more:hover {
-  background-color: var(--primary-color);
-  color: #ffffff;
-  border-color: var(--primary-color);
+  color: var(--link-hover);
 }
 
 .abstract-toggle-less {
