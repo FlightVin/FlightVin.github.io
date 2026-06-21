@@ -1,8 +1,18 @@
+import os
 import re
 import sys
 
 def test_news_date_format():
-    with open('index.html', 'r', encoding='utf-8') as f:
+    # Resolve index.html path relative to the directory containing this script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.dirname(script_dir)
+    index_path = os.path.join(repo_root, 'index.html')
+
+    if not os.path.exists(index_path):
+        print(f"Error: Could not locate index.html at {index_path}")
+        sys.exit(1)
+
+    with open(index_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
     # Locate the News Section content block
