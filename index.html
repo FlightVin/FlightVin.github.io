@@ -127,7 +127,6 @@
     </table>
 
     <script>
-      // 1. THE DATA: Define your papers here using simple parameters.
       const papers = [
         {
           title: "ObjectReact: Learning Object-Relative Control for Visual Navigation",
@@ -145,24 +144,24 @@
           imageSrc: "images/objectreact/image.png",
           videoSrc: "images/objectreact/video.mp4"
         }
-        // To add a new paper, just drop a new {} object here!
+
       ];
 
-      // 2. THE ENGINE: Converts your data into Jon Barron's HTML layout.
+
       function renderPapers() {
         const container = document.getElementById('papers-container');
         let html = '';
 
         papers.forEach(paper => {
-          // Handles the optional highlight color
+
           const bgStyle = paper.highlight ? 'bgcolor="#ffffd0"' : '';
           
-          // Builds the slash-separated links dynamically
+
           const linksHtml = paper.links
             .map(link => `<a href="${link.url}">${link.label}</a>`)
             .join(' / ');
 
-          // Appends the formatted HTML for this specific paper
+
           html += `
             <tr ${bgStyle}>
               <td style="padding:16px;width:20%;vertical-align:middle">
@@ -193,11 +192,9 @@
           `;
         });
 
-        // Inject all generated HTML into the DOM at once
         container.innerHTML = html;
       }
 
-      // 3. EXECUTION: Run the renderer when the page loads
       document.addEventListener('DOMContentLoaded', renderPapers);
     </script>
   </body>
