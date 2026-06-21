@@ -229,7 +229,7 @@
               <div id="bib-${i}" class="bibtex-block" style="display:none; margin-top:10px;">
                 <pre style="background:var(--bibtex-bg, #f4f4f4); padding:10px; border-radius:5px; font-size:11px; overflow-x:auto; position:relative; white-space:pre-wrap; word-wrap:break-word; border:1px solid var(--border-color, #e0e0e0); color:var(--text-color, #333);">
 <code id="code-bib-${i}">${bibtexEscaped}</code>
-<button onclick="copyBibTeX('bib-${i}')" class="copy-btn" style="position:absolute; top:5px; right:5px; padding:3px 6px; font-size:10px; cursor:pointer; background:var(--card-bg, #fff); border:1px solid var(--border-color, #ccc); border-radius:3px; color:var(--text-color, #333);">Copy</button>
+<button onclick="copyBibTeX('bib-${i}')" class="copy-btn">Copy</button>
                 </pre>
               </div>
             `;
@@ -268,16 +268,27 @@
         }
       }
 
-      // Copy BibTeX to clipboard
+      // Copy BibTeX to clipboard with style feedback
       function copyBibTeX(id) {
         const codeElement = document.getElementById("code-" + id);
         const text = codeElement.innerText;
         navigator.clipboard.writeText(text).then(function() {
           const btn = codeElement.nextElementSibling;
-          const originalText = btn.innerText;
-          btn.innerText = "Copied!";
-          setTimeout(function() {
-            btn.innerText = originalText;
+          
+          if (btn.copyTimeout) {
+            clearTimeout(btn.copyTimeout);
+          } else {
+            btn.originalHtml = btn.innerHTML;
+          }
+          
+          btn.innerHTML = "✓ Copied";
+          btn.classList.add("success");
+          
+          btn.copyTimeout = setTimeout(function() {
+            btn.innerHTML = btn.originalHtml;
+            btn.classList.remove("success");
+            btn.copyTimeout = null;
+            btn.originalHtml = null;
           }, 2000);
         }).catch(function(err) {
           console.error('Could not copy BibTeX: ', err);

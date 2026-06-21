@@ -13,6 +13,7 @@
   --highlight-bg: #ffffd0;
   --font-family: 'Lato', Verdana, Helvetica, sans-serif;
   --heading-font: 'Outfit', 'Inter', sans-serif;
+  --success-color: #2e7d32;
 }
 
 [data-theme="dark"] {
@@ -26,6 +27,7 @@
   --card-bg: #1e1e1e;
   --bibtex-bg: #2d2d2d;
   --highlight-bg: #2d2a15;
+  --success-color: #4caf50;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -40,6 +42,7 @@
     --card-bg: #1e1e1e;
     --bibtex-bg: #2d2d2d;
     --highlight-bg: #2d2a15;
+    --success-color: #4caf50;
   }
 }
 
@@ -238,13 +241,40 @@ span.highlight {
 }
 
 .copy-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 3px 8px;
+  font-size: 10px;
+  cursor: pointer;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  color: var(--text-color);
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  outline: none;
 }
 
 .copy-btn:hover {
-  background-color: var(--primary-color) !important;
-  color: #ffffff !important;
-  border-color: var(--primary-color) !important;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border-color: var(--primary-color);
+}
+
+.copy-btn.success {
+  border-color: var(--success-color) !important;
+  color: var(--success-color) !important;
+  background-color: rgba(46, 125, 50, 0.06) !important;
+}
+
+[data-theme="dark"] .copy-btn.success {
+  background-color: rgba(76, 175, 80, 0.1) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .copy-btn.success {
+    background-color: rgba(76, 175, 80, 0.1) !important;
+  }
 }
 
 /* Miscellanea Cards */
