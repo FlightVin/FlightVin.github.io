@@ -113,7 +113,7 @@
               <div class="filter-container">
                 <button class="filter-btn active" onclick="filterCategory('all', this)">All</button>
                 <button class="filter-btn" onclick="filterCategory('robotics', this)">Robotics</button>
-                <button class="filter-btn" onclick="filterCategory('ai-safety', this)">AI Safety</button>
+                <button class="filter-btn" onclick="filterCategory('ai-safety', this)">AI safety</button>
               </div>
 
               <table style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;">
@@ -244,7 +244,7 @@
             paper.categories.forEach(cat => {
               let label = '';
               if (cat === 'robotics') label = 'Robotics';
-              else if (cat === 'ai-safety') label = 'AI Safety';
+              else if (cat === 'ai-safety') label = 'AI safety';
               else {
                 label = cat.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
               }
@@ -370,7 +370,7 @@
             let label = '';
             if (catName === 'all') label = 'All';
             else if (catName === 'robotics') label = 'Robotics';
-            else if (catName === 'ai-safety') label = 'AI Safety';
+            else if (catName === 'ai-safety') label = 'AI safety';
             else {
               label = catName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
             }
