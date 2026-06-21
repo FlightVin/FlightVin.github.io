@@ -1,0 +1,18 @@
+[
+  {
+    "title": "ObjectReact: Learning Object-Relative Control for Visual Navigation",
+    "titleUrl": "https://object-react.github.io/",
+    "authors": "Sourav Garg*, Dustin Craggs*, <strong>Vineeth Bhat</strong>, Lachlan Mares, <br> Stefan Podgorski, Madhava Krishna, Feras Dayoub, Ian Reid",
+    "venue": "CoRL",
+    "year": "2025",
+    "highlight": false,
+    "links": [
+      { "label": "project page", "url": "https://object-react.github.io/" },
+      { "label": "arXiv", "url": "https://arxiv.org/abs/2509.09594" },
+      { "label": "twitter", "url": "https://x.com/sourav_garg_/status/1966369557859467487f" }
+    ],
+    "description": "Introduces an object-relative control framework for visual navigation using a relative 3D scene graph, enabling more <i>flexible, embodiment-invariant path planning and control</i> that generalizes better across tasks and real-world environments than traditional image-relative methods.",
+    "imageSrc": "images/objectreact/image.png",
+    "videoSrc": "images/objectreact/video.mp4"
+  }
+]
