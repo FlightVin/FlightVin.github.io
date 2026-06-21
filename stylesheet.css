@@ -319,6 +319,10 @@ span.highlight {
   padding-left: 18px;
 }
 
+.highlighted-paper .abstract-container.collapsed .abstract-toggle-more {
+  background: linear-gradient(to right, transparent, var(--highlight-bg) 25%, var(--highlight-bg));
+}
+
 .abstract-toggle-more:hover {
   color: var(--link-hover);
 }
