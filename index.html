@@ -54,46 +54,45 @@
           </tbody></table>
           <table style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
 
-            <tr onmouseout="gr3en_stop()" onmouseover="gr3en_start()">
+            <tr onmouseout="object_react_stop()" onmouseover="object_react_start()">
               <td style="padding:16px;width:20%;vertical-align:middle">
                 <div class="one">
-                  <div class="two" id='gr3en_image'><video  width=100% height=100% muted autoplay loop>
-                  <source src="images/gr3en.mp4" type="video/mp4">
-                  Your browser does not support the video tag.
+                  <div class="two" id='object_react_image'>
+                  <video  width=100% height=100% muted autoplay loop>
+                    <source src="images/objectreact/video.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
                   </video></div>
-                  <img src='images/gr3en.jpg' width="160">
+                  <img src='images/objectreact/image.png' width="160">
                 </div>
                 <script type="text/javascript">
-                  function gr3en_start() {
-                    document.getElementById('gr3en_image').style.opacity = "1";
+                  function object_react_start() {
+                    document.getElementById('object_react_image').style.opacity = "1";
                   }
 
-                  function gr3en_stop() {
-                    document.getElementById('gr3en_image').style.opacity = "0";
+                  function object_react_stop() {
+                    document.getElementById('object_react_image').style.opacity = "0";
                   }
-                  gr3en_stop()
+                  object_react_stop()
                 </script>
               </td>
               <td style="padding:20px;width:75%;vertical-align:middle">
-                <a href="https://gr3en-relight.github.io/">
-                  <span class="papertitle">GR3EN: Generative Relighting for 3D Environments</span>
+                <a href="https://object-react.github.io/">
+                  <span class="papertitle">ObjectReact: Learning Object-Relative Control for Visual Navigation</span>
                 </a>
                 <br>
-                <a href="https://xyxingx.github.io/">Xiaoyan Xing</a>,
-                <a href="https://henzler.github.io/">Philipp Henzler</a>,
-                <a href="https://hurjunhwa.github.io/">Junhwa Hur</a>,
-                <a href="https://bragilee.github.io/">Runze Li</a>, <br>
-                <strong>Jonathan T. Barron</strong>,
-                <a href="https://pratulsrinivasan.github.io/">Pratul P. Srinivasan</a>,
-                <a href="https://dorverbin.github.io/">Dor Verbin</a>
+                  Sourav Garg*, Dustin Craggs*, <strong>Vineeth Bhat</strong>, Lachlan Mares,
+                  <br>
+                  Stefan Podgorski, Madhava Krishna, Feras Dayoub, Ian Reid
                 <br>
-                <em>SIGGRAPH</em>, 2026
+                <em>CoRL</em>, 2025
                 <br>
-                <a href="https://gr3en-relight.github.io/">project page</a> /
-                <a href="https://arxiv.org/abs/2601.16272">arXiv</a>
+                <a href="https://object-react.github.io/">project page</a> /
+                <a href="https://arxiv.org/abs/2509.09594">arXiv</a> /
+                <a href="https://x.com/sourav_garg_/status/1966369557859467487f">twitter</a>
+
                 <p></p>
                 <p>
-                Distilling the outputs of a video-to-video relighting diffusion model into a 3D reconstruction enables controllable 3D relighting of room-scale scenes.
+                Introduces an object-relative control framework for visual navigation using a relative 3D scene graph, enabling more <i>flexible, embodiment-invariant path planning and control</i> that generalizes better across tasks and real-world environments than traditional image-relative methods.
                 </p>
               </td>
             </tr>
