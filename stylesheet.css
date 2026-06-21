@@ -350,6 +350,10 @@ span.highlight {
   font-size: 13px;
 }
 
+.paper-authors strong {
+  font-weight: 600;
+}
+
 /* Miscellanea Cards */
 .misc-container {
   padding: 8px 16px;
