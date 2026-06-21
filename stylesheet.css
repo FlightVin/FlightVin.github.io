@@ -198,9 +198,9 @@ span.highlight {
 
 /* Category Filtering */
 .filter-container {
-  padding: 8px 16px 16px 16px;
+  padding: 8px 16px 16px 32px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
@@ -210,7 +210,7 @@ span.highlight {
   color: var(--text-color);
   text-decoration: none;
   font-family: var(--font-family);
-  font-size: 14px;
+  font-size: 12px;
   transition: all 0.2s ease;
   cursor: pointer;
 }
@@ -227,7 +227,7 @@ span.highlight {
   color: var(--text-color);
   opacity: 0.5;
   user-select: none;
-  font-size: 14px;
+  font-size: 12px;
   font-family: var(--font-family);
 }
 
