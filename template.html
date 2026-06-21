@@ -28,6 +28,17 @@
       .paper-preview:hover .two {
         opacity: 1;
       }
+
+      /* Hover styling for the new collapsible section headers */
+      summary {
+        transition: opacity 0.2s;
+      }
+      summary:hover {
+        opacity: 0.6;
+      }
+      /* Removes default list styling on some browsers if preferred, 
+         though the default arrow is usually helpful for UI */
+      /* summary::marker { content: ""; } */
   </style>
   </head>
 
@@ -35,6 +46,7 @@
     <table style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
       <tr style="padding:0px">
         <td style="padding:0px">
+          
           <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
             <tr style="padding:0px">
               <td style="padding:2.5%;width:63%;vertical-align:middle">
@@ -49,7 +61,6 @@
                 </p>
                 <p style="text-align:center">
                   <a href="mailto:vineeth.bhat@gmail.com">Email</a> &nbsp;/&nbsp;
-                  <!-- <a href="data/JonBarron-CV.pdf">CV</a> &nbsp;/&nbsp; -->
                   <a href="data/bio.txt">Bio</a> &nbsp;/&nbsp;
                   <a href="data/cv.pdf">CV</a> &nbsp;/&nbsp;
                   <a href="https://scholar.google.com/citations?user=vsqwwPYAAAAJ&hl=en">Scholar</a> &nbsp;/&nbsp;
@@ -62,56 +73,51 @@
               </td>
             </tr>
           </tbody></table>
-          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-              <tr>
-              <td style="padding:16px;width:100%;vertical-align:middle">
-                <h2 id="publications">Research</h2>
-                <small>Salient papers are <span class="highlight">highlighted</span>.</small>
-              </td>
-            </tr>
-          </tbody></table>
 
-          <table style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;">
-            <tbody id="papers-container">
-              {paper-build}
-            </tbody>
-          </table>
+          <details open style="margin-bottom: 24px;">
+            <summary style="cursor: pointer; padding: 16px; outline: none;">
+              <h2 id="publications" style="display: inline-block; margin: 0;">Research</h2>
+              <p style="margin-top: 4px; margin-bottom: 0;"><small>Salient papers are <span class="highlight">highlighted</span>.</small></p>
+            </summary>
+
+            <table style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+              <tbody id="papers-container">
+                {paper-build}
+              </tbody>
+            </table>
+          </details>
                     
-					<table style="width:100%; margin:0 auto; border:0; border-spacing:0; padding:16px;"><tbody>
-            <tr>
-              <td>
-                <h2>Miscellanea</h2>
-              </td>
-            </tr>
-          </tbody></table>
-          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-           
-            <tr>
-              <td align="center" style="padding:16px;width:20%;vertical-align:middle">
-						     <div class="colored-box" style="background-color: #edd892;">
-								 <h2>Teaching Assistantship</h2>
-								 </div>
-              </td>
-              <td style="padding:8px;width:80%;vertical-align:center">
-                Teaching Assistant, <a href="https://karthikv1392.github.io/cs6401_se/">Software Engineering, Spring 2025</a>
-                <br>
-                Teaching Assistant, <a href="https://karthikv1392.github.io/cs3301_osn/home/">OS & Networks, Fall 2023</a>
-              </td>
-            </tr>
+          <details open>
+            <summary style="cursor: pointer; padding: 16px; outline: none;">
+              <h2 style="display: inline-block; margin: 0;">Miscellanea</h2>
+            </summary>
 
-            <tr>
-              <td align="center" style="padding:16px;width:20%;vertical-align:middle">
-						     <div class="colored-box" style="background-color: #c6b89e;">
-								 <h2>Academic Service</h2>
-								 </div>
-              </td>
-              <td style="padding:8px;width:80%;vertical-align:center">
-                Reviewer, <a href="https://2026.ieee-iros.org/">2026 IEEE RSJ International Conference on Intelligent Robots and Systems (IROS)</a>
-                <!-- <br> -->
-              </td>
-            </tr>
-            
-          </tbody></table>
+            <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+              <tr>
+                <td align="center" style="padding:16px;width:20%;vertical-align:middle">
+                   <div class="colored-box" style="background-color: #edd892;">
+                   <h2>Teaching Assistantship</h2>
+                   </div>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  Teaching Assistant, <a href="https://karthikv1392.github.io/cs6401_se/">Software Engineering, Spring 2025</a>
+                  <br>
+                  Teaching Assistant, <a href="https://karthikv1392.github.io/cs3301_osn/home/">OS & Networks, Fall 2023</a>
+                </td>
+              </tr>
+              <tr>
+                <td align="center" style="padding:16px;width:20%;vertical-align:middle">
+                   <div class="colored-box" style="background-color: #c6b89e;">
+                   <h2>Academic Service</h2>
+                   </div>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  Reviewer, <a href="https://2026.ieee-iros.org/">2026 IEEE RSJ International Conference on Intelligent Robots and Systems (IROS)</a>
+                </td>
+              </tr>
+            </tbody></table>
+          </details>
+
           <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
             <tr>
               <td style="padding:0px">
@@ -122,6 +128,7 @@
               </td>
             </tr>
           </tbody></table>
+
         </td>
       </tr>
     </table>
