@@ -441,12 +441,12 @@ span.highlight {
   font-size: inherit;
 }
 
-.footer-email {
+.footer-link {
   color: var(--link-color) !important;
   transition: color 0.2s ease;
 }
 
-.footer-email:hover {
+.footer-link:hover {
   color: var(--link-hover) !important;
   text-decoration: underline;
 }
