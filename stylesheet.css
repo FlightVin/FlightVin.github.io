@@ -297,6 +297,29 @@ span.highlight {
   font-size: 13px;
 }
 
+/* News Toggle Button */
+.news-toggle-btn {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: 13px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.news-toggle-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.news-list.collapsed li:nth-child(n+5) {
+  display: none;
+}
+
 
 /* Dark Mode Profile Image Blending */
 [data-theme="dark"] img.hoverZoomLink {

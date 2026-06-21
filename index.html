@@ -95,6 +95,9 @@
                   <li><strong class="news-date">[Jun 2025]</strong> Starting out as a software engineer at <a href="https://stripe.com/">Stripe</a>.</li>
                   <li><strong class="news-date">[Jun 2025]</strong> Our paper <a href="https://reachpranjal.github.io/sparseloc/">SparseLoc</a> was accepted as an oral presentation to <a href="http://iros25.org/">IROS 2025</a> in Hangzhou, China.</li>
                 </ul>
+                <div style="padding-left: 20px; margin-top: 10px; margin-bottom: 8px;">
+                  <button id="news-toggle-btn" class="news-toggle-btn" onclick="toggleNews()">Show Older News ↓</button>
+                </div>
               </div>
             </details>
 
@@ -326,11 +329,41 @@
         themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
       }
 
+      // Collapsible News Timeline Toggle
+      function initNewsToggle() {
+        const newsList = document.querySelector('.news-list');
+        const toggleBtn = document.getElementById('news-toggle-btn');
+        if (newsList && toggleBtn) {
+          const items = newsList.querySelectorAll('li');
+          if (items.length <= 4) {
+            toggleBtn.style.display = 'none';
+          } else {
+            newsList.classList.add('collapsed');
+          }
+        }
+      }
+
+      function toggleNews() {
+        const newsList = document.querySelector('.news-list');
+        const toggleBtn = document.getElementById('news-toggle-btn');
+        if (newsList && toggleBtn) {
+          const isCollapsed = newsList.classList.contains('collapsed');
+          if (isCollapsed) {
+            newsList.classList.remove('collapsed');
+            toggleBtn.innerHTML = 'Show Less ↑';
+          } else {
+            newsList.classList.add('collapsed');
+            toggleBtn.innerHTML = 'Show Older News ↓';
+          }
+        }
+      }
+
       // Initialize render on load
       document.addEventListener('DOMContentLoaded', () => {
         if (typeof papersData !== 'undefined') {
           renderPapers(papersData);
         }
+        initNewsToggle();
       });
     </script>
   </body>
