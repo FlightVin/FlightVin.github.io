@@ -5,7 +5,7 @@
     "authors": "Sourav Garg*, Dustin Craggs*, <strong>Vineeth Bhat</strong>, Lachlan Mares, <br>Stefan Podgorski, Madhava Krishna, Feras Dayoub, Ian Reid",
     "venue": "CoRL",
     "year": "2025",
-    "highlight": false,
+    "highlight": true,
     "links": [
       { "label": "project page", "url": "https://object-react.github.io/" },
       { "label": "arXiv", "url": "https://arxiv.org/abs/2509.09594" },
@@ -30,5 +30,21 @@
     "description": "A global localization system that uses VLMs to build sparse, semantic maps. It achieves localization accuracy comparable to dense LiDAR methods <i>while using 500x fewer points</i>. Deployed in production by <a href=\"https://atimotors.com/\">Ati Motors</a>.",
     "imageSrc": "images/sparseloc/image.jpg",
     "videoSrc": "images/sparseloc/video.mp4"
+  },
+  {
+    "title": "Consistency Checks for Language Model Forecasters",
+    "titleUrl": "https://arxiv.org/abs/2412.18544",
+    "authors": "Daniel Paleka*, Abhimanyu Pallavi Sudhir*, Alejandro Alvarez, <br><strong>Vineeth Bhat</strong>, Adam Shen, Evan Wang, Florian Tramèr",
+    "venue": "ICLR",
+    "year": "2025",
+    "paperType": "Oral",
+    "highlight": true,
+    "links": [
+      { "label": "arXiv", "url": "https://arxiv.org/abs/2412.18544" },
+      { "label": "project code", "url": "https://github.com/dpaleka/consistency-forecasting" },
+      { "label": "twitter", "url": "https://x.com/dpaleka/status/1877717539763237346" }
+    ],
+    "description": "Proposes a new framework for evaluating LLM-based forecasters by measuring their logical consistency, introducing an \"arbitrage metric\" that correlates strongly with future forecasting accuracy, even when the ground truth is unknown.",
+    "imageSrc": "images/consistencychecks/image.png"
   }
 ]
