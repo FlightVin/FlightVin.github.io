@@ -7,6 +7,7 @@ const papersData = [
     "year": "2025",
     "highlight": true,
     "categories": ["robotics"],
+    "subtags": ["Robot learning", "Navigation"],
     "bibtex": "@inproceedings{garg2025objectreact,\n  title={ObjectReact: Learning Object-Relative Control for Visual Navigation},\n  author={Garg, Sourav and Craggs, Dustin and Bhat, Vineeth and Mares, Lachlan and Podgorski, Stefan and Krishna, Madhava and Dayoub, Feras and Reid, Ian},\n  booktitle={Conference on Robot Learning (CoRL)},\n  year={2025}\n}",
     "links": [
       { "label": "project page", "url": "https://object-react.github.io/" },
@@ -26,6 +27,7 @@ const papersData = [
     "paperType": "Oral",
     "highlight": false,
     "categories": ["robotics"],
+    "subtags": ["Localization"],
     "bibtex": "@inproceedings{paul2025sparseloc,\n  title={SparseLoc: Sparse Open-Set Landmark-based Global Localization for Autonomous Navigation},\n  author={Paul, Pranjal and Bhat, Vineeth and Salian, Tejas and Omama, Mohammad and Jatavallabhula, Krishna Murthy and Arulselvan, Naveen and Krishna, K. Madhava},\n  booktitle={IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},\n  year={2025}\n}",
     "links": [
       { "label": "project page", "url": "https://reachpranjal.com/sparseloc/" },
@@ -62,6 +64,7 @@ const papersData = [
     "paperType": "Oral",
     "highlight": false,
     "categories": ["robotics"],
+    "subtags": ["Localization"],
     "bibtex": "@inproceedings{chavan2025towards,\n  title={Towards Global Localization Using Multi-Modal Object-Instance Re-Identification},\n  author={Chavan, Aneesh and Agrawal, Vaibhav and Bhat, Vineeth and Chittawar, Sarthak and Srivastava, Siddharth and Arora, Chetan and Krishna, K. Madhava},\n  booktitle={Advances in Robotics (AiR)},\n  year={2025}\n}",
     "links": [
       { "label": "project page", "url": "https://instance-based-loc-machine.github.io/" },

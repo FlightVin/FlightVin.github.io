@@ -251,6 +251,12 @@
               badgesHtml += ` <span class="paper-badge">[${label}]</span>`;
             });
           }
+          // Dynamic Subtags (e.g. [Robot learning], [Navigation], [Localization])
+          if (paper.subtags) {
+            paper.subtags.forEach(subtag => {
+              badgesHtml += ` <span class="paper-badge">[${subtag}]</span>`;
+            });
+          }
 
           // Descriptions and Meta Content Column
           const contentCol = `
