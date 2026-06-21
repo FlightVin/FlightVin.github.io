@@ -408,6 +408,13 @@ span.highlight {
   .misc-title {
     flex: none;
   }
+
+  p a, 
+  td a, 
+  tr a,
+  li a {
+    color: var(--link-color);
+  }
 }
 
 /* News Dates Alignment */
