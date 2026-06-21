@@ -235,12 +235,29 @@
             `;
           }
 
+          // Dynamic Badges (e.g. Oral, Robotics)
+          let badgesHtml = '';
+          if (paper.paperType) {
+            badgesHtml += `<span class="paper-badge badge-type">${paper.paperType}</span>`;
+          }
+          if (paper.categories) {
+            paper.categories.forEach(cat => {
+              let label = '';
+              if (cat === 'robotics') label = 'Robotics';
+              else if (cat === 'ai-safety') label = 'AI Safety';
+              else {
+                label = cat.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+              }
+              badgesHtml += `<span class="paper-badge badge-${cat}">${label}</span>`;
+            });
+          }
+
           // Descriptions and Meta Content Column
           const contentCol = `
             <td style="padding:20px;width:75%;vertical-align:middle">
               <a href="${paper.titleUrl}">
                 <span class="papertitle">${paper.title}</span>
-              </a>
+              </a>${badgesHtml}
               <br>
               ${paper.authors}
               <br>
@@ -249,7 +266,11 @@
               ${linksHtml}
               ${bibtexHtml}
               <p></p>
-              <p>${paper.description}</p>
+              <div class="abstract-container collapsed">
+                <span class="abstract-text">${paper.description}</span>
+                <a href="javascript:void(0)" class="abstract-toggle-more" onclick="toggleAbstract(this)">...</a>
+                <a href="javascript:void(0)" class="abstract-toggle-less" onclick="toggleAbstract(this)" style="display: none;">(less)</a>
+              </div>
             </td>
           `;
 
@@ -405,11 +426,55 @@
         }
       }
 
+      // Collapsible Abstract toggles
+      function toggleAbstract(el) {
+        const container = el.closest('.abstract-container');
+        if (!container) return;
+
+        const text = container.querySelector('.abstract-text');
+        const moreBtn = container.querySelector('.abstract-toggle-more');
+        const lessBtn = container.querySelector('.abstract-toggle-less');
+
+        const isCollapsed = container.classList.contains('collapsed');
+        if (isCollapsed) {
+          container.classList.remove('collapsed');
+          container.classList.add('expanded');
+          moreBtn.style.display = 'none';
+          lessBtn.style.display = 'inline';
+        } else {
+          container.classList.remove('expanded');
+          container.classList.add('collapsed');
+          moreBtn.style.display = 'inline-block';
+          lessBtn.style.display = 'none';
+        }
+      }
+
+      function initAbstractToggles() {
+        const containers = document.querySelectorAll('.abstract-container');
+        containers.forEach(container => {
+          const text = container.querySelector('.abstract-text');
+          const moreBtn = container.querySelector('.abstract-toggle-more');
+
+          // Temporarily uncollapse to check full height
+          container.classList.remove('collapsed');
+          const fullHeight = text.offsetHeight;
+          container.classList.add('collapsed');
+          const clampedHeight = text.offsetHeight;
+
+          // If the text naturally fits in 2 lines or fewer, hide the toggle entirely
+          if (fullHeight <= clampedHeight) {
+            moreBtn.style.display = 'none';
+            container.classList.remove('collapsed');
+          }
+        });
+      }
+
       // Initialize render on load
       document.addEventListener('DOMContentLoaded', () => {
         if (typeof papersData !== 'undefined') {
           renderPapers(papersData);
           updateCategoryCounters();
+          initAbstractToggles();
         }
         initNewsToggle();
       });
