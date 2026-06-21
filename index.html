@@ -284,7 +284,7 @@
         });
       }
 
-      // Interactive Category Filtering with smooth transitions
+      // Interactive Category Filtering (Instant)
       function filterCategory(category, button) {
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(btn => btn.classList.remove('active'));
@@ -293,26 +293,10 @@
         const rows = document.querySelectorAll('.paper-row');
         rows.forEach(row => {
           const match = category === 'all' || (row.getAttribute('data-categories') || '').split(' ').includes(category);
-          
           if (match) {
-            if (row.fadeTimeout) {
-              clearTimeout(row.fadeTimeout);
-              row.fadeTimeout = null;
-            }
-            row.style.display = '';
-            // Force reflow
-            void row.offsetHeight;
             row.classList.remove('hidden-paper');
           } else {
             row.classList.add('hidden-paper');
-            if (!row.fadeTimeout) {
-              row.fadeTimeout = setTimeout(() => {
-                if (row.classList.contains('hidden-paper')) {
-                  row.style.display = 'none';
-                }
-                row.fadeTimeout = null;
-              }, 300); // matches the 0.3s CSS transition
-            }
           }
         });
       }
