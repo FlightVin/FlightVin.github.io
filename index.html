@@ -238,7 +238,7 @@
           // Dynamic Badges (e.g. [Oral], [Robotics])
           let badgesHtml = '';
           if (paper.paperType) {
-            badgesHtml += ` <strong class="paper-badge">[${paper.paperType}]</strong>`;
+            badgesHtml += ` <span class="paper-badge">[${paper.paperType}]</span>`;
           }
           if (paper.categories) {
             paper.categories.forEach(cat => {
@@ -248,7 +248,7 @@
               else {
                 label = cat.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
               }
-              badgesHtml += ` <strong class="paper-badge">[${label}]</strong>`;
+              badgesHtml += ` <span class="paper-badge">[${label}]</span>`;
             });
           }
 
@@ -257,11 +257,11 @@
             <td style="padding:20px;width:75%;vertical-align:middle">
               <a href="${paper.titleUrl}">
                 <span class="papertitle">${paper.title}</span>
-              </a>${badgesHtml}
+              </a>
               <br>
               ${paper.authors}
               <br>
-              <em>${paper.venue}</em>, ${paper.year}${paperTypeHtml}
+              <em>${paper.venue}</em>, ${paper.year}${badgesHtml}
               <br>
               ${linksHtml}
               ${bibtexHtml}
