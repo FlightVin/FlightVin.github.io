@@ -1,4 +1,4 @@
-[
+const papersData = [
   {
     "title": "ObjectReact: Learning Object-Relative Control for Visual Navigation",
     "titleUrl": "https://object-react.github.io/",
@@ -6,6 +6,8 @@
     "venue": "CoRL",
     "year": "2025",
     "highlight": true,
+    "categories": ["robotics", "cv"],
+    "bibtex": "@inproceedings{garg2025objectreact,\n  title={ObjectReact: Learning Object-Relative Control for Visual Navigation},\n  author={Garg, Sourav and Craggs, Dustin and Bhat, Vineeth and Mares, Lachlan and Podgorski, Stefan and Krishna, Madhava and Dayoub, Feras and Reid, Ian},\n  booktitle={Conference on Robot Learning (CoRL)},\n  year={2025}\n}",
     "links": [
       { "label": "project page", "url": "https://object-react.github.io/" },
       { "label": "arXiv", "url": "https://arxiv.org/abs/2509.09594" },
@@ -23,6 +25,8 @@
     "year": "2025",
     "paperType": "Oral",
     "highlight": false,
+    "categories": ["robotics", "cv"],
+    "bibtex": "@inproceedings{paul2025sparseloc,\n  title={SparseLoc: Sparse Open-Set Landmark-based Global Localization for Autonomous Navigation},\n  author={Paul, Pranjal and Bhat, Vineeth and Salian, Tejas and Omama, Mohammad and Jatavallabhula, Krishna Murthy and Arulselvan, Naveen and Krishna, K. Madhava},\n  booktitle={IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},\n  year={2025}\n}",
     "links": [
       { "label": "project page", "url": "https://reachpranjal.com/sparseloc/" },
       { "label": "arXiv", "url": "https://arxiv.org/abs/2503.23465" }
@@ -39,6 +43,8 @@
     "year": "2025",
     "paperType": "Oral",
     "highlight": true,
+    "categories": ["ml"],
+    "bibtex": "@inproceedings{paleka2025consistency,\n  title={Consistency Checks for Language Model Forecasters},\n  author={Paleka, Daniel and Sudhir, Abhimanyu Pallavi and Alvarez, Alejandro and Bhat, Vineeth and Shen, Adam and Wang, Evan and Tram\u00e8r, Florian},\n  booktitle={International Conference on Learning Representations (ICLR)},\n  year={2025}\n}",
     "links": [
       { "label": "arXiv", "url": "https://arxiv.org/abs/2412.18544" },
       { "label": "project code", "url": "https://github.com/dpaleka/consistency-forecasting" },
@@ -55,6 +61,8 @@
     "year": "2025",
     "paperType": "Oral",
     "highlight": false,
+    "categories": ["robotics", "cv"],
+    "bibtex": "@inproceedings{chavan2025towards,\n  title={Towards Global Localization Using Multi-Modal Object-Instance Re-Identification},\n  author={Chavan, Aneesh and Agrawal, Vaibhav and Bhat, Vineeth and Chittawar, Sarthak and Srivastava, Siddharth and Arora, Chetan and Krishna, K. Madhava},\n  booktitle={Advances in Robotics (AiR)},\n  year={2025}\n}",
     "links": [
       { "label": "project page", "url": "https://instance-based-loc-machine.github.io/" },
       { "label": "arXiv", "url": "https://arxiv.org/abs/2409.12002" }
@@ -62,4 +70,4 @@
     "description": "A framework to build an object-based global map, and enables localization over it through a novel dual path transformer architecture that performs multi-modal instance re-identification.",
     "imageSrc": "images/dator/image.png"
   }
-]
+];

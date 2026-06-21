@@ -2,18 +2,18 @@
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
     <title>Vineeth Bhat</title>
 
     <meta name="author" content="Vineeth Bhat">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    
     <style>
-      /* Modern CSS-only hover effect for paper visuals */
+      /* Hover zooms and transitions for paper visual previews */
       .paper-preview {
         position: relative;
-        width: 160px; /* Matches your current image width */
+        width: 160px;
       }
       .paper-preview .two {
         position: absolute;
@@ -23,218 +23,334 @@
         height: 100%;
         opacity: 0;
         transition: opacity 0.2s ease-in-out;
-        pointer-events: none; /* Lets you click through if needed */
+        pointer-events: none;
       }
       .paper-preview:hover .two {
         opacity: 1;
       }
 
-      /* Hover styling for the new collapsible section headers */
+      /* Hover styling for the collapsible headers */
       summary {
         transition: opacity 0.2s;
       }
       summary:hover {
         opacity: 0.6;
       }
-      /* Removes default list styling on some browsers if preferred, 
-         though the default arrow is usually helpful for UI */
-      /* summary::marker { content: ""; } */
-  </style>
+    </style>
   </head>
 
   <body>
-    <table style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-      <tr style="padding:0px">
-        <td style="padding:0px">
-          
-          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-            <tr style="padding:0px">
-              <td style="padding:2.5%;width:63%;vertical-align:middle">
-                <p class="name" style="text-align: center;">
-                  Vineeth Bhat
-                </p>
-<p>
-    Incoming grad student at <a href="https://www.ml.cmu.edu/">CMU MLD</a> and Software Engineer at <a href="https://stripe.com/">Stripe</a>. 
-    Domains that pique my interest are ML, Robotics and Software (& distributed) systems. Did my undergrad in Computer Science and Engineering from <a href="https://www.iiit.ac.in/">IIIT Hyderabad</a>, 
-    where I graduated at the <a href="https://www.thehindu.com/education/colleges/iiit-hyderabad-24th-convocation-2025-529-graduates-gold-medal-awards-and-new-director-announced/article69810924.ece">top of my cohort</a>, and conducted 
-    research advised by <a href="https://scholar.google.com/citations?user=QDuPGHwAAAAJ&hl=en">Prof. K. Madhava Krishna</a> and <a href="https://oravus.github.io/">Dr. Sourav Garg</a> in robotics.
-</p>
-                <p style="text-align:center">
-                  <a href="mailto:vineeth.bhat@gmail.com">Email</a> &nbsp;/&nbsp;
-                  <a href="data/bio.txt">Bio</a> &nbsp;/&nbsp;
-                  <a href="data/cv.pdf">CV</a> &nbsp;/&nbsp;
-                  <a href="https://scholar.google.com/citations?user=vsqwwPYAAAAJ&hl=en">Scholar</a> &nbsp;/&nbsp;
-                  <a href="https://x.com/vin_bhat">Twitter</a> &nbsp;/&nbsp;
-                  <a href="https://vineethbhat.com/all-of-my-blogs-in-one-place/">Blogs</a>
-                </p>
-              </td>
-              <td style="padding:2.5%;width:37%;max-width:37%">
-                <a href="images/vineeth-bhat.jpeg"><img style="width:100%;max-width:100%;object-fit: cover; border-radius: 50%;" alt="profile photo" src="images/vineeth-bhat.jpeg" class="hoverZoomLink"></a>
-              </td>
-            </tr>
-          </tbody></table>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle-container" style="max-width: 800px; margin: 15px auto 5px auto; padding: 0 20px; text-align: right;">
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode" style="background: none; border: none; font-size: 20px; cursor: pointer; padding: 5px;">
+        🌙
+      </button>
+    </div>
 
-          <details open style="margin-bottom: 24px;">
-            <summary style="cursor: pointer; padding: 16px; outline: none;">
-              <h2 id="publications" style="display: inline-block; margin: 0;">Research</h2>
-              <p style="margin-top: 4px; margin-bottom: 0;"><small>Salient papers are <span class="highlight">highlighted</span>.</small></p>
-            </summary>
-
-            <table style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;">
-              <tbody id="papers-container">
-                
-        <tr bgcolor="#ffffd0">
-          <td style="padding:16px;width:20%;vertical-align:middle">
-            <div class="one paper-preview">
-              <div class="two">
-                
-                <video width="100%" height="100%" muted autoplay loop playsinline>
-                  <source src="images/objectreact/video.mp4" type="video/mp4">
-                </video>
+    <table style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+      <tbody>
+        <tr style="padding:0px">
+          <td style="padding:0px">
             
-              </div>
-              <img src="images/objectreact/image.png" width="160">
-            </div>
-          </td>
-          <td style="padding:20px;width:75%;vertical-align:middle">
-            <a href="https://object-react.github.io/">
-              <span class="papertitle">ObjectReact: Learning Object-Relative Control for Visual Navigation</span>
-            </a>
-            <br>
-            Sourav Garg*, Dustin Craggs*, <strong>Vineeth Bhat</strong>, Lachlan Mares, <br>Stefan Podgorski, Madhava Krishna, Feras Dayoub, Ian Reid
-            <br>
-            <em>CoRL</em>, 2025
-            <br>
-            <a href="https://object-react.github.io/">project page</a> / <a href="https://arxiv.org/abs/2509.09594">arXiv</a> / <a href="https://x.com/sourav_garg_/status/1966369557859467487f">twitter</a>
-            <p></p>
-            <p>An object-relative control framework for visual navigation using a relative 3D scene graph, enabling more <i>flexible, embodiment-invariant path planning and control</i> that generalizes better across tasks and real-world environments than traditional image-relative methods.</p>
-          </td>
-        </tr>
-        
-        <tr >
-          <td style="padding:16px;width:20%;vertical-align:middle">
-            <div class="one paper-preview">
-              <div class="two">
-                
-                <video width="100%" height="100%" muted autoplay loop playsinline>
-                  <source src="images/sparseloc/video.mp4" type="video/mp4">
-                </video>
-            
-              </div>
-              <img src="images/sparseloc/image.jpg" width="160">
-            </div>
-          </td>
-          <td style="padding:20px;width:75%;vertical-align:middle">
-            <a href="https://reachpranjal.com/sparseloc/">
-              <span class="papertitle">SparseLoc: Sparse Open-Set Landmark-based Global Localization for Autonomous Navigation</span>
-            </a>
-            <br>
-            Pranjal Paul*, <strong>Vineeth Bhat*</strong>, Tejas Salian, Mohammad Omama, <br>Krishna Murthy Jatavallabhula, Naveen Arulselvan, K. Madhava Krishna
-            <br>
-            <em>IROS</em>, 2025 (<i>Oral</i>)
-            <br>
-            <a href="https://reachpranjal.com/sparseloc/">project page</a> / <a href="https://arxiv.org/abs/2503.23465">arXiv</a>
-            <p></p>
-            <p>A global localization system that uses VLMs to build sparse, semantic maps. It achieves localization accuracy comparable to dense LiDAR methods <i>while using 500x fewer points</i>. Deployed in production by <a href="https://atimotors.com/">Ati Motors</a>.</p>
-          </td>
-        </tr>
-        
-        <tr bgcolor="#ffffd0">
-          <td style="padding:16px;width:20%;vertical-align:middle">
-            <div class="one paper-preview">
-              <div class="two">
-                
-              </div>
-              <img src="images/consistencychecks/image.png" width="160">
-            </div>
-          </td>
-          <td style="padding:20px;width:75%;vertical-align:middle">
-            <a href="https://arxiv.org/abs/2412.18544">
-              <span class="papertitle">Consistency Checks for Language Model Forecasters</span>
-            </a>
-            <br>
-            Daniel Paleka*, Abhimanyu Pallavi Sudhir*, Alejandro Alvarez, <br><strong>Vineeth Bhat</strong>, Adam Shen, Evan Wang, Florian Tramèr
-            <br>
-            <em>ICLR</em>, 2025 (<i>Oral</i>)
-            <br>
-            <a href="https://arxiv.org/abs/2412.18544">arXiv</a> / <a href="https://github.com/dpaleka/consistency-forecasting">project code</a> / <a href="https://x.com/dpaleka/status/1877717539763237346">twitter</a>
-            <p></p>
-            <p>Proposes a new framework for evaluating LLM-based forecasters by measuring their logical consistency, introducing an "arbitrage metric" that correlates strongly with future forecasting accuracy, even when the ground truth is unknown.</p>
-          </td>
-        </tr>
-        
-        <tr >
-          <td style="padding:16px;width:20%;vertical-align:middle">
-            <div class="one paper-preview">
-              <div class="two">
-                
-              </div>
-              <img src="images/dator/image.png" width="160">
-            </div>
-          </td>
-          <td style="padding:20px;width:75%;vertical-align:middle">
-            <a href="https://instance-based-loc-machine.github.io/">
-              <span class="papertitle">Towards Global Localization Using Multi-Modal Object-Instance Re-Identification</span>
-            </a>
-            <br>
-            Aneesh Chavan, Vaibhav Agrawal*, <strong>Vineeth Bhat*</strong>, Sarthak Chittawar*, <br>Siddharth Srivastava, Chetan Arora, K Madhava Krishna
-            <br>
-            <em>Advanced in Robotics</em>, 2025 (<i>Oral</i>)
-            <br>
-            <a href="https://instance-based-loc-machine.github.io/">project page</a> / <a href="https://arxiv.org/abs/2409.12002">arXiv</a>
-            <p></p>
-            <p>A framework to build an object-based global map, and enables localization over it through a novel dual path transformer architecture that performs multi-modal instance re-identification.</p>
-          </td>
-        </tr>
-        
+            <!-- Bio & Profile Section -->
+            <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+              <tbody>
+                <tr style="padding:0px">
+                  <td style="padding:2.5%;width:63%;vertical-align:middle">
+                    <p class="name" style="text-align: center;">
+                      Vineeth Bhat
+                    </p>
+                    <p>
+                      I am an incoming MS in Machine Learning (MSML) student at Carnegie Mellon University. Prior to this, I was a Software Engineer at <a href="https://stripe.com/">Stripe</a>. My research interests span ML, Robotics, and distributed systems. I completed my B.Tech (Honours) in Computer Science and Engineering from <a href="https://www.iiit.ac.in/">IIIT Hyderabad</a> in 2025, graduating at the <a href="https://www.thehindu.com/education/colleges/iiit-hyderabad-24th-convocation-2025-529-graduates-gold-medal-awards-and-new-director-announced/article69810924.ece">top of my cohort</a> (Institute Gold Medalist), where I was advised by <a href="https://scholar.google.com/citations?user=QDuPGHwAAAAJ&hl=en">Prof. K. Madhava Krishna</a> and <a href="https://oravus.github.io/">Dr. Sourav Garg</a>.
+                    </p>
+                    
+                    <!-- Social & Links Bar -->
+                    <div class="social-links-bar">
+                      <a href="mailto:vineeth.bhat@gmail.com" class="social-link" title="Email">
+                        <svg viewBox="0 0 24 24" class="icon"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        <span>Email</span>
+                      </a>
+                      <a href="data/bio.txt" class="social-link" title="Bio">
+                        <svg viewBox="0 0 24 24" class="icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        <span>Bio</span>
+                      </a>
+                      <a href="data/cv.pdf" class="social-link" title="CV">
+                        <svg viewBox="0 0 24 24" class="icon"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        <span>CV</span>
+                      </a>
+                      <a href="https://scholar.google.com/citations?user=vsqwwPYAAAAJ&hl=en" class="social-link" title="Google Scholar">
+                        <svg viewBox="0 0 24 24" class="icon"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z M5.89 12.55L12 15.9l6.11-3.35c.16.26.25.56.25.88v2.33c0 1.66-2.03 3-4.54 3H10.2c-2.51 0-4.54-1.34-4.54-3V13.43c0-.32.09-.62.23-.88z"/></svg>
+                        <span>Scholar</span>
+                      </a>
+                      <a href="https://x.com/vin_bhat" class="social-link" title="Twitter / X">
+                        <svg viewBox="0 0 24 24" class="icon"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        <span>Twitter</span>
+                      </a>
+                      <a href="https://vineethbhat.com/all-of-my-blogs-in-one-place/" class="social-link" title="Blogs">
+                        <svg viewBox="0 0 24 24" class="icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.4z"/></svg>
+                        <span>Blogs</span>
+                      </a>
+                    </div>
+                  </td>
+                  <td style="padding:2.5%;width:37%;max-width:37%">
+                    <a href="images/vineeth-bhat.jpeg">
+                      <img style="width:100%;max-width:100%;object-fit: cover; border-radius: 50%;" alt="profile photo" src="images/vineeth-bhat.jpeg" class="hoverZoomLink">
+                    </a>
+                  </td>
+                </tr>
               </tbody>
             </table>
-          </details>
-                    
-          <details open>
-            <summary style="cursor: pointer; padding: 16px; outline: none;">
-              <h2 style="display: inline-block; margin: 0;">Miscellanea</h2>
-            </summary>
 
-            <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-              <tr>
-                <td align="center" style="padding:16px;width:20%;vertical-align:middle">
-                   <div class="colored-box" style="background-color: #edd892;">
-                   <h2>Teaching Assistantship</h2>
-                   </div>
-                </td>
-                <td style="padding:8px;width:80%;vertical-align:middle">
-                  Teaching Assistant, <a href="https://karthikv1392.github.io/cs6401_se/">Software Engineering, Spring 2025</a>
-                  <br>
-                  Teaching Assistant, <a href="https://karthikv1392.github.io/cs3301_osn/home/">OS & Networks, Fall 2023</a>
-                </td>
-              </tr>
-              <tr>
-                <td align="center" style="padding:16px;width:20%;vertical-align:middle">
-                   <div class="colored-box" style="background-color: #c6b89e;">
-                   <h2>Academic Service</h2>
-                   </div>
-                </td>
-                <td style="padding:8px;width:80%;vertical-align:middle">
-                  Reviewer, <a href="https://2026.ieee-iros.org/">2026 IEEE RSJ International Conference on Intelligent Robots and Systems (IROS)</a>
-                </td>
-              </tr>
-            </tbody></table>
-          </details>
+            <!-- News Section -->
+            <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-bottom:10px;">
+              <tbody>
+                <tr>
+                  <td style="padding:2.5%;width:100%;vertical-align:middle">
+                    <h2>News</h2>
+                    <ul style="padding-left: 20px; margin-top: 8px; line-height: 1.6;">
+                      <li><strong>[Aug 2026]</strong> Starting my MS in Machine Learning (MSML) at Carnegie Mellon University!</li>
+                      <li><strong>[June 2026]</strong> Graduated from IIIT Hyderabad as the Institute Gold Medalist.</li>
+                      <li><strong>[May 2026]</strong> Our paper <i>ObjectReact</i> was accepted to CoRL 2025.</li>
+                      <li><strong>[Mar 2026]</strong> Our paper <i>SparseLoc</i> was accepted as an Oral to IROS 2025.</li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-            <tr>
-              <td style="padding:0px">
-                <br>
-                <p style="text-align:right;font-size:small;">
-                  Appropriated from Jon Barron's <a href="https://github.com/jonbarron/jonbarron_website">source code</a> with a few tweaks of my own. 
-                </p>
-              </td>
-            </tr>
-          </tbody></table>
+            <!-- Research & Publications Section -->
+            <details open style="margin-bottom: 24px;">
+              <summary style="cursor: pointer; padding: 16px; outline: none;">
+                <h2 id="publications" style="display: inline-block; margin: 0;">Research</h2>
+                <p style="margin-top: 4px; margin-bottom: 0;"><small>Salient papers are <span class="highlight">highlighted</span>.</small></p>
+              </summary>
 
-        </td>
-      </tr>
+              <!-- Category Filters -->
+              <div class="filter-container">
+                <button class="filter-btn active" onclick="filterCategory('all', this)">All</button>
+                <button class="filter-btn" onclick="filterCategory('robotics', this)">Robotics</button>
+                <button class="filter-btn" onclick="filterCategory('cv', this)">Computer Vision</button>
+                <button class="filter-btn" onclick="filterCategory('ml', this)">Machine Learning</button>
+              </div>
+
+              <table style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+                <tbody id="papers-container">
+                  <!-- Generated dynamically via JS -->
+                </tbody>
+              </table>
+            </details>
+
+            <!-- Miscellanea Section -->
+            <details open style="margin-bottom: 24px;">
+              <summary style="cursor: pointer; padding: 16px; outline: none;">
+                <h2 style="display: inline-block; margin: 0;">Miscellanea</h2>
+              </summary>
+
+              <div class="misc-container">
+                <div class="misc-card">
+                  <div class="misc-title">Teaching Assistantship</div>
+                  <div class="misc-content">
+                    Teaching Assistant, <a href="https://karthikv1392.github.io/cs6401_se/">Software Engineering, Spring 2025</a>
+                    <br>
+                    Teaching Assistant, <a href="https://karthikv1392.github.io/cs3301_osn/home/">OS & Networks, Fall 2023</a>
+                  </div>
+                </div>
+
+                <div class="misc-card">
+                  <div class="misc-title">Academic Service</div>
+                  <div class="misc-content">
+                    Reviewer, <a href="https://2026.ieee-iros.org/">2026 IEEE RSJ International Conference on Intelligent Robots and Systems (IROS)</a>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Footer -->
+            <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+              <tbody>
+                <tr>
+                  <td style="padding:0px">
+                    <br>
+                    <p style="text-align:right;font-size:small;">
+                      Appropriated from Jon Barron's <a href="https://github.com/jonbarron/jonbarron_website">source code</a> with some dynamic JS and CSS magic.
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+          </td>
+        </tr>
+      </tbody>
     </table>
+
+    <!-- Publications Data -->
+    <script src="data/papers.js"></script>
+
+    <!-- Dynamic Site Logic -->
+    <script>
+      // Render the publications dynamically
+      function renderPapers(papers) {
+        const container = document.getElementById('papers-container');
+        container.innerHTML = '';
+
+        papers.forEach((paper, i) => {
+          const tr = document.createElement('tr');
+          const highlightClass = paper.highlight ? 'highlighted-paper' : '';
+          tr.className = `paper-row ${highlightClass}`;
+          tr.setAttribute('data-categories', (paper.categories || []).join(' '));
+          
+          if (paper.highlight) {
+            tr.setAttribute('bgcolor', '#ffffd0');
+          }
+
+          // Visual Preview Column (with hover video)
+          let videoHtml = '';
+          if (paper.videoSrc) {
+            videoHtml = `
+              <video width="100%" height="100%" muted autoplay loop playsinline>
+                <source src="${paper.videoSrc}" type="video/mp4">
+              </video>
+            `;
+          }
+
+          const mediaCol = `
+            <td style="padding:16px;width:20%;vertical-align:middle">
+              <div class="one paper-preview">
+                <div class="two">
+                  ${videoHtml}
+                </div>
+                <img src="${paper.imageSrc}" width="160" alt="${paper.title}">
+              </div>
+            </td>
+          `;
+
+          // Format Links with "cite" toggle
+          const linksList = (paper.links || []).map(link => 
+            `<a href="${link.url}">${link.label}</a>`
+          );
+          if (paper.bibtex) {
+            linksList.push(`<a href="javascript:void(0)" onclick="toggleBibTeX('bib-${i}')">cite</a>`);
+          }
+          const linksHtml = linksList.join(' / ');
+
+          // Optional Paper Type
+          const paperTypeHtml = paper.paperType ? ` (<i>${paper.paperType}</i>)` : '';
+
+          // Collapsible BibTeX section
+          let bibtexHtml = '';
+          if (paper.bibtex) {
+            const bibtexEscaped = paper.bibtex.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            bibtexHtml = `
+              <div id="bib-${i}" class="bibtex-block" style="display:none; margin-top:10px;">
+                <pre style="background:var(--bibtex-bg, #f4f4f4); padding:10px; border-radius:5px; font-size:11px; overflow-x:auto; position:relative; white-space:pre-wrap; word-wrap:break-word; border:1px solid var(--border-color, #e0e0e0); color:var(--text-color, #333);">
+<code id="code-bib-${i}">${bibtexEscaped}</code>
+<button onclick="copyBibTeX('bib-${i}')" class="copy-btn" style="position:absolute; top:5px; right:5px; padding:3px 6px; font-size:10px; cursor:pointer; background:var(--card-bg, #fff); border:1px solid var(--border-color, #ccc); border-radius:3px; color:var(--text-color, #333);">Copy</button>
+                </pre>
+              </div>
+            `;
+          }
+
+          // Descriptions and Meta Content Column
+          const contentCol = `
+            <td style="padding:20px;width:75%;vertical-align:middle">
+              <a href="${paper.titleUrl}">
+                <span class="papertitle">${paper.title}</span>
+              </a>
+              <br>
+              ${paper.authors}
+              <br>
+              <em>${paper.venue}</em>, ${paper.year}${paperTypeHtml}
+              <br>
+              ${linksHtml}
+              ${bibtexHtml}
+              <p></p>
+              <p>${paper.description}</p>
+            </td>
+          `;
+
+          tr.innerHTML = mediaCol + contentCol;
+          container.appendChild(tr);
+        });
+      }
+
+      // Toggle BibTeX block visibility
+      function toggleBibTeX(id) {
+        const el = document.getElementById(id);
+        if (el.style.display === 'none') {
+          el.style.display = 'block';
+        } else {
+          el.style.display = 'none';
+        }
+      }
+
+      // Copy BibTeX to clipboard
+      function copyBibTeX(id) {
+        const codeElement = document.getElementById("code-" + id);
+        const text = codeElement.innerText;
+        navigator.clipboard.writeText(text).then(function() {
+          const btn = codeElement.nextElementSibling;
+          const originalText = btn.innerText;
+          btn.innerText = "Copied!";
+          setTimeout(function() {
+            btn.innerText = originalText;
+          }, 2000);
+        }).catch(function(err) {
+          console.error('Could not copy BibTeX: ', err);
+        });
+      }
+
+      // Interactive Category Filtering
+      function filterCategory(category, button) {
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const rows = document.querySelectorAll('.paper-row');
+        rows.forEach(row => {
+          if (category === 'all') {
+            row.style.display = '';
+          } else {
+            const categories = (row.getAttribute('data-categories') || '').split(' ');
+            if (categories.includes(category)) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          }
+        });
+      }
+
+      // Theme toggle implementation
+      const themeToggle = document.getElementById('theme-toggle');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+      let currentTheme = localStorage.getItem('theme');
+      if (!currentTheme) {
+        currentTheme = prefersDark.matches ? 'dark' : 'light';
+      }
+
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      updateToggleIcon(currentTheme);
+
+      themeToggle.addEventListener('click', () => {
+        let theme = document.documentElement.getAttribute('data-theme');
+        let newTheme = theme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateToggleIcon(newTheme);
+      });
+
+      function updateToggleIcon(theme) {
+        themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+      }
+
+      // Initialize render on load
+      document.addEventListener('DOMContentLoaded', () => {
+        if (typeof papersData !== 'undefined') {
+          renderPapers(papersData);
+        }
+      });
+    </script>
   </body>
 </html>
