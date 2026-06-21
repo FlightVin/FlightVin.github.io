@@ -347,11 +347,13 @@ span.highlight {
 
 /* Paper Authors */
 .paper-authors {
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
 }
 
 .paper-authors strong {
-  font-weight: 301;
+  font-weight: 500;
+  font-size: inherit;
 }
 
 /* Miscellanea Cards */
