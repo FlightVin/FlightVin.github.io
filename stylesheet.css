@@ -345,6 +345,11 @@ span.highlight {
   font-weight: normal;
 }
 
+/* Paper Authors */
+.paper-authors {
+  font-size: 13px;
+}
+
 /* Miscellanea Cards */
 .misc-container {
   padding: 8px 16px;
