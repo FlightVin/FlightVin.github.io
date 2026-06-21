@@ -431,6 +431,23 @@ span.highlight {
 }
 
 
+/* Footer Styles */
+.footer-subtext {
+  font-size: 10px;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.footer-email {
+  color: var(--link-color) !important;
+  transition: color 0.2s ease;
+}
+
+.footer-email:hover {
+  color: var(--link-hover) !important;
+  text-decoration: underline;
+}
+
 /* Dark Mode Profile Image Blending */
 [data-theme="dark"] img.hoverZoomLink {
   filter: brightness(0.85) contrast(1.05);
