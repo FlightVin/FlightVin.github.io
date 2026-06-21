@@ -2,7 +2,7 @@
   {
     "title": "ObjectReact: Learning Object-Relative Control for Visual Navigation",
     "titleUrl": "https://object-react.github.io/",
-    "authors": "Sourav Garg*, Dustin Craggs*, <strong>Vineeth Bhat</strong>, Lachlan Mares, <br> Stefan Podgorski, Madhava Krishna, Feras Dayoub, Ian Reid",
+    "authors": "Sourav Garg*, Dustin Craggs*, <strong>Vineeth Bhat</strong>, Lachlan Mares, <br>Stefan Podgorski, Madhava Krishna, Feras Dayoub, Ian Reid",
     "venue": "CoRL",
     "year": "2025",
     "highlight": false,
@@ -11,8 +11,23 @@
       { "label": "arXiv", "url": "https://arxiv.org/abs/2509.09594" },
       { "label": "twitter", "url": "https://x.com/sourav_garg_/status/1966369557859467487f" }
     ],
-    "description": "Introduces an object-relative control framework for visual navigation using a relative 3D scene graph, enabling more <i>flexible, embodiment-invariant path planning and control</i> that generalizes better across tasks and real-world environments than traditional image-relative methods.",
+    "description": "An object-relative control framework for visual navigation using a relative 3D scene graph, enabling more <i>flexible, embodiment-invariant path planning and control</i> that generalizes better across tasks and real-world environments than traditional image-relative methods.",
     "imageSrc": "images/objectreact/image.png",
     "videoSrc": "images/objectreact/video.mp4"
+  },
+  {
+    "title": "SparseLoc: Sparse Open-Set Landmark-based Global Localization for Autonomous Navigation",
+    "titleUrl": "https://reachpranjal.com/sparseloc/",
+    "authors": "Pranjal Paul*, <strong>Vineeth Bhat*</strong>, Tejas Salian, Mohammad Omama, <br>Krishna Murthy Jatavallabhula, Naveen Arulselvan, K. Madhava Krishna",
+    "venue": "IROS",
+    "year": "2025",
+    "highlight": false,
+    "links": [
+      { "label": "project page", "url": "https://reachpranjal.com/sparseloc/" },
+      { "label": "arXiv", "url": "https://arxiv.org/abs/2503.23465" }
+    ],
+    "description": "A global localization system that uses VLMs to build sparse, semantic maps. It achieves localization accuracy comparable to dense LiDAR methods <i>while using 500x fewer points</i>. Deployed in production by <a href=\"https://atimotors.com/\">Ati Motors</a>.",
+    "imageSrc": "images/sparseloc/image.jpg",
+    "videoSrc": "images/sparseloc/video.mp4"
   }
 ]
