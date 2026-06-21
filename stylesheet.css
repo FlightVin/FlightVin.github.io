@@ -216,11 +216,11 @@ span.highlight {
 }
 
 .filter-link:hover {
-  color: var(--primary-color);
+  color: var(--link-hover);
 }
 
 .filter-link.active {
-  color: var(--primary-color);
+  color: var(--link-color);
   font-weight: 600;
   text-decoration: underline;
 }
