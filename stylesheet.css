@@ -297,23 +297,18 @@ span.highlight {
   font-size: 13px;
 }
 
-/* News Toggle Button */
-.news-toggle-btn {
-  background-color: var(--card-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  padding: 6px 14px;
-  border-radius: 20px;
+/* News Toggle Link */
+.news-toggle-link {
+  font-size: 13px;
   cursor: pointer;
   font-family: var(--font-family);
-  font-size: 13px;
-  transition: all 0.2s ease;
-  outline: none;
+  color: var(--link-color);
+  transition: color 0.2s ease;
+  display: inline-block;
 }
 
-.news-toggle-btn:hover {
-  border-color: var(--primary-color);
-  color: var(--primary-color);
+.news-toggle-link:hover {
+  color: var(--link-hover);
 }
 
 .news-list.collapsed li:nth-child(n+5) {

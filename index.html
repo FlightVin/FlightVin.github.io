@@ -95,8 +95,8 @@
                   <li><strong class="news-date">[Jun 2025]</strong> Starting out as a software engineer at <a href="https://stripe.com/">Stripe</a>.</li>
                   <li><strong class="news-date">[Jun 2025]</strong> Our paper <a href="https://reachpranjal.github.io/sparseloc/">SparseLoc</a> was accepted as an oral presentation to <a href="http://iros25.org/">IROS 2025</a> in Hangzhou, China.</li>
                 </ul>
-                <div style="padding-left: 20px; margin-top: 10px; margin-bottom: 8px;">
-                  <button id="news-toggle-btn" class="news-toggle-btn" onclick="toggleNews()">Show Older News ↓</button>
+                <div style="padding-left: 20px; margin-top: 6px;">
+                  <a href="javascript:void(0)" id="news-toggle-btn" class="news-toggle-link" onclick="toggleNews()">older news ▾</a>
                 </div>
               </div>
             </details>
@@ -350,10 +350,10 @@
           const isCollapsed = newsList.classList.contains('collapsed');
           if (isCollapsed) {
             newsList.classList.remove('collapsed');
-            toggleBtn.innerHTML = 'Show Less ↑';
+            toggleBtn.innerHTML = 'less ▴';
           } else {
             newsList.classList.add('collapsed');
-            toggleBtn.innerHTML = 'Show Older News ↓';
+            toggleBtn.innerHTML = 'older news ▾';
           }
         }
       }
