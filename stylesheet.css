@@ -286,7 +286,6 @@ span.highlight {
 
 .abstract-container.collapsed {
   position: relative;
-  padding-right: 30px;
 }
 
 .abstract-container.collapsed .abstract-text {
@@ -311,6 +310,8 @@ span.highlight {
   position: absolute;
   bottom: 0;
   right: 0;
+  background: linear-gradient(to right, transparent, var(--bg-color) 25%, var(--bg-color));
+  padding-left: 18px;
 }
 
 .abstract-toggle-more:hover {
