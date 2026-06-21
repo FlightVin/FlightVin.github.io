@@ -2,7 +2,7 @@ const papersData = [
   {
     "title": "ObjectReact: Learning Object-Relative Control for Visual Navigation",
     "titleUrl": "https://object-react.github.io/",
-    "authors": "Sourav Garg*, Dustin Craggs*, <strong>Vineeth Bhat</strong>, Lachlan Mares, <br>Stefan Podgorski, Madhava Krishna, Feras Dayoub, Ian Reid",
+    "authors": "Sourav Garg*, Dustin Craggs*, <strong>Vineeth Bhat</strong>, Lachlan Mares, Stefan Podgorski, Madhava Krishna, Feras Dayoub, Ian Reid",
     "venue": "CoRL",
     "year": "2025",
     "highlight": true,
@@ -20,7 +20,7 @@ const papersData = [
   {
     "title": "SparseLoc: Sparse Open-Set Landmark-based Global Localization for Autonomous Navigation",
     "titleUrl": "https://reachpranjal.com/sparseloc/",
-    "authors": "Pranjal Paul*, <strong>Vineeth Bhat*</strong>, Tejas Salian, Mohammad Omama, <br>Krishna Murthy Jatavallabhula, Naveen Arulselvan, K. Madhava Krishna",
+    "authors": "Pranjal Paul*, <strong>Vineeth Bhat*</strong>, Tejas Salian, Mohammad Omama, Krishna Murthy Jatavallabhula, Naveen Arulselvan, K. Madhava Krishna",
     "venue": "IROS",
     "year": "2025",
     "paperType": "Oral",
@@ -38,7 +38,7 @@ const papersData = [
   {
     "title": "Consistency Checks for Language Model Forecasters",
     "titleUrl": "https://arxiv.org/abs/2412.18544",
-    "authors": "Daniel Paleka*, Abhimanyu Pallavi Sudhir*, Alejandro Alvarez, <br><strong>Vineeth Bhat</strong>, Adam Shen, Evan Wang, Florian Tramèr",
+    "authors": "Daniel Paleka*, Abhimanyu Pallavi Sudhir*, Alejandro Alvarez, <strong>Vineeth Bhat</strong>, Adam Shen, Evan Wang, Florian Tramèr",
     "venue": "ICLR",
     "year": "2025",
     "paperType": "Oral",
@@ -56,7 +56,7 @@ const papersData = [
   {
     "title": "Towards Global Localization Using Multi-Modal Object-Instance Re-Identification",
     "titleUrl": "https://instance-based-loc-machine.github.io/",
-    "authors": "Aneesh Chavan, Vaibhav Agrawal*, <strong>Vineeth Bhat*</strong>, Sarthak Chittawar*, <br>Siddharth Srivastava, Chetan Arora, K Madhava Krishna",
+    "authors": "Aneesh Chavan, Vaibhav Agrawal*, <strong>Vineeth Bhat*</strong>, Sarthak Chittawar*, Siddharth Srivastava, Chetan Arora, K Madhava Krishna",
     "venue": "Advanced in Robotics",
     "year": "2025",
     "paperType": "Oral",
