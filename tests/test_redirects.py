@@ -15,7 +15,7 @@ def test_section_redirects():
     with open(index_path, 'r', encoding='utf-8') as f:
         index_content = f.read()
 
-    sections = ['publications', 'news', 'misc']
+    sections = ['publications', 'news', 'projects', 'misc']
     errors = []
 
     for section in sections:

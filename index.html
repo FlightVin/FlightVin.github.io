@@ -137,6 +137,16 @@
               </table>
             </details>
 
+            <!-- Projects Section -->
+            <details style="margin-bottom: 24px;">
+              <summary style="cursor: pointer; padding: 16px; outline: none;">
+                <h2 id="projects" style="display: inline-block; margin: 0;">Projects</h2>
+              </summary>
+              <div id="projects-container" class="projects-container">
+                <!-- Generated dynamically via JS -->
+              </div>
+            </details>
+
             <!-- Miscellanea Section -->
             <details open style="margin-bottom: 24px;">
               <summary style="cursor: pointer; padding: 16px; outline: none;">
@@ -184,6 +194,8 @@
 
     <!-- Publications Data -->
     <script src="data/papers.js"></script>
+    <!-- Projects Data -->
+    <script src="data/projects.js"></script>
 
     <!-- Dynamic Site Logic -->
     <script>
@@ -296,6 +308,34 @@
 
           tr.innerHTML = mediaCol + contentCol;
           container.appendChild(tr);
+        });
+      }
+
+      // Render projects dynamically
+      function renderProjects(projects) {
+        const container = document.getElementById('projects-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        projects.forEach((project, i) => {
+          const card = document.createElement('div');
+          card.className = 'project-card';
+
+          const linksList = (project.links || []).map(link => 
+            `<a href="${link.url}">${link.label}</a>`
+          );
+          const linksHtml = linksList.join(' / ');
+
+          card.innerHTML = `
+            <div class="project-title-container">
+              <a href="${project.titleUrl}">
+                <span class="project-title">${project.title}</span>
+              </a>
+              <span class="project-links">${linksHtml}</span>
+            </div>
+            <p class="project-description">${project.description}</p>
+          `;
+          container.appendChild(card);
         });
       }
 
@@ -495,6 +535,9 @@
           renderPapers(papersData);
           updateCategoryCounters();
           initAbstractToggles();
+        }
+        if (typeof projectsData !== 'undefined') {
+          renderProjects(projectsData);
         }
         initNewsToggle();
       });
