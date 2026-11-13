@@ -1,0 +1,379 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Generating and Combining RVs | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Generating and Combining&nbsp;RVs</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-09-13T15:07:07">2025-09-13</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What’s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#inverse-transform-sampling">Inverse Transform Sampling</a><ol><li><a class="wp-block-table-of-contents__entry" href="#foundations">Foundations</a></li><li><a class="wp-block-table-of-contents__entry" href="#intuition">Intuition</a></li><li><a class="wp-block-table-of-contents__entry" href="#theoretical-development">Theoretical development</a></li><li><a class="wp-block-table-of-contents__entry" href="#algorithm">Algorithm</a></li><li><a class="wp-block-table-of-contents__entry" href="#when-does-this-not-work">When does this not work?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sums-and-products-of-random-variables">Sums and Products of Random Variables</a><ol><li><a class="wp-block-table-of-contents__entry" href="#sum-of-independent-rvs">Sum of independent RVs</a></li><li><a class="wp-block-table-of-contents__entry" href="#product-of-independent-rvs">Product of independent RVs</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What’s there?</h3>
+
+
+
+<p class="wp-block-paragraph">An exposition (I love this word sm) into techniques of Inverse Transform Sampling and the algebra of random variables.</p>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="inverse-transform-sampling">Inverse Transform Sampling</h3>
+
+
+
+<p class="wp-block-paragraph">This is how you generate random samples from any probability distribution.</p>
+
+
+
+<h4 class="wp-block-heading" id="foundations">Foundations</h4>
+
+
+
+<p class="wp-block-paragraph">Y&#8217;know the <strong>standard uniform distribution</strong>, <span class="math">U(0, 1)</span>. This is a continuous distribution where every value in the interval <span class="math">[0, 1]</span> is equally likely. </p>
+
+
+
+<p class="wp-block-paragraph">We assume the existence of a pseudorandom number generator (PRNG) that can produce such samples.</p>
+
+
+
+<p class="wp-block-paragraph">Imma also just recap the properties of the CDF (<span class="math">F_X(x) = P(X \le x)</span>)</p>
+
+
+
+<ol class="wp-block-list">
+<li>It is a non-decreasing function.</li>
+
+
+
+<li>It is right-continuous.</li>
+
+
+
+<li><span class="math">\lim_{x \to -\infty} F_X(x) = 0</span> and <span class="math">\lim_{x \to \infty} F_X(x) = 1</span>. Tts range is therefore the interval <span class="math">[0, 1]</span>.</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="intuition">Intuition</h4>
+
+
+
+<p class="wp-block-paragraph">A simple observation &#8211; if we apply the CDF of a random variable <span class="math">X</span> to the variable itself, the resulting random variable <span class="math">Y = F_X(X)</span> follows a standard uniform distribution, <span class="math">Y \sim U(0,1)</span>. The inverse of this statement is the key to the sampling method: if we start with a uniform random variable and apply the <em>inverse</em> CDF, we will generate a random variable with the desired distribution.</p>
+
+
+
+<p class="wp-block-paragraph">So cool.</p>
+
+
+
+<h4 class="wp-block-heading" id="theoretical-development">Theoretical development</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Theorem (Probability Integral Transform):</strong> Let <span class="math">X</span> be a continuous random variable with a strictly monotonic CDF, <span class="math">F_X(x)</span>. Then the random variable <span class="math">Y = F_X(X)</span> is uniformly distributed on <span class="math">[0, 1]</span>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Proof:</strong> We want to find the CDF of <span class="math">Y</span>, denoted <span class="math">F_Y(y) = P(Y \le y)</span> for <span class="math">y \in [0, 1]</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\begin{aligned} F_Y(y) &amp;= P(Y \le y) \ &amp;= P(F_X(X) \le y) \quad (\text{by definition of } Y) \end{aligned}</span></p>
+
+
+
+<p class="wp-block-paragraph">Since <span class="math">F_X</span> is a strictly increasing function, its inverse <span class="math">F_X^{-1}</span> exists. We can apply it to both sides of the inequality inside the probability expression without changing the direction of the inequality:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\begin{aligned} F_Y(y) &amp;= P(F_X^{-1}(F_X(X)) \le F_X^{-1}(y)) \ &amp;= P(X \le F_X^{-1}(y)) \end{aligned}</span></p>
+
+
+
+<p class="wp-block-paragraph">By the definition of the CDF of <span class="math">X</span>, <span class="math">P(X \le x') = F_X(x')</span>. Therefore:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">F_Y(y) = F_X(F_X^{-1}(y)) = y</span></p>
+
+
+
+<p class="wp-block-paragraph">The CDF of the random variable <span class="math">Y</span> is <span class="math">F_Y(y) = y</span> for <span class="math">y \in [0, 1]</span>. This is the CDF of the standard uniform distribution, <span class="math">U(0, 1)</span>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Importantly</strong>, note the <span style="text-decoration: underline">strictly monotonic CDF</span> bit!</p>
+
+
+
+<h4 class="wp-block-heading" id="algorithm">Algorithm</h4>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Generate a uniform sample:</strong> Draw a random number <span class="math">u</span> from the standard uniform distribution, <span class="math">u \sim U(0, 1)</span>.</li>
+
+
+
+<li><strong>Apply the inverse CDF:</strong> Compute the value <span class="math">x = F_X^{-1}(u)</span>.</li>
+
+
+
+<li><strong>Result:</strong> The resulting value <span class="math">x</span> is a random sample from the distribution with CDF <span class="math">F_X(x)</span>.</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="when-does-this-not-work">When does this not work?</h4>
+
+
+
+<p class="wp-block-paragraph">This requires the CDF to be invertible. What if it isn&#8217;t? Example &#8211; for Guassians (the most predominant stuff). Update &#8211; <a href="../2025-09-13-advanced-methods-for-generating-rvs/">Advanced Methods for generating RVs</a></p>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<h3 class="wp-block-heading" id="sums-and-products-of-random-variables">Sums and Products of Random Variables</h3>
+
+
+
+<p class="wp-block-paragraph">What do we need to do?</p>
+
+
+
+<p class="wp-block-paragraph">Let <span class="math">X</span> and <span class="math">Y</span> be two random variables with known distributions. We define a new random variable, <span class="math">Z</span>, as a function of them, for example <span class="math">Z = X+Y</span> or <span class="math">Z=XY</span>. The goal is to find the probability distribution of <span class="math">Z</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="sum-of-independent-rvs">Sum of independent RVs</h4>
+
+
+
+<p class="wp-block-paragraph">To find the distribution of the sum, we first find its CDF, <span class="math">F_Z(z) = P(Z \le z) = P(X+Y \le z)</span>. This probability is the double integral of the joint density <span class="math">f(x, y)</span> over the region where <span class="math">x+y \le z</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">F_Z(z) = \iint_{x+y \le z} f(x, y) dx dy</span></p>
+
+
+
+<p class="wp-block-paragraph">Wut. How can we even compute this. Yeah, dw, we use <em>independence</em> and say that their joint density is the product of their marginal densities, <span class="math">f(x, y) = f_X(x)f_Y(y)</span>.</p>
+
+
+
+<p class="wp-block-paragraph">We also differentiate &#8211; since the PDF is the derivative of the CDF (wrt <span class="math">z</span>) This gives us that <strong><span style="text-decoration: underline">convolution formula</span></strong>!</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f_Z(z) = \int_{-\infty}^{\infty} f_X(x) f_Y(z-x) dx = (f_X * f_Y)(z)</span></p>
+
+
+
+<p class="wp-block-paragraph">(I derive the product one properly to give better understanding, btw.)</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Important Special Cases:</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Sum of Gaussians:</strong> The sum of two independent Gaussian random variables is also a Gaussian. If <span class="math">X \sim \mathcal{N}(\mu_X, \sigma_X^2)</span> and <span class="math">Y \sim \mathcal{N}(\mu_Y, \sigma_Y^2)</span>, then <span class="math">Z=X+Y \sim \mathcal{N}(\mu_X+\mu_Y, \sigma_X^2+\sigma_Y^2)</span>. This is a rare case where the convolution has a simple, closed-form solution.</li>
+
+
+
+<li><strong>Sum of Poissons:</strong> The sum of two independent Poisson random variables is also a Poisson. If <span class="math">X \sim \text{Poisson}(\lambda_X)</span> and <span class="math">Y \sim \text{Poisson}(\lambda_Y)</span>, then <span class="math">Z=X+Y \sim \text{Poisson}(\lambda_X+\lambda_Y)</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<h4 class="wp-block-heading" id="product-of-independent-rvs">Product of independent RVs</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Define the product</strong></p>
+
+
+
+<p class="wp-block-paragraph">The CDF of <span class="math">Z</span>, denoted <span class="math">F_Z(z)</span>, is the probability that <span class="math">Z</span> is less than or equal to some value <span class="math">z</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">F_Z(z) = P(Z \le z) = P(XY \le z)</span></p>
+
+
+
+<p class="has-text-align-left wp-block-paragraph"><br>Since <span class="math">X</span> and <span class="math">Y</span> are independent, we can express this probability as a double integral of their joint density, <span class="math">f(x, y) = f_X(x)f_Y(y)</span>, over the region where <span class="math">xy \le z</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">F_Z(z) = \iint_{xy \le z} f_X(x) f_Y(y) \,dx\,dy</span></p>
+
+
+
+<p class="wp-block-paragraph"><em>To make this integral solvable, we need to set explicit limits. </em>The inequality <span class="math">y \le z/x</span> or <span class="math">y \ge z/x</span> depends on the sign of <span class="math">x</span>. We must split the integral into two parts: one for <span class="math">x &gt; 0</span> and one for <span class="math">x &lt; 0</span>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Define the CDF properly</strong></p>
+
+
+
+<ol class="wp-block-list">
+<li>When <span class="math">x &gt; 0</span>, the condition is <span class="math">y \le z/x</span>.</li>
+
+
+
+<li>When <span class="math">x &lt; 0</span>, the condition is <span class="math">y \ge z/x</span>.</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">This allows us to rewrite the CDF as:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">F_Z(z) = \int_{0}^{\infty} f_X(x) \left( \int_{-\infty}^{z/x} f_Y(y) \,dy \right) dx + \int_{-\infty}^{0} f_X(x) \left( \int_{z/x}^{\infty} f_Y(y) \,dy \right) dx</span></p>
+
+
+
+<p class="wp-block-paragraph">We can express the inner integrals in terms of the CDF of <span class="math">Y</span>, which is <span class="math">F_Y(y) = \int_{-\infty}^{y} f_Y(t) \,dt</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">F_Z(z) = \int_{0}^{\infty} f_X(x) F_Y(z/x) \,dx + \int_{-\infty}^{0} f_X(x) [1 - F_Y(z/x)] \,dx</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Find the PDF</strong></p>
+
+
+
+<p class="wp-block-paragraph">The PDF, <span class="math">f_Z(z)</span>, is the derivative of the CDF with respect to <span class="math">z</span>. We can differentiate under the integral sign using the Leibniz integral rule.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f_Z(z) = \frac{d}{dz}F_Z(z) = \frac{d}{dz}\int_{0}^{\infty} f_X(x) F_Y(z/x) \,dx + \frac{d}{dz}\int_{-\infty}^{0} f_X(x) [1 - F_Y(z/x)] \,dx</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f_Z(z) = \int_{0}^{\infty} f_X(x) \frac{d}{dz}F_Y(z/x) \,dx + \int_{-\infty}^{0} f_X(x) \frac{d}{dz}[1 - F_Y(z/x)] \,dx</span></p>
+
+
+
+<p class="wp-block-paragraph">Using the chain rule, the derivative of <span class="math">F_Y(z/x)</span> with respect to <span class="math">z</span> is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\frac{d}{dz}F_Y(z/x) = f_Y(z/x) \cdot \frac{1}{x}</span></p>
+
+
+
+<p class="wp-block-paragraph">Substituting this back into our expression:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f_Z(z) = \int_{0}^{\infty} f_X(x) f_Y(z/x) \frac{1}{x} \,dx + \int_{-\infty}^{0} f_X(x) \left(-f_Y(z/x) \frac{1}{x}\right) \,dx</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f_Z(z) = \int_{0}^{\infty} f_X(x) f_Y(z/x) \frac{1}{x} \,dx + \int_{-\infty}^{0} f_X(x) f_Y(z/x) \frac{-1}{x} \,dx</span></p>
+
+
+
+<p class="wp-block-paragraph">For the first integral, <span class="math">x &gt; 0</span>, so <span class="math">\frac{1}{x} = \frac{1}{|x|}</span>. For the second integral, <span class="math">x &lt; 0</span>, so <span class="math">\frac{-1}{x} = \frac{1}{|x|}</span>. Since both integrands are now identical, we can combine the two integrals back into one:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f_Z(z) = \int_{-\infty}^{\infty} f_X(x) f_Y(z/x) \frac{1}{|x|} dx</span></p>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+
+
+
+<li>Wikipedia page on Leibniz integral rule (<a href="https://en.wikipedia.org/wiki/Leibniz_integral_rule">link</a>)</li>
+</ol>
+
+
+
+<figure class="wp-block-image size-large"><img src="image-1.png" alt="" loading="lazy" /></figure>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

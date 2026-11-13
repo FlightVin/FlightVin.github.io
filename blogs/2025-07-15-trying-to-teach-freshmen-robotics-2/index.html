@@ -1,0 +1,259 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Trying to Teach Freshmen Robotics 2 | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Trying to Teach Freshmen Robotics&nbsp;2</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-07-15T20:49:59">2025-07-15</time></p>
+      <article class="blog-content">
+
+<p class="wp-block-paragraph">(Written earlier; <a href="https://github.com/FlightVin/flightvin.github.io/blob/c9ceda1ade3b2669f342a14f4b70cf326db2a0ca/_posts/2025-02-28-trying-to-teach-freshmen-robotics-2.md">GitHub permalink</a>)</p>
+
+
+
+<p class="wp-block-paragraph">Find week 1 at <em><a href="../2025-07-15-trying-to-teach-freshmen-robotics-1/">Trying to Teach Freshmen Robotics 1</a></em>.</p>
+
+
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#weeks-5-to-8">Weeks 5 to 8</a><ol><li><a class="wp-block-table-of-contents__entry" href="#stuff-that-i-sent-over">Stuff that I sent over</a></li><li><a class="wp-block-table-of-contents__entry" href="#pytorch">PyTorch</a></li><li><a class="wp-block-table-of-contents__entry" href="#robotic-vision-with-opencv">Robotic Vision with OpenCV</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#final-things">Final Things</a></li></ol>
+
+
+
+<h5 class="wp-block-heading" id="weeks-5-to-8">Weeks 5 to 8</h5>
+
+
+
+<h6 class="wp-block-heading" id="stuff-that-i-sent-over">Stuff that I sent over</h6>
+
+
+
+<ol class="wp-block-list">
+<li>PyTorch</li>
+
+
+
+<li>Robotic Vision (with OpenCV)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">Evidently, progress in the stuff I could teach was slow owing to academics (ironic, isn&#8217;t it?). Regardless, they are still interested in RRC and a couple of them got part-time internships in a robotics startup (Yay!).</p>
+
+
+
+<h6 class="wp-block-heading" id="pytorch">PyTorch</h6>
+
+
+
+<p class="wp-block-paragraph">Not just the basics but also dive into critical aspects that will be essential for applying neural networks to robotics problems.</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Getting Started with PyTorch:</strong></li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Resource:</strong> <a href="https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html">Deep Learning with PyTorch: A 60 Minute Blitz</a><br>Familiarize yourself with the core components of PyTorch.</li>
+</ul>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Data Loaders and Datasets:</strong></li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li>PyTorch’s <code>torch.utils.data.Dataset</code> and <code>DataLoader</code> classes are designed to simplify data handling.</li>
+
+
+
+<li><strong>Key Aspects:</strong>
+<ul class="wp-block-list">
+<li><strong>Custom Datasets:</strong> How to structure and preprocess your robotics data for training.</li>
+
+
+
+<li><strong>Batching &amp; Shuffling:</strong> Efficiently loading data during training to improve performance.</li>
+
+
+
+<li><strong>Parallel Data Loading:</strong> Leveraging multi-threading to accelerate your training pipeline.</li>
+</ul>
+</li>
+
+
+
+<li><strong>Resource:</strong> The <a href="https://pytorch.org/tutorials/beginner/data_loading_tutorial.html">Data Loading Tutorial</a></li>
+</ul>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Optimization Theory:</strong></li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li>Understanding the mathematics and intuition behind optimization is crucial.</li>
+
+
+
+<li><strong>Focus Areas:</strong>
+<ul class="wp-block-list">
+<li><strong>Gradient Descent and Variants:</strong> Learn why and how different optimizers work (SGD, Adam, etc.).</li>
+
+
+
+<li><strong>Tuning Hyperparameters:</strong> Experiment with learning rates, momentum, and other parameters through <code>torch.optim</code>.</li>
+</ul>
+</li>
+
+
+
+<li><strong>Resource:</strong> The <a href="https://pytorch.org/docs/stable/optim.html">PyTorch Optimizers Documentation</a> is a solid starting point.</li>
+
+
+
+<li><strong>Other stuff:</strong>
+<ul class="wp-block-list">
+<li>You have done quite a bit of this in the mathy bits earlier and will redo it in the mobile robotics course. Take a look again at this in for the time being: <a href="https://web.stanford.edu/group/sisl/k12/optimization/MO-unit1-pdfs/1.1optimization.pdf">Intro to Optimization</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+<h6 class="wp-block-heading" id="robotic-vision-with-opencv">Robotic Vision with OpenCV</h6>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Introduction to OpenCV:</strong></li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Resource:</strong> The <a href="https://docs.opencv.org/master/d6/d00/tutorial_py_root.html">OpenCV-Python Tutorials</a> for an overview.</li>
+</ul>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Multi-view Geometry:</strong></li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li>A super important thing in robotic vision is the ability to perceive depth and spatial relationships using multiple images.</li>
+
+
+
+<li><strong>Focus Areas:</strong>
+<ul class="wp-block-list">
+<li><strong>Camera Calibration:</strong> Learn to determine intrinsic and extrinsic camera parameters to correct lens distortions.</li>
+
+
+
+<li><strong>Resource:</strong> The <a href="https://docs.opencv.org/3.4/dc/dbb/tutorial_py_calibration.html">Camera Calibration Tutorial</a> guides you through this process.</li>
+
+
+
+<li><strong>Epipolar Geometry &amp; Stereo Vision:</strong> Understand how to estimate depth and recover 3D information from two or more camera views.</li>
+
+
+
+<li><strong>Resource:</strong> <a href="https://www.robots.ox.ac.uk/~vgg/hzbook/">Multi-view Geometry</a> is perhaps the best book available. There are a few copies in the library as well.</li>
+</ul>
+</li>
+</ul>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Robust Vision Pipelines:</strong></li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Key Concepts:</strong>
+<ul class="wp-block-list">
+<li><strong>Feature Detection:</strong> Experiment with detectors such as SIFT, SURF, or ORB to recognize and match key points in images.</li>
+
+
+
+<li><strong>Real-time Processing:</strong> Build pipelines that can handle continuous video streams and process images on the fly.</li>
+</ul>
+</li>
+</ul>
+
+
+
+<h5 class="wp-block-heading" id="final-things">Final Things</h5>
+
+
+
+<p class="wp-block-paragraph">Once you&#8217;re done. Start with reading about SLAM pipelines.</p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

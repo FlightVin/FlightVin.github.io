@@ -1,0 +1,373 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>A small introduction to Gaussian Processes | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">A small introduction to Gaussian&nbsp;Processes</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-09-09T21:59:00">2025-09-09</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What’s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#why-does-this-exist">Why does this exist?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#from-multivariate-gaussians-to-gaussian-processes">From Multivariate Gaussians to Gaussian Processes</a></li><li><a class="wp-block-table-of-contents__entry" href="#defining-a-gp">Defining a GP</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#bayesian-inference-with-gps">Bayesian Inference with GPs</a><ol><li><a class="wp-block-table-of-contents__entry" href="#gaussian-process-regression-model">Gaussian Process Regression Model</a></li><li><a class="wp-block-table-of-contents__entry" href="#posterior-predictive-distribution">Posterior Predictive Distribution</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#how-tos">How tos</a><ol><li><a class="wp-block-table-of-contents__entry" href="#the-kernel-function-and-model-properties">The Kernel Function and Model Properties</a></li><li><a class="wp-block-table-of-contents__entry" href="#learning-the-hyperparameters">Learning the Hyperparameters</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What’s there?</h3>
+
+
+
+<p class="wp-block-paragraph">Started with some Probability and Statistics; doing Gaussians now. This post is to go deep into Gaussian Processes.</p>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="why-does-this-exist">Why does this exist?</h3>
+
+
+
+<p class="wp-block-paragraph">A parametric model, such as polynomial regression (<span class="math">f(x) = \sum_{i=0}^M \theta_i x^i</span>), makes a strong, fixed assumption about the functional form of the relationship being modeled.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The learning process is confined to finding the optimal parameters <span class="math">\boldsymbol{\theta}</span> within this pre-defined structure.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">The fundamental question that motivates Gaussian Processes is &#8211; <strong>Can we perform inference about an unknown function without first committing to a rigid parametric form?</strong></p>
+
+
+
+<h4 class="wp-block-heading" id="from-multivariate-gaussians-to-gaussian-processes">From Multivariate Gaussians to Gaussian Processes</h4>
+
+
+
+<ol class="wp-block-list">
+<li>A <strong>univariate Gaussian</strong> is a distribution over a scalar random variable.</li>
+
+
+
+<li>A <strong>multivariate Gaussian</strong> is a distribution over a vector of random variables, <span class="math">\mathbf{x} = [X_1, \dots, X_D]^\top</span>. It is completely specified by a mean vector <span class="math">\boldsymbol{\mu}</span> and a covariance matrix <span class="math">\mathbf{\Sigma}</span>. The covariance matrix describes the relationships between all pairs of variables in the vector.</li>
+
+
+
+<li>A <strong>Gaussian Process</strong> is the logical extension of this concept to an infinite-dimensional setting. It is a distribution over a function <span class="math">f(\mathbf{x})</span>.</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="defining-a-gp">Defining a GP</h4>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">A Gaussian Process is a collection of random variables, any finite number of which have a joint Gaussian distribution.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">A GP defines a <em>probability distribution over a function</em> <span class="math">f: \mathcal{X} \to \mathbb{R}</span>. For any finite set of input points <span class="math">{\mathbf{x}_1, \dots, \mathbf{x}_N}</span>, the corresponding vector of function values <span class="math">[f(\mathbf{x}_1), \dots, f(\mathbf{x}_N)]^\top</span> is a random vector that follows a multivariate Gaussian distribution.</p>
+
+
+
+<p class="wp-block-paragraph">A Gaussian Process is completely specified by two functions:</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>The Mean Function, <span class="math">m(\mathbf{x})</span>:</strong> This function defines the expected value of the function at any input point <span class="math">\mathbf{x}</span>.</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">m(\mathbf{x}) = \mathbb{E}[f(\mathbf{x})]</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">It represents our prior belief about the average shape of the function. For notational simplicity, the mean function is often assumed to be the zero function, <span class="math">m(\mathbf{x}) = 0</span>.</p>
+</blockquote>
+</blockquote>
+
+
+
+<ol start="2" class="wp-block-list">
+<li><strong>The Covariance Function (or Kernel), <span class="math">k(\mathbf{x}, \mathbf{x}')</span>:</strong> This function defines the covariance between the function values at any two input points, <span class="math">\mathbf{x}</span> and <span class="math">\mathbf{x}'</span>.</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">k(\mathbf{x}, \mathbf{x}') = \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x}') - m(\mathbf{x}'))]</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The kernel encodes our prior beliefs about the properties of the function, such as its smoothness, periodicity, or stationarity. The choice of kernel is the most critical modeling decision when using a GP. <strong>Why?</strong> <em>A valid kernel function must ensure that the covariance matrix it generates for any set of points is always positive semi-definite.</em></p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">We denote a Gaussian Process prior over a function as:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f(\mathbf{x}) \sim \mathcal{GP}(m(\mathbf{x}), k(\mathbf{x}, \mathbf{x}'))</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Huh?</strong></p>
+
+
+
+<p class="wp-block-paragraph">You sample a function from a GP, duh.</p>
+
+
+
+<h3 class="wp-block-heading" id="bayesian-inference-with-gps">Bayesian Inference with GPs</h3>
+
+
+
+<p class="wp-block-paragraph">This is why I even started this. The primary use of Gaussian Processes is for <strong>Bayesian regression</strong>.</p>
+
+
+
+<h4 class="wp-block-heading" id="gaussian-process-regression-model">Gaussian Process Regression Model</h4>
+
+
+
+<p class="wp-block-paragraph">The full generative model assumes that our observed targets <span class="math">y</span> are evaluations of the latent function <span class="math">f</span> corrupted by independent, identically distributed Gaussian noise:</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Prior over the latent function:</strong> <span class="math">f(\mathbf{x}) \sim \mathcal{GP}(m(\mathbf{x}), k(\mathbf{x}, \mathbf{x}'))</span></li>
+
+
+
+<li><strong>Likelihood of observations:</strong> <span class="math">y_n = f(\mathbf{x}_n) + \epsilon_n</span>, where <span class="math">\epsilon_n \sim \mathcal{N}(0, \sigma_n^2)</span>. This is equivalent to the likelihood <span class="math">p(y_n | f(\mathbf{x}_n)) = \mathcal{N}(y_n | f(\mathbf{x}_n), \sigma_n^2)</span>.</li>
+</ol>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Such cool notation, right?</p>
+
+
+
+<h4 class="wp-block-heading" id="posterior-predictive-distribution">Posterior Predictive Distribution</h4>
+
+
+
+<p class="wp-block-paragraph">Let us consider a training dataset <span class="math">\mathcal{D} = \{\mathbf{X}, \mathbf{y}\}</span>, where <span class="math">\mathbf{X} = \{\mathbf{x}_n\}_{n=1}^N</span> are the training inputs and <span class="math">\mathbf{y} = \{y_n\}_{n=1}^N</span> are the noisy training targets. </p>
+
+
+
+<p class="wp-block-paragraph">As with any regression,</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">We want to predict the function value <span class="math">f_* = f(\mathbf{x}_*)</span> at a new test point <span class="math">\mathbf{x}_*</span>.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Here&#8217;s how we do it &#8211; </p>
+
+
+
+<p class="wp-block-paragraph">The core of GP inference lies in the foundational definition: <em>any finite collection of function values is jointly Gaussian. </em></p>
+
+
+
+<p class="wp-block-paragraph">Therefore, the training outputs <span class="math">\mathbf{y}</span> and the test output <span class="math">f_*</span> are jointly Gaussian &#8211; </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\begin{bmatrix} \mathbf{y} \\ f_* \end{bmatrix} \sim \mathcal{N}\left( \begin{bmatrix} \mathbf{m}(\mathbf{X}) \\ m(\mathbf{x}_*) \end{bmatrix}, \begin{bmatrix} \mathbf{K}(\mathbf{X}, \mathbf{X}) + \sigma_n^2\mathbf{I} &amp; \mathbf{k}(\mathbf{X}, \mathbf{x}_*) \\ \mathbf{k}(\mathbf{x}_*, \mathbf{X}) &amp; k(\mathbf{x}_*, \mathbf{x}_*) \end{bmatrix} \right)</span></p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">where:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\mathbf{m}(\mathbf{X})</span> is the vector of prior means at the training points.</li>
+
+
+
+<li><span class="math">\mathbf{K}(\mathbf{X}, \mathbf{X})</span> is the <span class="math">N \times N</span> covariance matrix where <span class="math">K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)</span>. The term <span class="math">\sigma_n^2\mathbf{I}</span> is added to account for the independent observation noise.</li>
+
+
+
+<li><span class="math">\mathbf{k}(\mathbf{X}, \mathbf{x}_*)</span> is the <span class="math">N \times 1</span> vector of covariances between the training points and the test point.</li>
+
+
+
+<li><span class="math">k(\mathbf{x}_*, \mathbf{x}_*)</span> is the prior variance at the test point.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">Notice how we now have a joint Gaussian distribution of the form <span class="math">p(\mathbf{y}, f_*)</span>.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The goal is to find the <strong>posterior predictive distribution</strong> <span class="math">p(f_* | \mathbf{y}, \mathbf{X}, \mathbf{x}_*)</span>.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Here, I just state the analytical solution &#8211;</p>
+
+
+
+<figure class="wp-block-image size-large"><img src="image.png" alt="" loading="lazy" /></figure>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong>Interpretation:</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>The posterior mean is a linear combination of the observed training targets (adjusted by their prior means).</li>
+
+
+
+<li>The posterior variance represents our uncertainty about the function value at the test point. It is the prior variance at that point, reduced by an amount that reflects the information gained from the training data. <br>The variance is <em>lowest near the training points </em>and grows as we move away from them, correctly capturing that our uncertainty increases in regions where we have no data.</li>
+</ul>
+
+
+
+<h3 class="wp-block-heading" id="how-tos">How tos</h3>
+
+
+
+<h4 class="wp-block-heading" id="the-kernel-function-and-model-properties">The Kernel Function and Model Properties</h4>
+
+
+
+<p class="wp-block-paragraph">The choice of kernel is the primary mechanism for incorporating prior knowledge into the model. A widely used kernel is the <strong>Squared Exponential (or Radial Basis Function) kernel</strong>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">k(\mathbf{x}, \mathbf{x}') = \sigma_f^2 \exp\left(-\frac{1}{2l^2} |\mathbf{x} - \mathbf{x}'|^2\right)</span></p>
+
+
+
+<p class="wp-block-paragraph">This kernel is governed by two hyperparameters:</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Length-scale (<span class="math">l</span>):</strong> Controls how quickly the correlation between function values decays with distance. A small <span class="math">l</span> produces rapidly varying (&#8220;wiggly&#8221;) functions, while a large <span class="math">l</span> produces smooth functions.</li>
+
+
+
+<li><strong>Signal Variance (<span class="math">\sigma_f^2</span>):</strong> Controls the overall vertical variation of the function from its mean.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="learning-the-hyperparameters">Learning the Hyperparameters</h4>
+
+
+
+<p class="wp-block-paragraph">The kernel parameters and the noise variance <span class="math">\sigma_n^2</span> are typically not set by hand. They are learned from the data by maximizing the <strong>marginal log-likelihood</strong>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\log p(\mathbf{y} | \mathbf{X}, \boldsymbol{\theta}) = -\frac{1}{2}\mathbf{y}^\top (\mathbf{K}_{\boldsymbol{\theta}} + \sigma_n^2\mathbf{I})^{-1}\mathbf{y} - \frac{1}{2}\log|\mathbf{K}_{\boldsymbol{\theta}} + \sigma_n^2\mathbf{I}| - \frac{N}{2}\log(2\pi)</span></p>
+
+
+
+<p class="wp-block-paragraph">where <span class="math">\boldsymbol{\theta}</span> denotes the set of all hyperparameters. This objective function has a natural interpretation as an implementation of <strong>Occam&#8217;s razor</strong>. </p>
+
+
+
+<p class="wp-block-paragraph">The first term is a data-fit term, while the second term, <span class="math">-\frac{1}{2}\log|\mathbf{K}_{\boldsymbol{\theta}} + \sigma_n^2\mathbf{I}|</span>, is a complexity penalty term that penalizes overly complex models. </p>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+</ol>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

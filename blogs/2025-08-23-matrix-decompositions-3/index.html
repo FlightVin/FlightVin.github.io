@@ -1,0 +1,683 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Matrix Decompositions 3 | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Matrix Decompositions 3</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-08-23T15:25:24">2025-08-23</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What&#8217;s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#what-are-s-v-and-d">What are S, V and D?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#geometric-action-of-a-matrix">Geometric action of a matrix!</a></li><li><a class="wp-block-table-of-contents__entry" href="#formal-definition">Formal definition!!</a></li><li><a class="wp-block-table-of-contents__entry" href="#woah-column-space-row-space-what">Woah! Column space, row space? What?</a></li><li><a class="wp-block-table-of-contents__entry" href="#an-exposition-on-the-fundamental-subspaces-of-a-linear-transformation">An Exposition on the Fundamental Subspaces of a Linear Transformation</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#theoretical-development">Theoretical development</a><ol><li><a class="wp-block-table-of-contents__entry" href="#from-eigendecomposition">From eigendecomposition</a></li><li><a class="wp-block-table-of-contents__entry" href="#singular-values-and-geometry">Singular values and geometry</a></li><li><a class="wp-block-table-of-contents__entry" href="#reduced-svd">Reduced SVD</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#applications">Applications</a><ol><li><a class="wp-block-table-of-contents__entry" href="#low-rank-approximation-and-principal-component-analysis-pca">Low-Rank Approximation and Principal Component Analysis (PCA)</a></li><li><a class="wp-block-table-of-contents__entry" href="#moore-penrose-pseudoinverse-and-linear-regression">Moore-Penrose Pseudoinverse and Linear Regression</a></li><li><a class="wp-block-table-of-contents__entry" href="#numerical-stability-and-condition-number">Numerical Stability and Condition Number</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#aside-eckart-young-mirsky-theorem">Aside: Eckart-Young-Mirsky Theorem</a><ol><li><a class="wp-block-table-of-contents__entry" href="#matrix-norms">Matrix norms</a></li><li><a class="wp-block-table-of-contents__entry" href="#theorem">Theorem</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#aside-intuitions-for-svd">Aside: Intuitions for SVD</a><ol><li><a class="wp-block-table-of-contents__entry" href="#theoretical-development-for-moore-pensore-inverse">Theoretical development for Moore-Pensore inverse</a></li><li><a class="wp-block-table-of-contents__entry" href="#listing-the-intuitions">Listing the intuitions</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What&#8217;s there?</h3>
+
+
+
+<p class="wp-block-paragraph">There are basically 5 (ಐದು / पाँच) types of matrix decompositions that are like super important. I strive to go in depth into all of them. These are</p>
+
+
+
+<ol class="wp-block-list">
+<li>Eigendecomposition (<a href="../2025-07-17-matrix-decompositions-1/">Matrix Decompositions 1</a>)</li>
+
+
+
+<li>QR decomposition (<a href="../2025-08-19-matrix-decompositions-2/">Matrix Decompositions 2</a>)</li>
+
+
+
+<li>Cholesky decomposition (<a href="../2025-08-19-matrix-decompositions-2/">Matrix Decompositions 2</a>)</li>
+
+
+
+<li>LU decomposition (<a href="../2025-08-19-matrix-decompositions-2/">Matrix Decompositions 2</a>)</li>
+
+
+
+<li>(perhaps the most important) Singular Value Decomposition (This post!)</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="what-are-s-v-and-d">What are S, V and D?</h3>
+
+
+
+<p class="wp-block-paragraph">Singular, Value and Decomposition? Let&#8217;s start!</p>
+
+
+
+<h4 class="wp-block-heading" id="geometric-action-of-a-matrix">Geometric action of a matrix!</h4>
+
+
+
+<p class="wp-block-paragraph">Remember eignedecomposition? Yes? No? See <a href="../2025-07-17-matrix-decompositions-1/">Matrix Decompositions 1</a></p>
+
+
+
+<p class="wp-block-paragraph">What if the matrix is not square?? We use SVD! Wait lemme explain:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><strong>Any linear transformation <span class="math">\mathbf{A}</span> maps the set of unit vectors in the input space (a unit sphere in <span class="math">\mathbb{R}^n</span>) to a hyperellipse in the output space <span class="math">\mathbb{R}^m</span>.</strong></p>
+
+
+
+<p class="wp-block-paragraph">This is the main geometric insight of the SVD &#8211;</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This hyperellipse lies within a subspace of the codomain. The SVD provides a complete characterization of this transformation by identifying the specific orthonormal basis vectors in the input space that are mapped directly onto the principal axes of this resulting hyperellipse.</p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="formal-definition">Formal definition!!</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Theorem (Singular Value Decomposition):</strong> For any matrix <span class="math">\mathbf{A} \in \mathbb{R}^{m \times n}</span> of rank <span class="math">r \le \min(m, n)</span>, there exists a factorization of the form:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A} = \mathbf{U}\mathbf{\Sigma}\mathbf{V}^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">where the components have the following properties:</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong><span class="math">\mathbf{U} \in \mathbb{R}^{m \times m}</span> is an Orthogonal Matrix.</strong> The columns of <span class="math">\mathbf{U}</span>, denoted <span class="math">{\mathbf{u}_1, \dots, \mathbf{u}_m}</span>, are the <strong>left-singular vectors</strong>. They form an orthonormal basis for the output space (codomain), <span class="math">\mathbb{R}^m</span>. The first <span class="math">r</span> of these vectors, <span class="math">{\mathbf{u}_1, \dots, \mathbf{u}_r}</span>, form an orthonormal basis for the column space (range) of <span class="math">\mathbf{A}</span>. Geometrically, these are the unit vectors that define the directions of the principal axes of the output hyperellipse.</li>
+
+
+
+<li><strong><span class="math">\mathbf{V} \in \mathbb{R}^{n \times n}</span> is an Orthogonal Matrix.</strong> The columns of <span class="math">\mathbf{V}</span>, denoted <span class="math">{\mathbf{v}_1, \dots, \mathbf{v}_n}</span>, are the <strong>right-singular vectors</strong>. They form an orthonormal basis for the input space (domain), <span class="math">\mathbb{R}^n</span>. The first <span class="math">r</span> of these vectors, <span class="math">{\mathbf{v}_1, \dots, \mathbf{v}_r}</span>, form an orthonormal basis for the row space of <span class="math">\mathbf{A}</span>. Geometrically, these are the specific orthonormal vectors on the input unit sphere that are mapped by <span class="math">\mathbf{A}</span> onto the principal axes of the output hyperellipse.</li>
+
+
+
+<li><strong><span class="math">\mathbf{\Sigma} \in \mathbb{R}^{m \times n}</span> is a Rectangular Diagonal Matrix.</strong> The only non-zero entries of <span class="math">\mathbf{\Sigma}</span> are on its main diagonal. These entries, <span class="math">\Sigma_{ii} = \sigma_i</span>, are the <strong>singular values</strong> of <span class="math">\mathbf{A}</span>. They are real, non-negative, and by convention, sorted in descending order:</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\sigma_1 \ge \sigma_2 \ge \dots \ge \sigma_r &gt; 0, \quad \text{and} \quad \sigma_{r+1} = \dots = \sigma_{\min(m,n)} = 0</span></p>
+
+
+
+<p class="wp-block-paragraph">The number of non-zero singular values is exactly the rank <span class="math">r</span> of the matrix <span class="math">\mathbf{A}</span>. Geometrically, each singular value <span class="math">\sigma_i</span> is the length of the <span class="math">i</span>-th principal semi-axis of the output hyperellipse.</p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="woah-column-space-row-space-what">Woah! Column space, row space? What?</h4>
+
+
+
+<p class="wp-block-paragraph">Actually, I&#8217;ll call this &#8211; </p>
+
+
+
+<h4 class="wp-block-heading" id="an-exposition-on-the-fundamental-subspaces-of-a-linear-transformation">An Exposition on the Fundamental Subspaces of a Linear Transformation</h4>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The most profound insights into the nature of this transformation are revealed by analyzing four special vector subspaces that are intrinsically associated with the matrix <span class="math">\mathbf{A}</span>. These are the <strong>four fundamental subspaces</strong>. Understanding them provides a complete geometric and algebraic picture of the action of the matrix.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Subspace 1: The Column Space (or Range)</span></strong></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The column space of a matrix <span class="math">\mathbf{A} \in \mathbb{R}^{m \times n}</span>, denoted <span class="math">\text{Col}(\mathbf{A})</span> or <span class="math">\mathcal{R}(\mathbf{A})</span>, is the set of all possible linear combinations of its column vectors. If the columns of <span class="math">\mathbf{A}</span> are <span class="math">{\mathbf{a}_1, \dots, \mathbf{a}_n}</span>, where each <span class="math">\mathbf{a}_j \in \mathbb{R}^m</span>, then:</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">$latex \text{Col}(\mathbf{A}) = \text{span}{\mathbf{a}<em>1, \dots, \mathbf{a}_n} = \left{ \sum</em>{j=1}^n c_j \mathbf{a}_j \mid c_j \in \mathbb{R} \right}$</p>
+
+
+
+<p class="wp-block-paragraph"><em>Notice</em> how the column space is the set of all vectors <span class="math">\mathbf{b}</span> for which the system <span class="math">\mathbf{A}\mathbf{x} = \mathbf{b}</span> has a solution.</p>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Subspace 2: The Null Space (or Kernel)</span></strong></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The null space of a matrix <span class="math">\mathbf{A} \in \mathbb{R}^{m \times n}</span>, denoted <span class="math">\text{Null}(\mathbf{A})</span> or <span class="math">\mathcal{N}(\mathbf{A})</span>, is the set of all solutions to the homogeneous linear system <span class="math">\mathbf{A}\mathbf{x} = \mathbf{0}</span>.</p>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{Null}(\mathbf{A}) = { \mathbf{x} \in \mathbb{R}^n \mid \mathbf{A}\mathbf{x} = \mathbf{0} }</span></p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">The null space answers the question: &#8220;What is the set of all input vectors that get crushed or annihilated by the transformation?&#8221;</p>
+
+
+
+<p class="wp-block-paragraph">For a system <span class="math">\mathbf{A}\mathbf{x} = \mathbf{b}</span>, if a solution <span class="math">\mathbf{x}_p</span> exists (a particular solution), then the set of all solutions is given by <span class="math">{\mathbf{x}_p + \mathbf{x}_n \mid \mathbf{x}_n \in \text{Null}(\mathbf{A})}</span>. </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">The null space thus describes the ambiguity or non-uniqueness of the solution.</p>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Subspace 3: The Row Space</span></strong></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">It is equivalent to the column space of <span class="math">\mathbf{A}^\top</span>.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Subspace 4: The Left Null Space</span></strong></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The left null space of a matrix <span class="math">\mathbf{A} \in \mathbb{R}^{m \times n}</span> is the set of all solutions to the homogeneous system <span class="math">\mathbf{A}^\top\mathbf{y} = \mathbf{0}</span>.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{Null}(\mathbf{A}^\top) = { \mathbf{y} \in \mathbb{R}^m \mid \mathbf{A}^\top\mathbf{y} = \mathbf{0} }</span></p>
+
+
+
+<p class="wp-block-paragraph">It is called the &#8220;left&#8221; null space because the equation can be written as <span class="math">\mathbf{y}^\top\mathbf{A} = \mathbf{0}^\top</span>, where the vector <span class="math">\mathbf{y}</span> is on the left.</p>
+
+
+
+<p class="wp-block-paragraph">Notice how the left null space contains all vectors in the output space that are orthogonal to every vector in the column space.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">It represents the part of the codomain that is &#8220;unreachable&#8221; by the transformation.</p>
+
+
+
+<p class="wp-block-paragraph"><strong><em><span style="text-decoration: underline">The Rank-Nullity Theorem</span></em></strong></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Theorem (Rank-Nullity Theorem):</strong> For any matrix <span class="math">\mathbf{A} \in \mathbb{R}^{m \times n}</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\dim(\text{Col}(\mathbf{A})) + \dim(\text{Null}(\mathbf{A})) = n</span></p>
+
+
+
+<p class="wp-block-paragraph">or, using the definition of rank:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{rank}(\mathbf{A}) + \dim(\text{Null}(\mathbf{A})) = n</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Interpretation:</strong> The dimension of the input space (<span class="math">n</span>) is partitioned between two subspaces: the part that is mapped to the column space (the row space, whose dimension is the rank) and the part that is crushed to zero (the null space).</p>
+
+
+
+<p class="wp-block-paragraph"><span style="text-decoration: underline"><em>The Fundamental Theorem of Linear Algebra</em></span></p>
+
+
+
+<p class="wp-block-paragraph"><strong><em>Part 1: Dimensions</em></strong></p>
+
+
+
+<p class="wp-block-paragraph">By applying the Rank-Nullity theorem to both <span class="math">\mathbf{A}</span> and its transpose <span class="math">\mathbf{A}^\top</span>, we arrive at a complete description of the dimensions of all four fundamental subspaces:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\dim(\text{Col}(\mathbf{A})) = r</span></li>
+
+
+
+<li><span class="math">\dim(\text{Row}(\mathbf{A})) = r</span></li>
+
+
+
+<li><span class="math">\dim(\text{Null}(\mathbf{A})) = n - r</span></li>
+
+
+
+<li><span class="math">\dim(\text{Null}(\mathbf{A}^\top)) = m - r</span></li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"><strong><em>Part 2: Geometry</em></strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>The row space and the null space are <strong>orthogonal complements</strong> in the input space <span class="math">\mathbb{R}^n</span>.</li>
+
+
+
+<li>The column space and the left null space are <strong>orthogonal complements</strong> in the output space <span class="math">\mathbb{R}^m</span>. </li>
+</ul>
+
+
+
+<h3 class="wp-block-heading" id="theoretical-development">Theoretical development</h3>
+
+
+
+<h4 class="wp-block-heading" id="from-eigendecomposition">From eigendecomposition</h4>
+
+
+
+<p class="wp-block-paragraph">Consider the matrix <span class="math">\mathbf{S}_1 = \mathbf{A}^\top\mathbf{A} \in \mathbb{R}^{n \times n}</span>. By construction, <span class="math">\mathbf{S}_1</span> is symmetric (<span class="math">\mathbf{S}_1^\top = (\mathbf{A}^\top\mathbf{A})^\top = \mathbf{A}^\top(\mathbf{A}^\top)^\top = \mathbf{A}^\top\mathbf{A} = \mathbf{S}_1</span>) and positive semi-definite (<span class="math">\mathbf{x}^\top\mathbf{S}_1\mathbf{x} = \mathbf{x}^\top\mathbf{A}^\top\mathbf{A}\mathbf{x} = (\mathbf{A}\mathbf{x})^\top(\mathbf{A}\mathbf{x}) = |\mathbf{A}\mathbf{x}|_2^2 \ge 0</span>).</p>
+
+
+
+<p class="wp-block-paragraph">By the <strong>Spectral Theorem</strong>, any real symmetric matrix has a full set of orthonormal eigenvectors and real, non-negative eigenvalues. Therefore, <span class="math">\mathbf{S}_1</span> admits an eigendecomposition:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}^\top\mathbf{A} = \mathbf{V}\mathbf{D}\mathbf{V}^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">where <span class="math">\mathbf{V}</span> is an orthogonal matrix of eigenvectors and <span class="math">\mathbf{D}</span> is a diagonal matrix of eigenvalues <span class="math">\lambda_i \ge 0</span>.</p>
+
+
+
+<p class="wp-block-paragraph">Now, substitute the SVD form <span class="math">\mathbf{A} = \mathbf{U}\mathbf{\Sigma}\mathbf{V}^\top</span> into this expression:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}^\top\mathbf{A} = (\mathbf{U}\mathbf{\Sigma}\mathbf{V}^\top)^\top (\mathbf{U}\mathbf{\Sigma}\mathbf{V}^\top) = (\mathbf{V}\mathbf{\Sigma}^\top\mathbf{U}^\top) (\mathbf{U}\mathbf{\Sigma}\mathbf{V}^\top)</span></p>
+
+
+
+<p class="wp-block-paragraph">Since <span class="math">\mathbf{U}</span> is orthogonal, <span class="math">\mathbf{U}^\top\mathbf{U} = \mathbf{I}_m</span>, which simplifies the expression to:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}^\top\mathbf{A} = \mathbf{V}(\mathbf{\Sigma}^\top\mathbf{\Sigma})\mathbf{V}^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">Comparing this with the eigendecomposition <span class="math">\mathbf{V}\mathbf{D}\mathbf{V}^\top</span>, we establish the following fundamental relationships:</p>
+
+
+
+<ul class="wp-block-list">
+<li>The <strong>right-singular vectors</strong> of <span class="math">\mathbf{A}</span> (the columns of <span class="math">\mathbf{V}</span>) are the <strong>eigenvectors</strong> of <span class="math">\mathbf{A}^\top\mathbf{A}</span>.</li>
+
+
+
+<li>The eigenvalues of <span class="math">\mathbf{A}^\top\mathbf{A}</span> are the squares of the singular values of <span class="math">\mathbf{A}</span>, i.e., <span class="math">\lambda_i = \sigma_i^2</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">A symmetric argument applies to the matrix <span class="math">\mathbf{S}_2 = \mathbf{A}\mathbf{A}^\top \in \mathbb{R}^{m \times m}</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}\mathbf{A}^\top = (\mathbf{U}\mathbf{\Sigma}\mathbf{V}^\top)(\mathbf{U}\mathbf{\Sigma}\mathbf{V}^\top)^\top = \mathbf{U}(\mathbf{\Sigma}\mathbf{\Sigma}^\top)\mathbf{U}^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">This reveals that:</p>
+
+
+
+<ul class="wp-block-list">
+<li>The <strong>left-singular vectors</strong> of <span class="math">\mathbf{A}</span> (the columns of <span class="math">\mathbf{U}</span>) are the <strong>eigenvectors</strong> of <span class="math">\mathbf{A}\mathbf{A}^\top</span>.</li>
+
+
+
+<li>The non-zero eigenvalues of <span class="math">\mathbf{A}\mathbf{A}^\top</span> are identical to the non-zero eigenvalues of <span class="math">\mathbf{A}^\top\mathbf{A}</span>, and are also equal to <span class="math">\sigma_i^2</span>.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="singular-values-and-geometry">Singular values and geometry</h4>
+
+
+
+<p class="wp-block-paragraph">The relationship between the components can be summarized by the <strong>singular value equations</strong>, derived by right-multiplying <span class="math">\mathbf{A} = \mathbf{U}\mathbf{\Sigma}\mathbf{V}^\top</span> by <span class="math">\mathbf{V}</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}\mathbf{V} = \mathbf{U}\mathbf{\Sigma}</span></p>
+
+
+
+<p class="wp-block-paragraph">Considering this equation one column at a time, for <span class="math">i=1, \dots, n</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}\mathbf{v}_i = \sigma_i \mathbf{u}_i</span></p>
+
+
+
+<p class="wp-block-paragraph">This equation provides the <span style="text-decoration: underline"><strong>geometric interpretation</strong></span>: </p>
+
+
+
+<ul class="wp-block-list">
+<li>The linear transformation <span class="math">\mathbf{A}</span> maps the <span class="math">i</span>-th right-singular vector (an orthonormal basis vector in the domain) to a <span style="text-decoration: underline">scaled</span> version of the <span class="math">i</span>-th left-singular vector (an orthonormal basis vector in the codomain). </li>
+
+
+
+<li>The scaling factor is the <span class="math">i</span>-th singular value.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="reduced-svd">Reduced SVD</h4>
+
+
+
+<p class="wp-block-paragraph">What if <span class="math">m \gg n</span> or <span class="math">n \gg m</span>? We use the reduced version!</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Full SVD:</strong> The form described above, where <span class="math">\mathbf{U}</span> is <span class="math">m \times m</span> and <span class="math">\mathbf{V}</span> is <span class="math">n \times n</span>.</li>
+
+
+
+<li><strong>Reduced SVD:</strong> If <span class="math">m &gt; n</span>, the matrix <span class="math">\mathbf{\Sigma}</span> will have <span class="math">m-n</span> rows of all zeros. These rows, when multiplied by <span class="math">\mathbf{U}</span>, contribute nothing to the final product. The reduced SVD eliminates these zero rows and the corresponding columns of <span class="math">\mathbf{U}</span>:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A} = \mathbf{U}_r \mathbf{\Sigma}_r \mathbf{V}_r^\top</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">where <span class="math">\mathbf{U}_r \in \mathbb{R}^{m \times n}</span>, <span class="math">\mathbf{\Sigma}_r \in \mathbb{R}^{n \times n}</span> (now a square diagonal matrix), and <span class="math">\mathbf{V}_r = \mathbf{V} \in \mathbb{R}^{n \times n}</span>. <span style="text-decoration: underline">This is a more memory-efficient representation.</span></p>
+</blockquote>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="applications">Applications</h3>
+
+
+
+<h4 class="wp-block-heading" id="low-rank-approximation-and-principal-component-analysis-pca">Low-Rank Approximation and Principal Component Analysis (PCA)</h4>
+
+
+
+<p class="wp-block-paragraph">The expression <span class="math">\mathbf{A} = \sum_{i=1}^{r} \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span> represents <span class="math">\mathbf{A}</span> as a weighted sum of rank-one matrices. The <strong>Eckart-Young-Mirsky Theorem</strong> states that the optimal rank-<span class="math">k</span> approximation of <span class="math">\mathbf{A}</span> (the matrix <span class="math">\mathbf{A}_k</span> that minimizes <span class="math">|\mathbf{A} - \mathbf{A}_k|</span>) is found by truncating this sum:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}_k = \sum_{i=1}^{k} \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">What does this mean? You select the ones corresponding to the largest singular values:) This is what&#8217;s used in PCA! (<a href="../2025-07-21-pca-spectral-clustering-and-t-sne/">PCA, Spectral Clustering and t-SNE</a>)</p>
+
+
+
+<h4 class="wp-block-heading" id="moore-penrose-pseudoinverse-and-linear-regression">Moore-Penrose Pseudoinverse and Linear Regression</h4>
+
+
+
+<p class="wp-block-paragraph">For any matrix <span class="math">\mathbf{A}</span>, the SVD provides its <strong>pseudoinverse</strong>: <span class="math">\mathbf{A}^\dagger = \mathbf{V}\mathbf{\Sigma}^\dagger\mathbf{U}^\top</span>, where <span class="math">\mathbf{\Sigma}^\dagger</span> is formed by taking the reciprocal of the non-zero singular values in <span class="math">\mathbf{\Sigma}</span> and transposing.</p>
+
+
+
+<p class="wp-block-paragraph"><em>In ML</em>: The solution to the linear least-squares problem, <span class="math">\min_{\mathbf{x}} |\mathbf{A}\mathbf{x} - \mathbf{b}|_2^2</span>, is given by <span class="math">\mathbf{x} = \mathbf{A}^\dagger\mathbf{b}</span>. </p>
+
+
+
+<h4 class="wp-block-heading" id="numerical-stability-and-condition-number">Numerical Stability and Condition Number</h4>
+
+
+
+<p class="wp-block-paragraph">Remember? I spoke about this in <a href="../2025-08-19-matrix-decompositions-2/">Matrix Decompositions 2</a>? Condition number, that is.</p>
+
+
+
+<p class="wp-block-paragraph">The <strong>condition number</strong> of a matrix <span class="math">\mathbf{A}</span>, which measures the sensitivity of the solution of <span class="math">\mathbf{A}\mathbf{x}=\mathbf{b}</span> to perturbations in the data. It is defined as</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\kappa(\mathbf{A}) = \frac{\sigma_1}{\sigma_r} \quad (\text{the ratio of the largest to the smallest non-zero singular value})</span></p>
+
+
+
+<h3 class="wp-block-heading" id="aside-eckart-young-mirsky-theorem">Aside: Eckart-Young-Mirsky Theorem</h3>
+
+
+
+<h4 class="wp-block-heading" id="matrix-norms">Matrix norms</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Spectral Norm:</strong> The maximum scaling factor the matrix can apply to any unit vector: <span class="math">|\mathbf{M}|_2 = \max_{|\mathbf{x}|_2=1} |\mathbf{M}\mathbf{x}|_2</span>. It can be proven that this is equal to the largest singular value, <span class="math">|\mathbf{M}|_2 = \sigma_1</span>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Frobenius Norm:</strong> The matrix equivalent of the vector Euclidean norm, defined as the square root of the sum of the squares of all its elements: <span class="math">|\mathbf{M}|_F = \sqrt{\sum_{i,j} M_{ij}^2}</span>. It can be proven that this is equal to the square root of the sum of the squares of its singular values: <span class="math">|\mathbf{M}|_F = \sqrt{\sum_{i=1}^r \sigma_i^2}</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="theorem">Theorem</h4>
+
+
+
+<p class="wp-block-paragraph">Let the SVD of <span class="math">\mathbf{M}</span> be <span class="math">\mathbf{M} = \sum_{i=1}^{r} \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span>. The best rank-<span class="math">k</span> approximation to <span class="math">\mathbf{M}</span> (for <span class="math">k \le r</span>), denoted <span class="math">\mathbf{M}_k</span>, is the one that minimizes the approximation error <span class="math">|\mathbf{M} - \mathbf{M}_k|</span>. <span style="text-decoration: underline"><strong>For both the spectral and Frobenius norms</strong></span>, this minimum is achieved by the truncated SVD sum:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{M}_k = \sum_{i=1}^{k} \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">The approximation error is given by:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">|\mathbf{M} - \mathbf{M}_k|_2 = \sigma_{k+1}</span></li>
+
+
+
+<li><span class="math">|\mathbf{M} - \mathbf{M}_k|_F = \sqrt{\sum_{i=k+1}^r \sigma_i^2}</span></li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">This theorem guarantees that truncating the SVD provides the most compact linear approximation of a matrix for a given rank, capturing the &#8220;most important parts of M&#8221; by retaining the components with the largest singular values.</p>
+
+
+
+<h3 class="wp-block-heading" id="aside-intuitions-for-svd">Aside: Intuitions for SVD</h3>
+
+
+
+<p class="wp-block-paragraph">I highly suggest looking up <a href="https://www.lesswrong.com/posts/iupCxk3ddiJBAJkts/six-and-a-half-intuitions-for-svd">Six (and a half) intuitions for SVD</a>, but here are some things that aren&#8217;t directly covered earlier in this blog:</p>
+
+
+
+<h4 class="wp-block-heading" id="theoretical-development-for-moore-pensore-inverse">Theoretical development for Moore-Pensore inverse</h4>
+
+
+
+<p class="wp-block-paragraph">We substitute the SVD of <span class="math">\mathbf{M}</span> into the objective function and use the property that the L2 norm is invariant under orthogonal transformations:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\begin{aligned} |\mathbf{M}\mathbf{x} - \mathbf{b}|_2^2 &amp;= |\mathbf{U}\mathbf{S}\mathbf{V}^\top\mathbf{x} - \mathbf{b}|_2^2 \ &amp;= |\mathbf{U}^\top(\mathbf{U}\mathbf{S}\mathbf{V}^\top\mathbf{x} - \mathbf{b})|_2^2 \quad \ &amp;= |\mathbf{S}\mathbf{V}^\top\mathbf{x} - \mathbf{U}^\top\mathbf{b}|_2^2 \end{aligned}</span></p>
+
+
+
+<p class="wp-block-paragraph">By defining a change of variables <span class="math">\mathbf{x}' = \mathbf{V}^\top\mathbf{x}</span> and <span class="math">\mathbf{b}' = \mathbf{U}^\top\mathbf{b}</span>, the problem becomes <span class="math">\min_{\mathbf{x}'} |\mathbf{S}\mathbf{x}' - \mathbf{b}'|_2^2</span>. Since <span class="math">\mathbf{S}</span> is diagonal, this is a sum of independent squared errors:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\sum_{i=1}^r (\sigma_i x'_i - b'_i)^2 + \sum_{i=r+1}^m (b'_i)^2</span></p>
+
+
+
+<p class="wp-block-paragraph">The minimum is achieved when <span class="math">\sigma_i x'_i - b'_i = 0</span> for <span class="math">i=1,\dots,r</span>, yielding <span class="math">x'_i = b'_i / \sigma_i</span>. For <span class="math">i &gt; r</span>, <span class="math">x'_i</span> is unconstrained as <span class="math">\sigma_i=0</span>; the minimum-norm solution sets these to zero. Transforming back gives the solution:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x} = \mathbf{V}\mathbf{x}' = \sum_{i=1}^{r} \frac{b'_i}{\sigma_i}\mathbf{v}_i = \sum_{i=1}^{r} \frac{\mathbf{u}_i^\top \mathbf{b}}{\sigma_i}\mathbf{v}_i = \mathbf{M}^\dagger \mathbf{b}</span></p>
+
+
+
+<p class="wp-block-paragraph">where <span class="math">\mathbf{M}^\dagger = \mathbf{V}\mathbf{S}^\dagger\mathbf{U}^\top</span> is the Moore-Penrose Pseudoinverse. </p>
+
+
+
+<h4 class="wp-block-heading" id="listing-the-intuitions">Listing the intuitions</h4>
+
+
+
+<p class="wp-block-paragraph">We have mostly coverered all of these above btw,</p>
+
+
+
+<ol class="wp-block-list">
+<li>Rotations and Scalings (The Geometric Picture)</li>
+
+
+
+<li>Best Rank-k Approximations</li>
+
+
+
+<li>Least Squares Regression</li>
+
+
+
+<li>Input and Output Directions</li>
+
+
+
+<li>Lost &amp; Preserved Information</li>
+
+
+
+<li>PCA and Information Compression</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">Yay, we are (mostly) done with matrix decompositions!</p>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+
+
+
+<li>Six (and a half) intuitions for&nbsp;SVD (<a href="https://www.lesswrong.com/posts/iupCxk3ddiJBAJkts/six-and-a-half-intuitions-for-svd">link</a>)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

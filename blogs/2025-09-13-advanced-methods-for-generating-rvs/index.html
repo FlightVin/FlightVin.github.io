@@ -1,0 +1,461 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Advanced Methods for generating RVs | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Advanced Methods for generating&nbsp;RVs</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-09-13T17:45:43">2025-09-13</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What’s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#box-muller-transform">Box-Muller Transform</a><ol><li><a class="wp-block-table-of-contents__entry" href="#foundational-insight">Foundational insight</a></li><li><a class="wp-block-table-of-contents__entry" href="#theoretical-development">Theoretical development</a></li><li><a class="wp-block-table-of-contents__entry" href="#algorithm">Algorithm</a></li><li><a class="wp-block-table-of-contents__entry" href="#how-to-do-this-for-any-arbitrary-thing">How to do this for any arbitrary thing?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#rejection-sampling">Rejection Sampling</a><ol><li><a class="wp-block-table-of-contents__entry" href="#setup">Setup</a></li><li><a class="wp-block-table-of-contents__entry" href="#algorithm-1">Algorithm</a></li><li><a class="wp-block-table-of-contents__entry" href="#interpretation">Interpretation</a></li><li><a class="wp-block-table-of-contents__entry" href="#more-intuition">More intuition</a></li><li><a class="wp-block-table-of-contents__entry" href="#ok-why-not-accept-all-points-with-r-1">Ok, why not accept all points with r &lt; 1?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What’s there?</h3>
+
+
+
+<p class="wp-block-paragraph">While the Inverse Transform Sampling method provides a theoretical foundation for random sampling, its practical applicability is limited to distributions with an invertible Cumulative Distribution Function (CDF).</p>
+
+
+
+<p class="wp-block-paragraph">So, we have other stuff!</p>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="box-muller-transform">Box-Muller Transform</h3>
+
+
+
+<p class="wp-block-paragraph">We can use this to generate <span class="math">\mathcal{N}(0, 1)</span> from <span class="math">U(0, 1)</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="foundational-insight">Foundational insight</h4>
+
+
+
+<p class="wp-block-paragraph">Remeber that the CDF of the Gaussian distribution, which involves the error function (<span class="math">\text{erf}</span>), does not have a closed-form analytical inverse.</p>
+
+
+
+<p class="wp-block-paragraph">What else did you expect? I will give more insights through theory &#8211; I don&#8217;t want to mention them directly here.</p>
+
+
+
+<p class="wp-block-paragraph">So, I really just wrote this section to mention what is called the <strong>Jacobian determinant</strong>.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Just remember that</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">In probability, density is &#8220;probability per unit area.&#8221; When you switch coordinate systems, the definition of a &#8220;unit area&#8221; changes.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">We&#8217;ll get back to this.</p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="theoretical-development">Theoretical development</h4>
+
+
+
+<p class="wp-block-paragraph">Let <span class="math">X \sim \mathcal{N}(0, 1)</span> and <span class="math">Y \sim \mathcal{N}(0, 1)</span> be two independent standard normal random variables. Their joint PDF is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f(x, y) = f(x)f(y) = \frac{1}{\sqrt{2\pi}}e^{-x^2/2} \cdot \frac{1}{\sqrt{2\pi}}e^{-y^2/2} = \frac{1}{2\pi}e^{-(x^2+y^2)/2}</span></p>
+
+
+
+<p class="wp-block-paragraph">The expression <span class="math">e^{-(x^2+y^2)/2}</span> shows that the probability density depends only on the squared distance from the origin (<span class="math">x^2+y^2</span>), meaning the distribution is perfectly circular and symmetric.</p>
+
+
+
+<p class="wp-block-paragraph">Sounds familiar? </p>
+
+
+
+<p class="wp-block-paragraph">Yes, we can use polar coordinates now! We can use <span class="math">x = r\cos\theta</span> and <span class="math">y = r\sin\theta</span>, so <span class="math">r^2 = x^2+y^2</span>.</p>
+
+
+
+<p class="wp-block-paragraph">We know that &#8211; </p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Cartesian Area</strong>: A small rectangular area element, <span class="math">dx\,dy</span>, has the same size everywhere on the plane.</li>
+
+
+
+<li><strong>Polar Area</strong>: A small &#8220;polar patch,&#8221; <span class="math">dr\,d\theta</span>, does not have a constant area. A patch with a large radius <span class="math">r</span> is much bigger than a patch with a small radius, even if <span class="math">dr</span> and <span class="math">d\theta</span> are the same.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">The fundamental relationship is that the probability in a small patch must be equal in both systems:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f(x, y) \,dx\,dy = f(r, \theta) \,dr\,d\theta</span><br><span class="math">f(r, \theta) = f(x, y) \cdot \frac{dx\,dy}{dr\,d\theta} = f(x, y) \cdot r</span></p>
+
+
+
+<p class="wp-block-paragraph">This is the working of the jacobian determinant. Using this, we get &#8211; </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f(r, \theta) = r e^{-r^2/2} \cdot \frac{1}{2\pi}</span></p>
+
+
+
+<h4 class="wp-block-heading" id="algorithm">Algorithm</h4>
+
+
+
+<p class="wp-block-paragraph">We see that the joint density factors into two parts: <span class="math">f(r, \theta) = f_R(r) f_\Theta(\theta)</span>, where:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">f_\Theta(\theta) = \frac{1}{2\pi}</span> for <span class="math">\theta \in [0, 2\pi)</span>. This is the PDF of a <strong>uniform distribution</strong>.</li>
+
+
+
+<li><span class="math">f_R(r) = r e^{-r^2/2}</span> for <span class="math">r \ge 0</span>. This is the PDF of a <strong>Rayleigh distribution</strong>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">The Box-Muller algorithm exploits this by generating samples for <span class="math">R</span> and <span class="math">\Theta</span> and then transforming them back.</p>
+
+
+
+<ol class="wp-block-list">
+<li>Generate two independent uniform random variables <span class="math">u_1, u_2 \sim U(0, 1)</span>.</li>
+
+
+
+<li>Generate the angle <span class="math">\theta = 2\pi u_1</span>. This is a direct sample from the uniform distribution for the angle.</li>
+
+
+
+<li>Generate the radius <span class="math">r</span>. The squared radius, <span class="math">R^2</span>, follows an exponential distribution with rate <span class="math">\lambda=1/2</span>. We can use Inverse Transform Sampling to generate a sample for <span class="math">R^2</span> from <span class="math">u_2</span>: <span class="math">r^2 = -2\ln(u_2)</span>. Thus, <span class="math">r = \sqrt{-2\ln(u_2)}</span>.</li>
+
+
+
+<li>Convert back to Cartesian coordinates:</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">x = r \cos\theta = \sqrt{-2\ln u_2} \cos(2\pi u_1)</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">y = r \sin\theta = \sqrt{-2\ln u_2} \sin(2\pi u_1)</span></p>
+
+
+
+<p class="wp-block-paragraph">The resulting <span class="math">x</span> and <span class="math">y</span> are two independent samples from a standard normal distribution.</p>
+
+
+
+<h4 class="wp-block-heading" id="how-to-do-this-for-any-arbitrary-thing">How to do this for any arbitrary thing?</h4>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">To generate samples from an arbitrary Gaussian <span class="math">\mathcal{N}(\mu, \sigma^2)</span>, one simply generates a standard normal sample <span class="math">z</span> using Box-Muller and then applies the linear transformation: <span class="math">x = \mu + \sigma z</span>.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Duh.</p>
+
+
+
+<h3 class="wp-block-heading" id="rejection-sampling">Rejection Sampling</h3>
+
+
+
+<p class="wp-block-paragraph">This is when we want to generate samples from <span class="math">p(x)</span>, <em>but</em> cannot sample from it directly, <em>but</em> we <em>can</em> evaluate its density (up to a constant).</p>
+
+
+
+<p class="wp-block-paragraph">It works by sampling from an easier-to-sample &#8220;proposal&#8221; distribution and then probabilistically accepting or rejecting those samples.</p>
+
+
+
+<h4 class="wp-block-heading" id="setup">Setup</h4>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Target Distribution, <span class="math">p(x)</span>:</strong> The complex distribution we want to sample from. We only need to be able to evaluate a function <span class="math">\tilde{p}(x)</span> that is proportional to <span class="math">p(x)</span>, i.e., <span class="math">p(x) = \tilde{p}(x)/Z</span> where the normalization constant <span class="math">Z</span> may be unknown.</li>
+
+
+
+<li><strong>Proposal Distribution, <span class="math">q(x)</span>:</strong> A simpler distribution that we already know how to sample from (e.g., a uniform or Gaussian).</li>
+
+
+
+<li><strong>Acceptance Constant, <span class="math">M</span>:</strong> A constant chosen such that <span class="math">M \cdot q(x) \ge \tilde{p}(x)</span> for all <span class="math">x</span>. The function <span class="math">M q(x)</span> must form an &#8220;envelope&#8221; that is everywhere above our unnormalized target density.</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="algorithm-1">Algorithm</h4>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Propose:</strong> Draw a sample <span class="math">x_0</span> from the proposal distribution, <span class="math">x_0 \sim q(x)</span>.</li>
+
+
+
+<li><strong>Evaluate:</strong> Calculate the acceptance ratio: <span class="math">r = \frac{\tilde{p}(x_0)}{M q(x_0)}</span>. This ratio is guaranteed to be in <span class="math">[0, 1]</span>.</li>
+
+
+
+<li><strong>Accept/Reject:</strong> Draw a sample <span class="math">u</span> from the standard uniform distribution, <span class="math">u \sim U(0, 1)</span>.
+<ul class="wp-block-list">
+<li>If <span class="math">u &lt; r</span>, <strong>accept</strong> the sample: <span class="math">x = x_0</span>.</li>
+
+
+
+<li>If <span class="math">u \ge r</span>, <strong>reject</strong> the sample and return to Step 1.</li>
+</ul>
+</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="interpretation">Interpretation</h4>
+
+
+
+<p class="wp-block-paragraph">Yeah, what is even happening here?</p>
+
+
+
+<p class="wp-block-paragraph">Imagine the graphs of <span class="math">\tilde{p}(x)</span> and the envelope <span class="math">M q(x)</span>. The algorithm is equivalent to:</p>
+
+
+
+<ol class="wp-block-list">
+<li>Sample a point <span class="math">(x_0, y_0)</span> uniformly from the area <em>under</em> the curve of the envelope <span class="math">M q(x)</span>.</li>
+
+
+
+<li>If this point is also <em>under</em> the curve of the target density <span class="math">\tilde{p}(x)</span>, accept the x-coordinate <span class="math">x_0</span>. Otherwise, reject it.<br>This process correctly generates samples with a distribution of <span class="math">p(x)</span>.</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">Still don&#8217;t get it? Yeah, I didn&#8217;t either. </p>
+
+
+
+<h4 class="wp-block-heading" id="more-intuition">More intuition</h4>
+
+
+
+<p class="wp-block-paragraph">For the dummies out there (like me!).</p>
+
+
+
+<p class="wp-block-paragraph">Imagine you want to sample random points from within the shape of an oddly-shaped pond (your complex <strong>target distribution</strong>), but you can only throw darts randomly at a large, rectangular tarp that covers the entire pond (your simple <strong>proposal distribution</strong>).</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Throw a Dart</strong>: You throw a dart, and it lands somewhere on the tarp. This is <strong>Step 1: Propose</strong>.</li>
+
+
+
+<li><strong>Check Where it Landed</strong>: You look at the dart&#8217;s location.</li>
+
+
+
+<li><strong>Accept or Reject</strong>:
+<ul class="wp-block-list">
+<li>If the dart landed in the pond, you <strong>accept</strong> its location as a valid sample.</li>
+
+
+
+<li>If the dart landed on the tarp but outside the pond, you <strong>reject</strong> it and throw another dart.</li>
+</ul>
+</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">If you do this many times, the collection of accepted dart locations will be a perfect random sample from within the shape of the pond.</p>
+
+
+
+<p class="wp-block-paragraph">This is just the most basic thing, <strong>not the algorithm</strong>.</p>
+
+
+
+<p class="wp-block-paragraph">The shapes now have varying heights.</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Propose (Throw a horizontal dart)</strong>: When you draw a sample <span class="math">x_{prop}</span> from <span class="math">q(x)</span>, you are choosing a random horizontal position on the dartboard.</li>
+
+
+
+<li><strong>Accept/Reject (Throw a vertical dart)</strong>: Now, at that horizontal position, you need to decide whether to keep the sample. This is done by throwing a &#8220;vertical&#8221; dart.
+<ol class="wp-block-list">
+<li>The height of the dartboard at this position is <span class="math">M \cdot q(x_{prop})</span>.</li>
+
+
+
+<li>The height of your target shape is <span class="math">\tilde{p}(x_{prop})</span>.</li>
+
+
+
+<li>The <strong>acceptance ratio</strong> <span class="math">r = \frac{\tilde{p}(x_{prop})}{M \cdot q(x_{prop})}</span> tells you how much of the dartboard&#8217;s height is &#8220;filled&#8221; by the target shape at that exact spot.</li>
+
+
+
+<li>You then draw a random number <span class="math">u</span> between 0 and 1. If <span class="math">u</span> is less than or equal to the ratio <span class="math">r</span>, it means your &#8220;vertical dart&#8221; has landed underneath the curve of the target shape. You <strong>accept</strong> the sample. If not, it landed above the target but still on the dartboard, so you <strong>reject</strong> it.</li>
+</ol>
+</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">This process ensures that you are more likely to accept samples in regions where the target distribution <span class="math">\tilde{p}(x)</span> is high and less likely to accept them where it&#8217;s low. Over many trials, the collection of accepted samples perfectly mimics the <em>shape of the target distribution</em> you wanted all along.</p>
+
+
+
+<h4 class="wp-block-heading" id="ok-why-not-accept-all-points-with-r-1">Ok, why not accept all points with r &lt; 1?</h4>
+
+
+
+<p class="wp-block-paragraph">That is, with the acceptance ratio less than 1? </p>
+
+
+
+<p class="wp-block-paragraph">The proposal distribution, <span class="math">g(x)</span>, generates samples according to its own shape. For example, if <span class="math">g(x)</span> is a uniform distribution, it will propose samples evenly across its domain. If we simply accepted every sample we generated, our final collection of points would just be a uniform distribution.</p>
+
+
+
+<p class="wp-block-paragraph">The random comparison, <span class="math">u \le r</span>, is a clever trick to <strong>&#8220;thin out&#8221;</strong> the samples from the proposal distribution so that their final density matches the target.</p>
+
+
+
+<p class="wp-block-paragraph">Think of the acceptance ratio, <span class="math">r = \frac{\tilde{p}(x)}{M \cdot g(x)}</span>, as the percentage of the envelope&#8217;s height that is &#8220;filled&#8221; by the target curve at a specific point <span class="math">x</span>.</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Where the Target is High</strong>: In a region where <span class="math">\tilde{p}(x)</span> is high (a peak), the ratio <span class="math">r</span> will be close to 1. This means you have a very high chance of accepting a sample proposed in this region.</li>
+
+
+
+<li><strong>Where the Target is Low</strong>: In a region where <span class="math">\tilde{p}(x)</span> is low (a valley), the ratio <span class="math">r</span> will be close to 0. This means you have a very low chance of accepting a sample proposed here, and you&#8217;ll reject most of them.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">This probabilistic step ensures that you keep more samples at the peaks and fewer samples in the valleys, perfectly sculpting the simple proposal distribution into the shape of your desired target distribution.</p>
+
+
+
+<p class="wp-block-paragraph">Makes sense? Yay!</p>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Information Theory | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Information Theory</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-10-05T13:03:19">2025-10-05</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What’s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#entropy">Entropy</a><ol><li><a class="wp-block-table-of-contents__entry" href="#brain-dump">Brain dump</a></li><li><a class="wp-block-table-of-contents__entry" href="#theoretical-development">Theoretical development</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#cross-entropy">Cross-Entropy</a><ol><li><a class="wp-block-table-of-contents__entry" href="#theory">Theory</a></li><li><a class="wp-block-table-of-contents__entry" href="#what-does-this-mean">What does this mean?</a></li><li><a class="wp-block-table-of-contents__entry" href="#relationship-with-kl-divergence">Relationship with KL Divergence</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#kullback-leibler-kl-divergence">Kullback-Leibler (KL) Divergence</a><ol><li><a class="wp-block-table-of-contents__entry" href="#theory-1">Theory</a></li><li><a class="wp-block-table-of-contents__entry" href="#with-cross-entropy">With cross entropy</a></li><li><a class="wp-block-table-of-contents__entry" href="#minimizing-and-maximising">Minimizing and maximising</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#mutual-information">Mutual Information</a><ol><li><a class="wp-block-table-of-contents__entry" href="#understanding">Understanding</a></li><li><a class="wp-block-table-of-contents__entry" href="#theory-2">Theory</a></li><li><a class="wp-block-table-of-contents__entry" href="#in-terms-of-kl-divergence">In terms of KL Divergence</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What’s there?</h3>
+
+
+
+<p class="wp-block-paragraph">Basic principles of information theory &#8211; entropy, KL divergence.</p>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="entropy">Entropy</h3>
+
+
+
+<h4 class="wp-block-heading" id="brain-dump">Brain dump</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>The Concept of Information (or &#8220;Surprisal&#8221;):</strong> The foundational idea is that learning the outcome of an event is more &#8220;informative&#8221; if that event was unlikely.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Axioms for an Information Measure:</strong> Shannon proposed that a measure of information, <span class="math">I(p)</span>, associated with an event of probability <span class="math">p</span>, should have the following properties:</p>
+
+
+
+<ol class="wp-block-list">
+<li>Information is non-negative: <span class="math">I(p) \ge 0</span>.</li>
+
+
+
+<li>If an event is certain (<span class="math">p=1</span>), its information content is zero: <span class="math">I(1) = 0</span>.</li>
+
+
+
+<li>If an event is less likely, it is more informative: if <span class="math">p_1 &lt; p_2</span>, then <span class="math">I(p_1) &gt; I(p_2)</span>.</li>
+
+
+
+<li>The information gained from observing two independent events is the sum of their individual information contents: <span class="math">I(p_1 p_2) = I(p_1) + I(p_2)</span>.</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"><strong>The Information Formula:</strong> The unique function that satisfies these axioms is the <strong>negative logarithm</strong>:</p>
+
+
+
+<p class="wp-block-paragraph"><span class="math">I(p) = -\log_b(p)</span></p>
+
+
+
+<p class="wp-block-paragraph">The base of the logarithm, <span class="math">b</span>, determines the units of information. If <span class="math">b=2</span>, the unit is <strong>bits</strong>. If <span class="math">b=e</span> (natural log), the unit is <strong>nats</strong>. In machine learning, we typically use the natural logarithm. An event with probability <span class="math">1/2</span> has <span class="math">-\log_2(1/2) = 1</span> bit of information.</p>
+
+
+
+<h4 class="wp-block-heading" id="theoretical-development">Theoretical development</h4>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Formal Definition (Entropy):</strong> Let <span class="math">X</span> be a discrete random variable that can take on <span class="math">K</span> possible states <span class="math">{x_1, \dots, x_K}</span> with probabilities <span class="math">P(X=x_k) = p_k</span>. The Shannon entropy of the random variable <span class="math">X</span>, denoted <span class="math">H(X)</span> or <span class="math">H(P)</span>, is:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">H(X) = \mathbb{E}[I(P(X))] = \sum_{k=1}^K p_k I(p_k) = -\sum_{k=1}^K p_k \log p_k</span></p>
+
+
+
+<p class="wp-block-paragraph">By convention, <span class="math">0 \log 0 = 0</span>.</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Properties of Entropy:</strong>
+<ul class="wp-block-list">
+<li><strong>Minimum Entropy:</strong> The entropy is minimal (<span class="math">H(X)=0</span>) when there is no uncertainty. This occurs when one outcome is certain (<span class="math">p_k=1</span> for some <span class="math">k</span>) and all others are impossible (<span class="math">p_j=0</span> for <span class="math">j \neq k</span>).</li>
+
+
+
+<li><strong>Maximum Entropy:</strong> The entropy is maximal when there is the most uncertainty. For a variable with <span class="math">K</span> states, this occurs when all outcomes are equally likely, i.e., the distribution is uniform (<span class="math">p_k = 1/K</span> for all <span class="math">k</span>). In this case, <span class="math">H(X) = \log K</span>.</li>
+
+
+
+<li><strong>Geometric Interpretation:</strong> Entropy measures the &#8220;flatness&#8221; or &#8220;peakedness&#8221; of a probability distribution. A peaked distribution has low entropy; a flat distribution has high entropy.</li>
+</ul>
+</li>
+</ul>
+
+
+
+<h3 class="wp-block-heading" id="cross-entropy">Cross-Entropy</h3>
+
+
+
+<h4 class="wp-block-heading" id="theory">Theory</h4>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Formal Definition (Cross-Entropy):</strong> Let <span class="math">P</span> be the true probability distribution over a set of events, and <span class="math">Q</span> be our model&#8217;s predicted probability distribution over the same set of events. The cross-entropy of <span class="math">Q</span> with respect to <span class="math">P</span> is:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">H(P, Q) = \mathbb{E}_{X \sim P}[I(Q(X))] = \sum_{k=1}^K p_k I(q_k) = -\sum_{k=1}^K p_k \log q_k</span></p>
+
+
+
+<p class="wp-block-paragraph">Notice the structure: we are averaging the information content of the <em>model&#8217;s</em> probabilities (<span class="math">-\log q_k</span>) over the <em>true</em> probabilities (<span class="math">p_k</span>).</p>
+
+
+
+<h4 class="wp-block-heading" id="what-does-this-mean">What does this mean?</h4>
+
+
+
+<p class="wp-block-paragraph">Think about encoding the letters of the English alphabet into Morse code.</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>True Distribution (<span class="math">P</span>):</strong> In real English text, the letter &#8216;E&#8217; is extremely common, while &#8216;Z&#8217; is very rare. An efficient code would give &#8216;E&#8217; a very short representation (like a single dot) and &#8216;Z&#8217; a much longer one. This is the optimal encoding scheme based on the true frequency of letters.</li>
+
+
+
+<li><strong>Model Distribution (<span class="math">Q</span>):</strong> Now, suppose you <em>mistakenly believe</em> that &#8216;Z&#8217; is the most common letter and &#8216;E&#8217; is the rarest. You design a new Morse code based on this incorrect assumption. You&#8217;d give &#8216;Z&#8217; a short code and &#8216;E&#8217; a very long, inefficient one.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"><strong>Cross-entropy</strong> is the average length of the messages you&#8217;d have to send using your <strong>inefficient, &#8216;Z&#8217;-focused code</strong> to communicate actual English text. Because your code is optimized for the wrong reality, your messages will be, on average, much longer than necessary.</p>
+
+
+
+<p class="wp-block-paragraph">The extra length is the &#8220;penalty&#8221; for your incorrect assumption.</p>
+
+
+
+<p class="wp-block-paragraph">Deconstructing the formula &#8211; </p>
+
+
+
+<p class="wp-block-paragraph">The cross-entropy of <span class="math">Q</span> relative to <span class="math">P</span> is calculated as:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">H(P, Q) = -\sum_{x} P(x) \log Q(x)</span></p>
+
+
+
+<p class="wp-block-paragraph">Let&#8217;s break this down:</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong><span class="math">P(x)</span>:</strong> The true probability of an event <span class="math">x</span>. This acts as a weight. We care more about events that actually happen often.</li>
+
+
+
+<li><strong><span class="math">\log Q(x)</span>:</strong> This relates to the &#8220;cost&#8221; of encoding event <span class="math">x</span> using our model&#8217;s assumed probability. If our model says an event is very likely (<span class="math">Q(x)</span> is high), the cost is low. If it says an event is very unlikely (<span class="math">Q(x)</span> is low), the cost is very high.</li>
+
+
+
+<li><strong><span class="math">-\sum_{x}</span>:</strong> We sum this &#8220;weighted cost&#8221; over all possible events to get the average cost, or the cross-entropy.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="relationship-with-kl-divergence">Relationship with KL Divergence</h4>
+
+
+
+<p class="wp-block-paragraph">Cross-entropy is intimately related to Shannon entropy and the <strong>Kullback-Leibler (KL) Divergence</strong>, which measures <span style="text-decoration: underline">the &#8220;extra&#8221; bits/nats needed due to using the wrong code</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\begin{aligned} H(P, Q) &amp;= -\sum_k p_k \log q_k \ &amp;= -\sum_k p_k \log \left( \frac{q_k}{p_k} p_k \right) \ &amp;= -\sum_k p_k \log p_k - \sum_k p_k \log \frac{q_k}{p_k} \ &amp;= H(P) + D_{KL}(P || Q) \end{aligned}</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><strong>Cross-Entropy = Entropy + KL Divergence.</strong></p>
+
+
+
+<p class="wp-block-paragraph">This is like <span style="text-decoration: underline">super important, since</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">In machine learning, the true data distribution <span class="math">P</span> is fixed (but unknown). We are trying to find a model <span class="math">Q</span> that is as close to <span class="math">P</span> as possible. Since <span class="math">H(P)</span> is a constant with respect to our model, <strong>minimizing the cross-entropy <span class="math">H(P, Q)</span> is equivalent to minimizing the KL divergence <span class="math">D_{KL}(P || Q)</span></strong>. Therefore, cross-entropy serves as an excellent loss function.</p>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="kullback-leibler-kl-divergence">Kullback-Leibler (KL) Divergence</h3>
+
+
+
+<h4 class="wp-block-heading" id="theory-1">Theory</h4>
+
+
+
+<p class="wp-block-paragraph">Let <span class="math">P(x)</span> and <span class="math">Q(x)</span> be two probability distributions over the same random variable <span class="math">x</span>. The KL Divergence of <span class="math">Q</span> from <span class="math">P</span>, denoted <span class="math">D_{KL}(P || Q)</span>, is defined as the expectation of the logarithmic difference between the two distributions, where the expectation is taken with respect to the true distribution <span class="math">P</span>.</p>
+
+
+
+<ul class="wp-block-list">
+<li>For <strong>discrete</strong> distributions:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">D_{KL}(P || Q) = \sum_x P(x) \log \frac{P(x)}{Q(x)}</span></p>
+
+
+
+<ul class="wp-block-list">
+<li>For <strong>continuous</strong> distributions:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">D_{KL}(P || Q) = \int_{-\infty}^{\infty} p(x) \log \frac{p(x)}{q(x)} dx</span></p>
+
+
+
+<h4 class="wp-block-heading" id="with-cross-entropy">With cross entropy</h4>
+
+
+
+<p class="wp-block-paragraph">As shown earlier, <span class="math">D_{KL}(P || Q) = H(P, Q) - H(P)</span>.</p>
+</blockquote>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The KL divergence (the penalty) is the difference between the average message length using the wrong code (<span class="math">H(P,Q)</span>) and the average message length using the optimal code (<span class="math">H(P)</span>).</p>
+</blockquote>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="minimizing-and-maximising">Minimizing and maximising</h4>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Minimizing <span class="math">D_{KL}(P || Q)</span>:</strong> This is the &#8220;forward KL&#8221; used in <strong>Maximum Likelihood Estimation</strong>. It forces <span class="math">Q</span> to be non-zero wherever <span class="math">P</span> is non-zero. This leads to &#8220;mode-covering&#8221; or &#8220;zero-avoiding&#8221; behavior, where the model <span class="math">Q</span> tries to be broad enough to capture all the probability mass of the true distribution <span class="math">P</span>.</li>
+
+
+
+<li><strong>Minimizing <span class="math">D_{KL}(Q || P)</span>:</strong> This is the &#8220;reverse KL&#8221; used in <strong>Variational Inference</strong>. It forces <span class="math">Q</span> to be zero wherever <span class="math">P</span> is zero. This leads to &#8220;mode-seeking&#8221; or &#8220;zero-forcing&#8221; behavior, where the approximation <span class="math">Q</span> tends to find and fit one of the modes of a multi-modal true distribution <span class="math">P</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">Um, what?</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Mode Covering</strong></p>
+
+
+
+<p class="wp-block-paragraph">This version asks, &#8220;What&#8217;s the penalty for my model <span class="math">Q</span> failing to account for something that is actually true (<span class="math">P</span>)?&#8221;</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>The Penalty:</strong> Look at the term <span class="math">P(x) \log\left(\frac{P(x)}{Q(x)}\right)</span>. If there is a place where the true probability is high (<span class="math">P(x) &gt; 0</span>) but your model assigns it a near-zero probability (<span class="math">Q(x) \to 0</span>), the ratio <span class="math">\frac{P(x)}{Q(x)}</span> becomes huge. The logarithm of this huge number is also huge, resulting in an <strong>infinite KL divergence</strong>.</li>
+
+
+
+<li><strong>Behavior (&#8220;Zero-Avoiding&#8221;):</strong> To avoid this infinite penalty, the model is forced to place some probability mass everywhere the true distribution has mass. It learns to <strong>avoid assigning zero probability where it shouldn&#8217;t</strong>.</li>
+
+
+
+<li><strong>Result (&#8220;Mode-Covering&#8221;):</strong> If the true distribution <span class="math">P</span> has multiple peaks (is multi-modal), the model <span class="math">Q</span> must stretch itself out to cover all of them to avoid the infinite penalty. This results in a broad, &#8220;averaged&#8221; approximation that covers all modes, even if it doesn&#8217;t perfectly capture any single one. This is why it&#8217;s used in Maximum Likelihood Estimation, where the goal is to find a single set of parameters that best explains all the observed data.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Mode Seeking</strong></p>
+
+
+
+<p class="wp-block-paragraph">This version flips the question and asks, &#8220;What&#8217;s the penalty for my model <span class="math">Q</span> hallucinating something that is actually impossible (<span class="math">P</span>)?&#8221;</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>The Penalty:</strong> The formula for reverse KL is <span class="math">D_{KL}(Q || P) = \sum_x Q(x) \log\left(\frac{Q(x)}{P(x)}\right)</span>. Now, consider a place where your model assigns some probability (<span class="math">Q(x) &gt; 0</span>), but the true probability is zero (<span class="math">P(x) = 0</span>). The ratio <span class="math">\frac{Q(x)}{P(x)}</span> becomes infinite, again leading to an <strong>infinite KL divergence</strong>.</li>
+
+
+
+<li><strong>Behavior (&#8220;Zero-Forcing&#8221;):</strong> To avoid this infinite penalty, the model is forced to have zero probability wherever the true distribution has zero probability. It learns to <strong>only place probability mass in regions where it&#8217;s sure the true distribution exists</strong>.</li>
+
+
+
+<li><strong>Result (&#8220;Mode-Seeking&#8221;):</strong> If the true distribution <span class="math">P</span> has multiple peaks separated by regions of zero probability, the model <span class="math">Q</span> cannot stretch to cover them all because that would force it to place probability in the zero-regions, resulting in an infinite penalty. Instead, the safest strategy is to pick <strong>one single mode</strong> of <span class="math">P</span> and fit it as well as possible. This is why it&#8217;s used in Variational Inference, where we often want a simpler, tractable approximation (<span class="math">Q</span>) that captures the most significant part of a complex true posterior distribution (<span class="math">P</span>).</li>
+</ul>
+
+
+
+<h3 class="wp-block-heading" id="mutual-information">Mutual Information</h3>
+
+
+
+<h4 class="wp-block-heading" id="understanding">Understanding</h4>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">How much does knowing the value of variable <span class="math">Y</span> reduce my uncertainty about variable <span class="math">X</span>?</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Recall that entropy, <span class="math">H(X)</span>, measures our total uncertainty about <span class="math">X</span>. After we observe the value of <span class="math">Y</span>, our uncertainty about <span class="math">X</span> is now given by the <strong>conditional entropy</strong>, <span class="math">H(X|Y)</span>. Mutual Information is simply the reduction in uncertainty.</p>
+
+
+
+<p class="wp-block-paragraph"><span class="math">\text{Mutual Information} = (\text{Initial Uncertainty about X}) - (\text{Remaining Uncertainty about X after seeing Y})</span></p>
+
+
+
+<h4 class="wp-block-heading" id="theory-2">Theory</h4>
+
+
+
+<p class="wp-block-paragraph">The Mutual Information between two random variables <span class="math">X</span> and <span class="math">Y</span>, denoted <span class="math">I(X; Y)</span>, is defined as:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">I(X; Y) = H(X) - H(X|Y)</span></p>
+
+
+
+<p class="wp-block-paragraph">where <span class="math">H(X)</span> is the entropy of <span class="math">X</span> and <span class="math">H(X|Y) = -\sum_{x,y} p(x,y)\log p(x|y)</span> is the conditional entropy.</p>
+
+
+
+<h4 class="wp-block-heading" id="in-terms-of-kl-divergence">In terms of KL Divergence</h4>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">I(X; Y) = D_{KL}( p(x, y) || p(x)p(y) )</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">p(x, y)</span> is the <strong>true joint distribution</strong> of the two variables, capturing all dependencies between them.</li>
+
+
+
+<li><span class="math">p(x)p(y)</span> is the <strong>hypothetical joint distribution</strong> that we would have if the two variables were <strong>perfectly independent</strong>.</li>
+
+
+
+<li>Therefore, the Mutual Information is the KL divergence from the independent case to the true joint case. It measures how much the true joint distribution deviates from the assumption of independence. If the variables are truly independent, then <span class="math">p(x,y)=p(x)p(y)</span>, and the KL divergence is zero.</li>
+</ul>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

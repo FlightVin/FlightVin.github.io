@@ -1,0 +1,1669 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>PCA, Spectral Clustering and t-SNE | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">PCA, Spectral Clustering and&nbsp;t-SNE</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-07-21T21:41:56">2025-07-21</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#whats-this">Whats this?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#principal-component-analysis-pca">Principal Component Analysis (PCA)</a><ol><li><a class="wp-block-table-of-contents__entry" href="#perspectives">Perspectives</a></li><li><a class="wp-block-table-of-contents__entry" href="#huh-what-s-variance-covariance">Huh? What&#8217;s variance? Covariance?</a></li><li><a class="wp-block-table-of-contents__entry" href="#some-math-y-aspects-of-variance">Some math-y aspects of variance</a></li><li><a class="wp-block-table-of-contents__entry" href="#covariance">Covariance!</a></li><li><a class="wp-block-table-of-contents__entry" href="#covariance-matrix">Covariance Matrix!!</a></li><li><a class="wp-block-table-of-contents__entry" href="#back-to-pca">Back to PCA</a></li><li><a class="wp-block-table-of-contents__entry" href="#probabilistic-pca-ppca">Probabilistic PCA (PPCA)</a></li><li><a class="wp-block-table-of-contents__entry" href="#kernel-pca">Kernel PCA</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#spectral-clustering">Spectral Clustering</a><ol><li><a class="wp-block-table-of-contents__entry" href="#foundations">Foundations</a></li><li><a class="wp-block-table-of-contents__entry" href="#graph-cut-and-laplacian">Graph cut and Laplacian</a></li><li><a class="wp-block-table-of-contents__entry" href="#generalized">Generalized</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#t-distributed-stochastic-neighbor-embedding-t-sne">t-Distributed Stochastic Neighbor Embedding (t-SNE)</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-not-just-pca">Why not just PCA?</a></li><li><a class="wp-block-table-of-contents__entry" href="#prerequisites">Prerequisites</a></li><li><a class="wp-block-table-of-contents__entry" href="#math">Math</a></li><li><a class="wp-block-table-of-contents__entry" href="#why-not-just-kernel-pca">Why not just kernel PCA?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources </a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="whats-this">Whats this?</h3>
+
+
+
+<p class="wp-block-paragraph">It&#8217;s a document on PCA, Spectral Clustering and t-SNE, duh? All of these are used to make sense of the structure of data. More importantly, all of these are intricately related to eigendecomposition (<a href="../2025-07-17-matrix-decompositions-1/">Matrix Decompositions 1</a>).</p>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">As always, I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public.</p>
+
+
+
+<h3 class="wp-block-heading" id="principal-component-analysis-pca">Principal Component Analysis (PCA)</h3>
+
+
+
+<p class="wp-block-paragraph">What&#8217;s this used for? We use it to find a lower-dimensional linear subspace of a high-dimensional data space that captures the maximal amount of variance in the data. </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Big dimensional data bad, lesser dimensions good:)</p>
+</blockquote>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="perspectives">Perspectives</h4>
+
+
+
+<p class="wp-block-paragraph">We can think about PCA from two viewpoints</p>
+
+
+
+<ol class="wp-block-list">
+<li>Maximizing the variance of projected data</li>
+
+
+
+<li>Minimizing reconstruction error</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="huh-what-s-variance-covariance">Huh? What&#8217;s variance? Covariance?</h4>
+
+
+
+<p class="wp-block-paragraph">Let&#8217;s nail down <strong>expected value</strong> first. </p>
+
+
+
+<p class="wp-block-paragraph">The <strong>expected value</strong> of a random variable, which represents its theoretical mean or center of mass. For a continuous random variable <span class="math">X</span> with probability density function (PDF) <span class="math">p(x)</span>, the expected value is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbb{E}[X] = \mu = \int_{-\infty}^{\infty} x p(x) dx</span></p>
+
+
+
+<p class="wp-block-paragraph">So, as you can probably gauge, this is like the mean &#8211; describes the central tendency of a distribution. But, it does not tell us anything about its spread / dispersion. This is where we get <strong>variance</strong>!</p>
+
+
+
+<p class="wp-block-paragraph">The <strong>variance</strong> of a random variable <span class="math">X</span>, denoted <span class="math">\text{Var}(X)</span> or <span class="math">\sigma^2</span>, is the expected value of the squared deviation from its mean <span class="math">\mu</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{Var}(X) = \sigma^2 := \mathbb{E}[(X - \mu)^2]</span></p>
+
+
+
+<p class="wp-block-paragraph">The square root of the variance, <span class="math">\sigma</span>, is the <strong>standard deviation</strong>, which is returned to the original units of the variable and is often more interpretable.</p>
+
+
+
+<p class="wp-block-paragraph"><em>Takeaway &#8211; </em>A low variance indicates that the values are tightly clustered around the mean, while a high variance indicates that they are spread out over a wider range.</p>
+
+
+
+<h4 class="wp-block-heading" id="some-math-y-aspects-of-variance">Some math-y aspects of variance</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>The Raw-score Formula</strong></p>
+
+
+
+<p class="wp-block-paragraph">The definition of variance can be expanded using the linearity of expectation.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{Var}(X) = \mathbb{E}[(X^2 - 2\mu X + \mu^2)] = \mathbb{E}[X^2] - 2\mu\mathbb{E}[X] + \mu^2 = \mathbb{E}[X^2] - 2\mu^2 + \mu^2</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2</span></p>
+
+
+
+<p class="wp-block-paragraph">This is more convenient for us. Why? </p>
+
+
+
+<p class="wp-block-paragraph"><strong>Empirally determining variance</strong></p>
+
+
+
+<p class="wp-block-paragraph">In practice, we do not have the true distribution <span class="math">p(x)</span> but a finite dataset of <span class="math">N</span> observations <span class="math">{x_n}_{n=1}^N</span>. We estimate the true variance using the <strong>empirical variance</strong> (or sample variance). First, the empirical mean is calculated:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\bar{x} = \frac{1}{N} \sum_{n=1}^N x_n</span></p>
+
+
+
+<p class="wp-block-paragraph">The empirical variance is the average of the squared deviations from this empirical mean:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\hat{\sigma}^2 = \frac{1}{N} \sum_{n=1}^N (x_n - \bar{x})^2</span></p>
+
+
+
+<p class="wp-block-paragraph"><em>Important note &#8211; </em> The unbiased estimator uses a denominator of <span class="math">N-1</span>, but for large <span class="math">N</span> and in many machine learning contexts, the version with <span class="math">N</span> is used.</p>
+
+
+
+<p class="wp-block-paragraph">Huh? You ask again. </p>
+
+
+
+<p class="wp-block-paragraph"><strong>Why did you talk <span class="math">N-1</span></strong> <strong>about above?</strong></p>
+
+
+
+<p class="wp-block-paragraph">First &#8211; an <strong>unbiased estimator</strong> is a formula that, on average, gives us the correct value for the property that we are trying to <strong>measure from a population</strong>. </p>
+
+
+
+<p class="wp-block-paragraph">The population bit is important &#8211; this is the actual disribution. What are have are <strong>samples</strong>!</p>
+
+
+
+<p class="wp-block-paragraph">When you calculate the variance of a sample, you don&#8217;t know the <em>true mean</em> (<span class="math">\mu</span>) of the entire population. Instead, you have to use the <em>sample mean</em> (<span class="math">\bar{x}</span>).</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The sample mean (<span class="math">\bar{x}</span>) is calculated from your specific data points. By its nature, it&#8217;s the value that is closest to all the points in your sample, minimizing the sum of squared differences <span class="math">(x_n - \bar{x})^2</span> for that <em>particular sample</em>.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Since the sample mean is always a &#8220;perfect fit&#8221; for the sample, the deviations from it are slightly smaller than the deviations would be from the true population mean! So, we divide by <span class="math">N-1</span> to account for this &#8211; we call this <strong>Bessel&#8217;s Correction.</strong></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Using a smaller denominator makes the final result slightly larger. This small increase perfectly corrects for the underestimation caused by using the sample mean, ensuring that, on average, the calculated variance matches the true population variance. This is why it&#8217;s called the <strong>unbiased estimator</strong>. (What&#8217;s this? Keep reading until a few more sections. Or hit ctrl+F and find biased-estimator-def)</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong>Ok, but, why <span class="math">N-1</span>???</strong></p>
+
+
+
+<p class="wp-block-paragraph">(Feel free to skip this bit if you don&#8217;t care about Math. But, then, that&#8217;s why you are here, isn&#8217;t it?)</p>
+
+
+
+<p class="wp-block-paragraph">First, let&#8217;s define our terms:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\sigma^2</span> is the true variance of the population (what we want to estimate).</li>
+
+
+
+<li><span class="math">\mu</span> is the true mean of the population.</li>
+
+
+
+<li><span class="math">\bar{x} = \frac{1}{N}\sum x_i</span> is the sample mean.</li>
+
+
+
+<li>The sample variance estimator is <span class="math">s^2 = \frac{1}{N-1}\sum(x_i - \bar{x})^2</span>.</li>
+
+
+
+<li>The expectation operator, <span class="math">E[\cdot]</span>, gives the long-run average of an estimator. For an estimator to be <strong>unbiased</strong>, its expectation must equal the true parameter, i.e., <span class="math">E[s^2] = \sigma^2</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">Now, the derivation!</p>
+
+
+
+<p class="wp-block-paragraph">Our goal is to compute the expected value of the sum of squared differences, <span class="math">E\left[\sum(x_i - \bar{x})^2\right]</span>. We start by rewriting the term inside the sum:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\sum(x_i - \bar{x})^2 = \sum(x_i - \mu - (\bar{x} - \mu))^2</span></p>
+
+
+
+<p class="wp-block-paragraph">Expanding the squared term gives:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \sum\left[ (x_i - \mu)^2 - 2(x_i - \mu)(\bar{x} - \mu) + (\bar{x} - \mu)^2 \right]</span></p>
+
+
+
+<p class="wp-block-paragraph">Distributing the summation:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \sum(x_i - \mu)^2 - 2(\bar{x} - \mu)\sum(x_i - \mu) + \sum(\bar{x} - \mu)^2</span></p>
+
+
+
+<p class="wp-block-paragraph">Now, let&#8217;s simplify the middle term, <span class="math">\sum(x_i - \mu)</span>, which equals <span class="math">N(\bar{x} - \mu)</span>. Substituting this in:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \sum(x_i - \mu)^2 - 2(\bar{x} - \mu) \cdot N(\bar{x} - \mu) + N(\bar{x} - \mu)^2</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \sum(x_i - \mu)^2 - 2N(\bar{x} - \mu)^2 + N(\bar{x} - \mu)^2</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \sum(x_i - \mu)^2 - N(\bar{x} - \mu)^2</span></p>
+
+
+
+<p class="wp-block-paragraph">Now we take the expectation of this entire expression:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">E\left[\sum(x_i - \bar{x})^2\right] = E\left[\sum(x_i - \mu)^2\right] - E\left[N(\bar{x} - \mu)^2\right]</span></p>
+
+
+
+<p class="wp-block-paragraph">By definition, <span class="math">E[(x_i - \mu)^2]</span> is the population variance <span class="math">\sigma^2</span>, and <span class="math">E[(\bar{x} - \mu)^2]</span> is the variance of the sample mean, which is <span class="math">\sigma^2/N</span>. Substituting these in:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">E\left[\sum(x_i - \bar{x})^2\right] = \sum E[(x_i - \mu)^2] - N \cdot E[(\bar{x} - \mu)^2]</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= N\sigma^2 - N\left(\frac{\sigma^2}{N}\right)</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= N\sigma^2 - \sigma^2</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= (N-1)\sigma^2</span></p>
+
+
+
+<p class="wp-block-paragraph"><em><span style="text-decoration: underline">See? Now remember that</span></em> you can user either <span class="math">N</span> or <span class="math">N - 1</span> since for <span style="text-decoration: underline">very, very large</span> <span class="math">N</span>, <span class="math">\mu = \bar{x}</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="covariance">Covariance!</h4>
+
+
+
+<p class="wp-block-paragraph">Variance describes how a single variable changes. <strong>Covariance</strong> extends this idea to describe how two variables change <em>together</em>.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The covariance between two random variables <span class="math">X</span> and <span class="math">Y</span> with means <span class="math">\mu_X</span> and <span class="math">\mu_Y</span> respectively, is the expected value of the product of their deviations from their means:</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{Cov}(X, Y) := \mathbb{E}[(X - \mu_X)(Y - \mu_Y)]</span></p>
+
+
+
+<h4 class="wp-block-heading" id="covariance-matrix">Covariance Matrix!!</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Multidimensional Data</strong></p>
+
+
+
+<p class="wp-block-paragraph">For a <span class="math">D</span>-dimensional random vector <span class="math">\mathbf{X} = [X_1, \dots, X_D]^\top</span> with mean vector <span class="math">\boldsymbol{\mu} = \mathbb{E}[\mathbf{X}]</span>, the relationships between all pairs of its components are captured by the <strong>covariance matrix</strong> <span class="math">\mathbf{\Sigma} \in \mathbb{R}^{D \times D}</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{\Sigma} := \mathbb{E}[(\mathbf{X} - \boldsymbol{\mu})(\mathbf{X} - \boldsymbol{\mu})^\top]</span></p>
+
+
+
+<p class="wp-block-paragraph">The entry at position <span class="math">(i, j)</span> of this matrix is the covariance between the <span class="math">i</span>-th and <span class="math">j</span>-th components of the vector:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\Sigma_{ij} = \text{Cov}(X_i, X_j)</span></p>
+
+
+
+<p class="wp-block-paragraph">The diagonal elements are the variances of each component, <span class="math">\Sigma_{ii} = \text{Var}(X_i)</span>.</p>
+
+
+
+<p class="wp-block-paragraph">As always, properties!<br>1. <strong>Symmetry:</strong> <span class="math">\mathbf{\Sigma} = \mathbf{\Sigma}^\top</span>, since <span class="math">\text{Cov}(X_i, X_j) = \text{Cov}(X_j, X_i)</span>.<br>2. <strong>Positive Semi-Definiteness:</strong> For any vector <span class="math">\mathbf{w} \in \mathbb{R}^D</span>, <span class="math">\mathbf{w}^\top \mathbf{\Sigma} \mathbf{w} \ge 0</span>. This is because <span class="math">\mathbf{w}^\top \mathbf{\Sigma} \mathbf{w} = \text{Var}(\mathbf{w}^\top \mathbf{X})</span>, and variance is always non-negative! (since it&#8217;s a square, duh)</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Empirical Covariance Matrix</strong></p>
+
+
+
+<p class="wp-block-paragraph">As always, we only have a sample; not the distribution / population.</p>
+
+
+
+<p class="wp-block-paragraph">So, what do we do? <span class="math">N</span> or <span class="math">N-1</span>?</p>
+
+
+
+<p class="wp-block-paragraph">I will first define population and samples since I&#8217;ve just been naming them</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Population:</strong> The entire set of all possible observations of interest. Population parameters, such as the true mean <span class="math">\mu</span> and the true covariance <span class="math">\mathbf{\Sigma}</span>, are considered fixed but unknown constants.</li>
+
+
+
+<li><strong>Sample:</strong> A finite subset of observations $latex {\mathbf{x}<em>n}</em>{n=1}^N$ drawn from the population. We use the sample to make inferences about the unknown population parameters.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">With me so far? Good, now more definitions.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">An <strong>estimator</strong> is a function of the sample data that is used to estimate an unknown population parameter. For example, the sample mean <span class="math">\bar{\mathbf{x}}</span> is an estimator for the population mean <span class="math">\boldsymbol{\mu}</span>. A crucial property of an estimator is its <strong>bias</strong>.</p>
+</blockquote>
+</blockquote>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph"><strong>Definition (Bias of an Estimator):</strong> Let <span class="math">\theta</span> be an unknown population parameter and let <span class="math">\hat{\theta}</span> be an estimator of <span class="math">\theta</span> based on a sample. The bias of the estimator is defined as the difference between the expected value of the estimator and the true value of the parameter:</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{Bias}(\hat{\theta}) = \mathbb{E}[\hat{\theta}] - \theta</span></p>
+
+
+
+<ul class="wp-block-list">
+<li>An estimator is <strong>unbiased</strong> if its bias is zero, i.e., <span class="math">\mathbb{E}[\hat{\theta}] = \theta</span>. This means that if we were to repeatedly draw samples of size <span class="math">N</span> from the population and compute the estimate <span class="math">\hat{\theta}</span> for each, the average of these estimates would converge to the true parameter <span class="math">\theta</span>.</li>
+
+
+
+<li>An estimator is <strong>biased</strong> if <span class="math">\mathbb{E}[\hat{\theta}] \neq \theta</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">(See? I told you a few more sections earlier; keyword: biased-estimator-def)</p>
+
+
+
+<p class="wp-block-paragraph">Cool, I just want to remind you of Bessel&#8217;s Correction once again:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbb{E}[\hat{\sigma}^2_{N-1}] = \mathbb{E}\left[\frac{N}{N-1}\hat{\sigma}^2_N\right] = \frac{N}{N-1}\mathbb{E}[\hat{\sigma}^2_N] = \frac{N}{N-1} \left( \frac{N-1}{N}\sigma^2 \right) = \sigma^2</span></p>
+
+
+
+<p class="wp-block-paragraph">and also the why once again &#8211; The bias arises because we are measuring deviations from the sample mean <span class="math">\bar{x}</span>, which is itself derived from the data. </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The data points are, on average, closer to their own sample mean than to the true population mean, leading to an underestimation of the true spread.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong>First, the MLE!</strong></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Maximum Likelihood Estimation is a fundamental method for deriving estimators. Given a dataset <span class="math">\mathcal{X} = {x_n}_{n=1}^N</span> and a parameterized probability model <span class="math">p(\mathbf{x} | \boldsymbol{\theta})</span>, the likelihood function is the probability of observing the data, viewed as a function of the parameters <span class="math">\boldsymbol{\theta}</span>:</p>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">L(\boldsymbol{\theta}; \mathcal{X}) = p(\mathcal{X} | \boldsymbol{\theta})</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The MLE principle states that we should choose the parameters <span class="math">\hat{\boldsymbol{\theta}}_{\text{ML}}</span> that maximize this likelihood function. For an i.i.d. sample, this is equivalent to maximizing the log-likelihood:</p>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\hat{\boldsymbol{\theta}}_{\text{ML}} = \arg\max _{\boldsymbol{\theta}} \sum_{n=1}^N \log p(\mathbf{x}_n | \boldsymbol{\theta})</span></p>
+
+
+
+<p class="wp-block-paragraph">How did we get the above? Take log on both sides of </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">L(\boldsymbol{\theta}; \mathcal{X}) = p(\mathcal{X} | \boldsymbol{\theta}) = \prod_{n=1}^N p(\mathbf{x}_n | \boldsymbol{\theta})</span></p>
+
+
+
+<p class="wp-block-paragraph"><span style="text-decoration: underline">Ok what the hell is this</span>? Probability theory solves the &#8220;forward problem&#8221;: <em>Given a model with known parameters, what does the data look like?</em> (e.g., &#8220;If this coin is fair, <span class="math">\theta=0.5</span>, I expect to see roughly 5 heads in 10 flips.&#8221;)</p>
+
+
+
+<p class="wp-block-paragraph">(Statistical inference in general, and) <strong>MLE in particular</strong>, solves the <strong>inverse problem</strong>: <em>Given the data we have observed, what were the most likely parameters of the model that generated it?</em> (e.g., &#8220;I flipped a coin 10 times and got 8 heads. What is the most plausible value for this coin&#8217;s bias, $\theta$?&#8221;)</p>
+</blockquote>
+
+
+
+<ul class="wp-block-list">
+<li>Normally, we think of <span class="math">p(\mathcal{X} | \boldsymbol{\theta})</span> as a probability distribution over possible datasets <span class="math">\mathcal{X}</span>, for a <em>fixed</em> parameter setting <span class="math">\boldsymbol{\theta}</span>.</li>
+</ul>
+
+
+
+<ul class="wp-block-list">
+<li>The <strong>likelihood function</strong>, <span class="math">L(\boldsymbol{\theta}; \mathcal{X})</span>, treats the <em>observed data</em> <span class="math">\mathcal{X}</span> as fixed and views this quantity as a function of the <em>parameters</em> <span class="math">\boldsymbol{\theta}</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">Here, I present a statement:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><strong>The covariance estimator with denominator <span class="math">N</span> is the MLE under a Gaussian assumption</strong></p>
+
+
+
+<p class="wp-block-paragraph">Ponder this. What can it even mean? Yeah, it&#8217;s just that <span class="math">\mathcal{X}</span> is taken as a gaussian.</p>
+
+
+
+<p class="wp-block-paragraph">Specifically, we assume our data points <span class="math">{\mathbf{x}_n}</span> are drawn i.i.d. from a multivariate Gaussian distribution, <span class="math">\mathcal{N}(\boldsymbol{\mu}, \mathbf{\Sigma})</span>. The parameters to be estimated are <span class="math">\boldsymbol{\theta} = {\boldsymbol{\mu}, \mathbf{\Sigma}}</span>.</p>
+
+
+
+<p class="wp-block-paragraph">That means that the log-likelihood function for this model and a dataset <span class="math">\mathcal{X}</span> is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\log L(\boldsymbol{\mu}, \mathbf{\Sigma}; \mathcal{X}) = \sum_{n=1}^N \log \left( \frac{1}{(2\pi)^{D/2}|\mathbf{\Sigma}|^{1/2}} \exp\left(-\frac{1}{2}(\mathbf{x}_n-\boldsymbol{\mu})^\top\mathbf{\Sigma}^{-1}(\mathbf{x}_n-\boldsymbol{\mu})\right) \right)</span></p>
+
+
+
+<p class="wp-block-paragraph">Do math, take partial derivatives, yada yada and we get:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\hat{\boldsymbol{\mu}}_{\text{ML}} = \frac{1}{N}\sum\mathbf{x}_n = \bar{\mathbf{x}}</span> (the sample mean)</li>
+
+
+
+<li><span class="math">\hat{\mathbf{\Sigma}}_{\text{ML}} = \frac{1}{N}\sum(\mathbf{x}_n - \bar{\mathbf{x}})(\mathbf{x}_n - \bar{\mathbf{x}})^\top</span></li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"><em>Takeaway &#8211; </em>The MLE (estimator / estimation &#8211; same thing) is the estimator that makes the observed data &#8220;most probable&#8221; under a Gaussian model.</p>
+
+
+
+<p class="wp-block-paragraph">Now, <span style="text-decoration: underline">this estimator is biased!</span></p>
+
+
+
+<p class="wp-block-paragraph">Changing notation a bit (I started this on another day and am lazy to keep track, haha).</p>
+
+
+
+<p class="wp-block-paragraph">Here&#8217;s what&#8217;s up rn: </p>
+
+
+
+<p class="wp-block-paragraph">The estimator for the covariance matrix using denominator <span class="math">N</span> is the MLE:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{S}_{N} = \frac{1}{N} \sum_{n=1}^N (\mathbf{x}_n - \bar{\mathbf{x}})(\mathbf{x}_n - \bar{\mathbf{x}})^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">Its expected value is: <strong>(tiny recap time!)</strong></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbb{E}[\mathbf{S}_N] = \frac{N-1}{N}\mathbf{\Sigma}</span></p>
+
+
+
+<p class="wp-block-paragraph">This estimator is biased. The unbiased sample covariance matrix is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{S}_{N-1} = \frac{1}{N-1} \sum_{n=1}^N (\mathbf{x}_n - \bar{\mathbf{x}})(\mathbf{x}_n - \bar{\mathbf{x}})^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">Its expected value is <span class="math">\mathbb{E}[\mathbf{S}_{N-1}] = \mathbf{\Sigma}</span>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Now, which one do we use?</strong></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">Use MLE for ML, unbiased for statistics.</p>
+
+
+
+<ul class="wp-block-list">
+<li><span style="text-decoration: underline">Statistics</span>: Unbiasedness is a highly desirable property. An unbiased estimator is <strong>correct on average</strong>.
+<ul class="wp-block-list">
+<li>The unbiased estimator <span class="math">\mathbf{S}_{N-1}</span> is the standard. In statistical analysis (e.g., hypothesis testing, confidence intervals), using an unbiased estimate of variance is critical for the validity of the statistical procedures. The focus is on <em>estimation accuracy</em>.</li>
+</ul>
+</li>
+
+
+
+<li><span style="text-decoration: underline">Machine Learning</span>: Minimizing prediction error is a desired property. MLE is better for such cases.
+<ul class="wp-block-list">
+<li>The quality of an estimator is often judged by its <strong>Mean Squared Error (MSE)</strong> </li>
+
+
+
+<li><span class="math">\text{MSE}(\hat{\theta}) = \mathbb{E}[(\hat{\theta} - \theta)^2] = (\text{Bias}(\hat{\theta}))^2 + \text{Var}(\hat{\theta})</span></li>
+
+
+
+<li>This is the <strong>bias-variance tradeoff</strong>. The best estimator is one that minimizes this total error. </li>
+
+
+
+<li>The MLE estimator <span class="math">\mathbf{S}_{N}</span> <em>has a slightly lower variance than the unbiased estimator </em><span class="math">\mathbf{S}_{N-1}</span> (what, you want the proof? we did this earlier, dummy). It can be shown that <span class="math">\text{MSE}(\mathbf{S}_{N}) &lt; \text{MSE}(\mathbf{S}_{N-1})</span>. Therefore, if the goal is to find an estimator that is &#8220;closer&#8221; to the true value on average in terms of squared error, the biased MLE is superior.</li>
+</ul>
+</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="back-to-pca">Back to PCA</h4>
+
+
+
+<p class="wp-block-paragraph">We take the empirical covariance matrix to be </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{S} = \frac{1}{N} \sum_{n=1}^N \mathbf{x}_n \mathbf{x}_n^\top = \frac{1}{N}\mathbf{X}^\top\mathbf{X}</span></p>
+
+
+
+<p class="wp-block-paragraph">where <span class="math">\mathbf{X} \in \mathbb{R}^{N \times D}</span> is the data matrix with observations as rows. This is when we are dealing with a centered dataset, i.e., the sample mean, <span class="math">\frac{1}{N}\sum_n \mathbf{x}_n = \mathbf{0}</span>.</p>
+
+
+
+<p class="wp-block-paragraph">Notice that the covariance matrix, <span class="math">\mathbf{S} \in \mathbb{R}^{D \times D}</span>; it is reflects the dimenions, NOT the samples. </p>
+
+
+
+<p class="wp-block-paragraph"><em>Important Note</em>: Ok, cool, <span class="math">N</span> for ML (explained above). But, does it matter here? NO. We use eigenvectors and these are the same for both <span class="math">\mathbf{S}_{N-1}</span> and <span class="math">\mathbf{S}_{N}</span> since these are only scaled versions of each other.</p>
+
+
+
+<p class="wp-block-paragraph">(<span style="text-decoration: underline">Perspective 1</span>) <strong>As maximising variance</strong></p>
+
+
+
+<p class="wp-block-paragraph"><em>Remember: </em>We have centered the dataset!</p>
+
+
+
+<p class="wp-block-paragraph">Now, we are trying to find a lower dimension space. So, we reduce the number of dimensions (duh), but what this means is that we should be able to reflect <span class="math">{x_n} \in \mathbb{R}^D</span> in less than <span class="math">D</span> coordinate vectors. </p>
+
+
+
+<p class="wp-block-paragraph">So, we try to find a set of coordinate vectors <span class="math">\in \mathbb{R}^D</span> such that the number of these coordinate vectors is less than <span class="math">D</span>. Thus, now, the new set of coordinate vectors will no longer span the entire real space, i.e., <span class="math">\mathbb{R}^D</span>.</p>
+
+
+
+<p class="wp-block-paragraph">Now, let us find the direction, represented by a unit vector <span class="math">\mathbf{b}_1 \in \mathbb{R}^D</span>, onto which the projected data has the greatest variance.</p>
+
+
+
+<p class="wp-block-paragraph">The projection of a data point <span class="math">\mathbf{x}_n</span> onto the direction <span class="math">\mathbf{b}_1</span> results in a scalar coordinate <span class="math">z_{1n} = \mathbf{b}_1^\top \mathbf{x}_n</span>. The variance of these projected coordinates over the entire dataset is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">V_{1} = \frac{1}{N}\sum_{n=1}^{N} z_{1n}^{2}</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \frac{1}{N}\sum_{n=1}^{N} (\mathbf{b}_{1}^\top \mathbf{x}_{n})^{2}</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \frac{1}{N}\sum_{n=1}^{N} \mathbf{b}_{1}^\top \mathbf{x}_{n} \mathbf{x}_{n}^\top \mathbf{b}_{1}</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \mathbf{b}_{1}^\top \left(\frac{1}{N}\sum_{n=1}^{N} \mathbf{x}_{n} \mathbf{x}_{n}^\top\right) \mathbf{b}_{1}</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \mathbf{b}_{1}^\top \mathbf{S} \mathbf{b}_{1}</span></p>
+
+
+
+<p class="wp-block-paragraph">What we want to do is maximize this variance subject to the constraint that <span class="math">\mathbf{b}_1</span> is a unit vector, i.e., <span class="math">|\mathbf{b}_1|^2 = \mathbf{b}_1^\top \mathbf{b}_1 = 1</span>. This is a constrained optimization problem:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\max_{\mathbf{b}_1} \mathbf{b}_1^\top \mathbf{S} \mathbf{b}_1 \quad \text{subject to} \quad \mathbf{b}_1^\top \mathbf{b}_1 = 1</span></p>
+
+
+
+<p class="wp-block-paragraph">We form the Lagrangian:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathcal{L}(\mathbf{b}_1, \lambda_1) = \mathbf{b}_1^\top \mathbf{S} \mathbf{b}_1 - \lambda_1(\mathbf{b}_1^\top \mathbf{b}_1 - 1)</span></p>
+
+
+
+<p class="wp-block-paragraph">Setting the gradient with respect to <span class="math">\mathbf{b}_1</span> to zero yields:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\nabla_{\mathbf{b}_1} \mathcal{L} = 2\mathbf{S}\mathbf{b}_1 - 2\lambda_1\mathbf{b}_1 = \mathbf{0} \implies \mathbf{S}\mathbf{b}_1 = \lambda_1\mathbf{b}_1</span></p>
+
+
+
+<p class="wp-block-paragraph">This is the eigenvalue equation for the covariance matrix <span class="math">\mathbf{S}</span>. To maximize the variance <span class="math">V_1 = \mathbf{b}_1^\top \mathbf{S} \mathbf{b}_1 = \mathbf{b}_1^\top (\lambda_1 \mathbf{b}_1) = \lambda_1</span>, we must choose <span class="math">\lambda_1</span> to be the largest eigenvalue of <span class="math">\mathbf{S}</span>. The corresponding vector <span class="math">\mathbf{b}_1</span> is the first <em>principal component</em>. </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Subsequent principal components <span class="math">\mathbf{b}_2, \dots, \mathbf{b}_M</span> are found by finding the eigenvectors of <span class="math">\mathbf{S}</span> corresponding to the next largest eigenvalues, ensuring they are orthogonal to the preceding components.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Notice how it is also very neat that the variance is then just the sum of the chosen eigen values:)</p>
+
+
+
+<p class="wp-block-paragraph">(<span style="text-decoration: underline">Perspective 2</span>) <strong>As minimizing reconstruction error</strong></p>
+
+
+
+<p class="wp-block-paragraph">No one really talks about this one much but let&#8217;s see. I will be very math-y here.</p>
+
+
+
+<ul class="wp-block-list">
+<li>Let the principal subspace be an <span class="math">M</span>-dimensional subspace spanned by an orthonormal basis of vectors <span class="math">{\mathbf{b}_{m}}_{m=1}^M</span> </li>
+
+
+
+<li><span class="math">\mathbf{B} = [\mathbf{b}_1, \dots, \mathbf{b}_M] \in \mathbb{R}^{D \times M}</span>. </li>
+
+
+
+<li>The orthogonal projection of a data point <span class="math">\mathbf{x}_n</span> onto this subspace is <span class="math">\tilde{\mathbf{x}}_n = \mathbf{B}\mathbf{B}^\top \mathbf{x}_n</span>. </li>
+
+
+
+<li>Our goal is to find the basis <span class="math">\mathbf{B}</span> that minimizes the average squared reconstruction error:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">J_M = \frac{1}{N} \sum_{n=1}^N |\mathbf{x}_n - \tilde{\mathbf{x}}_n|^2</span></p>
+
+
+
+<p class="wp-block-paragraph">By the properties of orthogonal projections, the total variance can be decomposed: <span class="math">\sum_n |\mathbf{x}_n|^2 = \sum_n |\tilde{\mathbf{x}}_n|^2 + \sum_n |\mathbf{x}_n - \tilde{\mathbf{x}}_n|^2</span>. Since the total variance <span class="math">\sum_n |\mathbf{x}_n|^2</span> is fixed, minimizing the reconstruction error is equivalent to maximizing the projected variance <span class="math">\sum_n |\tilde{\mathbf{x}}_n|^2</span>. </p>
+
+
+
+<p class="wp-block-paragraph">So, yes, we have very smartly reduced the 2nd perspective to the first perspective. Yay!</p>
+
+
+
+<h4 class="wp-block-heading" id="probabilistic-pca-ppca">Probabilistic PCA (PPCA)</h4>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">Classical PCA is a geometric, algorithmic procedure. Probabilistic PCA (PPCA) reformulates this procedure within a probabilistic framework by defining a <strong>latent variable model</strong> that describes the generative process of the data.</p>
+
+
+
+<p class="wp-block-paragraph">What? Ok, fine, I&#8217;ll explain.</p>
+
+
+
+<p class="wp-block-paragraph">PCA is a <strong>point estimate</strong> &#8211; gives you a <strong>single, definitive answer</strong> for the principal components and the lower-dimensional space they define, without expressing any uncertainty about that result. It is fundamentally a descriptive tool, not a generative one. This means:</p>
+
+
+
+<ul class="wp-block-list">
+<li>It cannot generate new data points</li>
+
+
+
+<li>It does not provide a likelihood of the data, making principled model selection (e.g., choosing the optimal number of components <span class="math">M</span>) difficult!</li>
+
+
+
+<li>It cannot handle missing values in the data.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">So, we now have PPCA! PPCA posits that the high-dimensional observed data <span class="math">\mathbf{x} \in \mathbb{R}^D</span> is a manifestation of <strong>some simpler, unobserved (latent) cause</strong> <span class="math">\mathbf{z} \in \mathbb{R}^M</span>, where <span class="math">M &lt; D</span>.</p>
+
+
+
+<p class="wp-block-paragraph">PPCA models the relationship between the latent and the observed (this is such a smart sounding statement, omg).</p>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Definitions</span></strong></p>
+
+
+
+<p class="wp-block-paragraph">(No, what did you expect?)</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Latent Variable Prior:</strong> A simple cause is assumed for each data point. This is modeled by a prior distribution over the latent variable <span class="math">\mathbf{z}</span>. PPCA assumes a standard multivariate Gaussian prior:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(\mathbf{z}) = \mathcal{N}(\mathbf{z} | \mathbf{0}, \mathbf{I})</span></p>
+
+
+
+<p class="wp-block-paragraph">This asserts that the latent variables are, a priori, independent and centered at the origin of the latent space.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Conditional Distribution of Data (Likelihood):</strong> The observed data point <span class="math">\mathbf{x}</span> is generated from its corresponding latent variable <span class="math">\mathbf{z}</span> via a linear transformation, with added noise. This is defined by the conditional probability <span class="math">p(\mathbf{x}|\mathbf{z})</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(\mathbf{x} | \mathbf{z}) = \mathcal{N}(\mathbf{x} | \mathbf{B}\mathbf{z} + \boldsymbol{\mu}, \sigma^2\mathbf{I})</span></p>
+
+
+
+<p class="wp-block-paragraph">This is equivalent to the equation <span class="math">\mathbf{x}_n = \mathbf{B}\mathbf{z}_n + \boldsymbol{\mu} + \boldsymbol{\epsilon}_n</span>, where:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\mathbf{B} \in \mathbb{R}^{D \times M}</span> is a matrix that maps the latent space to the data space. Its columns can be interpreted as the basis vectors of the principal subspace.
+<ul class="wp-block-list">
+<li>The <strong>principal subspace</strong> is the lower-dimensional plane or hyperplane that captures the most important variations in your data. Basis vectors are the fundamental directions that define or &#8220;span&#8221; that subspace.</li>
+
+
+
+<li>This just means that the reconstructed data point is made by a linear combination of the basis vectors of the principal subspace (plus the following things).</li>
+</ul>
+</li>
+
+
+
+<li><span class="math">\boldsymbol{\mu} \in \mathbb{R}^D</span> is the mean of the data.
+<ul class="wp-block-list">
+<li>Yeah I don&#8217;t think I can explain this more.</li>
+</ul>
+</li>
+
+
+
+<li><span class="math">\boldsymbol{\epsilon}_n \sim \mathcal{N}(\mathbf{0}, \sigma^2\mathbf{I})</span> is isotropic Gaussian noise, which accounts for the variability of data <em>off</em> the principal subspace. 
+<ul class="wp-block-list">
+<li>isotropic = fluctuations are same in all directions; hence the scalar multiplied with the identity matrix for variance.</li>
+
+
+
+<li>Also, every dimension is independent and uncorrrelated.</li>
+</ul>
+</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"><span style="text-decoration: underline"><strong>Calculation time!</strong></span></p>
+
+
+
+<p class="wp-block-paragraph">To define the likelihood of the model, we must integrate out the latent variables to find the marginal distribution of the observed data, <span class="math">p(\mathbf{x})</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(\mathbf{x}) = \int p(\mathbf{x} | \mathbf{z}) p(\mathbf{z}) d\mathbf{z}</span></p>
+
+
+
+<p class="wp-block-paragraph">Since both <span class="math">p(\mathbf{x}|\mathbf{z})</span> and <span class="math">p(\mathbf{z})</span> are Gaussian, and the relationship is linear, this integral can be solved analytically. The resulting marginal distribution is also a Gaussian, <span class="math">p(\mathbf{x}) = \mathcal{N}(\mathbf{x} | \boldsymbol{\mu}, \mathbf{C})</span>, with mean and covariance:</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Mean:</strong> <span class="math">\mathbb{E}[\mathbf{x}] = \mathbb{E}[\mathbf{B}\mathbf{z} + \boldsymbol{\mu} + \boldsymbol{\epsilon}] = \mathbf{B}\mathbb{E}[\mathbf{z}] + \boldsymbol{\mu} + \mathbb{E}[\boldsymbol{\epsilon}] = \boldsymbol{\mu}</span>.</li>
+
+
+
+<li><strong>Covariance:</strong> <span class="math">\text{Cov}(\mathbf{x}) = \text{Cov}(\mathbf{B}\mathbf{z} + \boldsymbol{\epsilon}) = \mathbf{B}\text{Cov}(\mathbf{z})\mathbf{B}^\top + \text{Cov}(\boldsymbol{\epsilon}) = \mathbf{B}\mathbf{I}\mathbf{B}^\top + \sigma^2\mathbf{I} = \mathbf{B}\mathbf{B}^\top + \sigma^2\mathbf{I}</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">The parameters of the model (<span class="math">\mathbf{B}, \boldsymbol{\mu}, \sigma^2</span>) are found by maximizing the log-likelihood of the observed data under this marginal distribution. How to do this? I dunno and I can&#8217;t write that much latex. Go read a book for this please (note to self &#8211; code is available thankfully).</p>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Advantanges</span></strong></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Handling Missing Data:</strong> The generative nature of PPCA allows it to handle missing data through the <strong>Expectation-Maximization (EM) algorithm</strong>. 
+<ul class="wp-block-list">
+<li>How? Again, I think I&#8217;ll write more on EM later. But, for now, let&#8217;s take it as is.</li>
+</ul>
+</li>
+
+
+
+<li><strong>Model Selection:</strong> The probabilistic formulation provides a log-likelihood value for the dataset given a model. 
+<ul class="wp-block-list">
+<li>This allows for principled model selection, for instance, choosing the optimal number of principal components $M$ by comparing the likelihood values (often using criteria like AIC or BIC) for different choices of $M$.</li>
+</ul>
+</li>
+
+
+
+<li>PPCA is used in robotics for sensor fusion and state estimation where sensor noise is a critical factor. How? Idk &#8211; I took this statement as is. <em>Takeaway</em> &#8211; super useful.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="kernel-pca">Kernel PCA</h4>
+
+
+
+<p class="wp-block-paragraph">This addresses the primary limitation of standard PCA &#8211; PCA seeks a linear subspace to represent the data. If the data lies on <strong>a complex, non-linear manifold</strong> (e.g., a spiral, a &#8220;Swiss roll&#8221;), any linear projection will fail to capture the underlying structure, leading to a poor low-dimensional representation.</p>
+
+
+
+<p class="wp-block-paragraph">How? Map the data from the original input space <span class="math">\mathbb{R}^D</span> to a higher (often infinite) dimensional feature space <span class="math">\mathcal{F}</span> via a non-linear mapping <span class="math">\phi: \mathbb{R}^D \to \mathcal{F}</span>. The mapping <span class="math">\phi</span> is chosen such that the structure of the mapped data <span class="math">\phi(\mathbf{x})</span> becomes linear in <span class="math">\mathcal{F}</span>. Standard linear PCA is then performed on the data in this feature space.</p>
+
+
+
+<p class="wp-block-paragraph">But, we get a <strong>computational barrier</strong>: </p>
+
+
+
+<ul class="wp-block-list">
+<li>The dimensionality of <span class="math">\mathcal{F}</span> can be enormous or infinite.</li>
+
+
+
+<li>The function <span class="math">\phi</span> itself may not even be known explicitly.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">So, we use the <strong><span style="text-decoration: underline">kernel trick</span></strong>!</p>
+
+
+
+<p class="wp-block-paragraph">Let&#8217;s perform PCA on the mapped data $latex {\phi(\mathbf{x}<em>n)}</em>{n=1}^N$. The covariance matrix in the feature space <span class="math">\mathcal{F}</span> is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{S}_\phi = \frac{1}{N} \sum_{n=1}^N \phi(\mathbf{x}_n) \phi(\mathbf{x}_n)^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">The eigenvalue problem in <span class="math">\mathcal{F}</span> is <span class="math">\mathbf{S}_\phi \mathbf{v} = \lambda \mathbf{v}</span>, where <span class="math">\mathbf{v} \in \mathcal{F}</span> are the principal components in the feature space.</p>
+
+
+
+<p class="wp-block-paragraph">Want to go on? Follow this <a href="https://www.cs.mcgill.ca/~dprecup/courses/ML/Lectures/ml-lecture13.pdf">lecture pdf from slide 32</a>; I really can&#8217;t write it better for myself either. The only extra thing that I can offer is to answer the question: Why can eigenvectors be written as linear combiunation of features?</p>
+
+
+
+<p class="wp-block-paragraph">The eigenvectors <strong>v</strong>ⱼ can be written as a linear combination of the features because they must lie in the space <strong>spanned by the feature vectors</strong> φ(<strong>x</strong>ᵢ) themselves.</p>
+
+
+
+<p class="wp-block-paragraph">Let&#8217;s start with the PCA equation:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\frac{1}{m} \sum_{i=1}^m \phi(\mathbf{x}_i)\phi(\mathbf{x}_i)^T \mathbf{v}_j = \lambda_j \mathbf{v}_j</span></p>
+
+
+
+<p class="wp-block-paragraph">We can isolate the eigenvector <strong>v</strong>ⱼ by rearranging the equation (assuming the eigenvalue λⱼ is not zero):</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{v}_j = \frac{1}{m\lambda_j} \sum_{i=1}^m \phi(\mathbf{x}_i)\phi(\mathbf{x}_i)^T \mathbf{v}_j</span></p>
+
+
+
+<p class="wp-block-paragraph">Now, let&#8217;s group the terms differently:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{v}_j = \sum_{i=1}^m \left( \frac{\phi(\mathbf{x}_i)^T \mathbf{v}_j}{m\lambda_j} \right) \phi(\mathbf{x}_i)</span></p>
+
+
+
+<p class="wp-block-paragraph">Notice that the term in the parenthesis, <span class="math">\frac{\phi(\mathbf{x}_i)^T \mathbf{v}_j}{m\lambda_j}</span>, is just a <strong>scalar</strong> (a single number) because it&#8217;s a dot product divided by constants.</p>
+
+
+
+<p class="wp-block-paragraph">If we call this scalar coefficient <span class="math">a_{ji}</span>, we get the exact relationship shown on the slide:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{v}_j = \sum_{i=1}^m a_{ji} \phi(\mathbf{x}_i)</span></p>
+
+
+
+<p class="wp-block-paragraph">This proves that any eigenvector <strong>v</strong>ⱼ is simply a weighted sum of all the feature vectors φ(<strong>x</strong>ᵢ).</p>
+
+
+
+<h3 class="wp-block-heading" id="spectral-clustering">Spectral Clustering</h3>
+
+
+
+<p class="wp-block-paragraph">This is a graph-based clustering technique that partitions data by analyzing the spectrum (eigenvalues) of a graph&#8217;s Laplacian matrix.</p>
+
+
+
+<h4 class="wp-block-heading" id="foundations">Foundations</h4>
+
+
+
+<p class="wp-block-paragraph">What? Ok, some definitions :sparkles: (I hope you can relate to some things if you took data structures and algorithms)</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Similarity Graph</strong></p>
+
+
+
+<p class="wp-block-paragraph">Given a dataset of <span class="math">N</span> points <span class="math">{\mathbf{x}_1, \dots, \mathbf{x}_N}</span>, we construct a graph <span class="math">G = (V, E)</span>, where the set of vertices <span class="math">V</span> corresponds to the data points. The set of edges <span class="math">E</span> represents the similarity or affinity between pairs of points. This similarity is quantified by a weighted <strong>adjacency matrix</strong> <span class="math">\mathbf{A} \in \mathbb{R}^{N \times N}</span>, where <span class="math">A_{ij} \ge 0</span> is the similarity between points <span class="math">\mathbf{x}_i</span> and <span class="math">\mathbf{x}_j</span>. High values indicate high similarity. </p>
+
+
+
+<ul class="wp-block-list">
+<li>Common ways to construct <span class="math">\mathbf{A}</span> include the k-nearest neighbor graph or using a Gaussian kernel: <span class="math">A_{ij} = \exp(-|\mathbf{x}_i - \mathbf{x}_j|^2 / 2\sigma^2)</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"><strong>Graph Partitioning</strong></p>
+
+
+
+<p class="wp-block-paragraph">The goal of clustering is to partition the vertices <span class="math">V</span> into disjoint sets (clusters) <span class="math">C_1, C_2, \dots, C_k</span>. An ideal partition is one where the edges <em>within</em> a cluster have high weights (high intra-cluster similarity) and the edges <em>between</em> clusters have low weights (low inter-cluster similarity). This is known as finding a minimal <strong>graph cut</strong>.</p>
+
+
+
+<ul class="wp-block-list">
+<li>This is our objective btw in case it wasn&#8217;t clear.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"><strong>Graph Laplacian</strong></p>
+
+
+
+<p class="wp-block-paragraph">Ok, this isn&#8217;t much of a definition. I&#8217;ll try to explain it since it&#8217;s the core component / concept.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">It is the fundamental object whose spectrum (eigenvalues and eigenvectors) reveals the cluster structure of the graph.</p>
+
+
+
+<p class="wp-block-paragraph">First, let&#8217;s define the <strong>degree matrix</strong>. A diagonal matrix where each diagonal element <span class="math">D_{ii}</span> is the sum of weights of all edges connected to vertex <span class="math">i</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">D_{ii} = \sum_{j=1}^N A_{ij}</span></p>
+
+
+
+<p class="wp-block-paragraph">The <strong>unnormalized graph laplacian</strong> is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{L} := \mathbf{D} - \mathbf{A}</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Some properties of the Graph Laplacian</strong>:</p>
+
+
+
+<ul class="wp-block-list">
+<li>It is symmetric and positive semi-definite.
+<ul class="wp-block-list">
+<li>It is symmetric since it&#8217;s the combination of the adjacency matrix and the degree matrix (a diagonal matrix) are symmetric.</li>
+
+
+
+<li>We later show that <span class="math">x^{T}Lx</span> turns into a square term, so it is positive semi-definite (or semi positive definite). Or, ctrl + F and find quadratic-laplacian-square.</li>
+
+
+
+<li>The Spectral Theorem states that any real, symmetric matrix has real eigenvalues and orthogonal eigenvectors. 
+<ul class="wp-block-list">
+<li>The added property of being positive semi-definite ensures these real eigenvalues are also non-negative (λ≥0).</li>
+
+
+
+<li>This is crucial because it allows us to reliably sort the eigenvalues from smallest to largest.</li>
+</ul>
+</li>
+</ul>
+</li>
+
+
+
+<li>The smallest eigenvalue of <span class="math">\mathbf{L}</span> is always <span class="math">\lambda_1 = 0</span>, with the corresponding eigenvector being the vector of all ones, <span class="math">\mathbf{u}_1 = \mathbf{1}</span>.
+<ul class="wp-block-list">
+<li>This is because the sum of each row in the Laplacian matrix is always zero by construction (<span class="math">D_{ii} - \sum_j A_{ij} = 0</span>).</li>
+</ul>
+</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="graph-cut-and-laplacian">Graph cut and Laplacian</h4>
+
+
+
+<p class="wp-block-paragraph">Ok, simplest case first &#8211; we have two partitions, i.e., two disjoint sets, <span class="math">C</span> and its complement <span class="math">\bar{C}</span>.</p>
+
+
+
+<p class="wp-block-paragraph">The &#8220;cut&#8221; is the sum of weights of all edges connecting these two sets:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{cut}(C, \bar{C}) = \sum_{i \in C, j \in \bar{C}} A_{ij}</span></p>
+
+
+
+<p class="wp-block-paragraph">Repeating for dramatic effect &#8211; minimizing this cut directly is an NP-hard combinatorial problem.</p>
+
+
+
+<p class="wp-block-paragraph">We (I) define a partition indicator vector <span class="math">\mathbf{f} \in \mathbb{R}^N</span> where:</p>
+
+
+
+<figure class="wp-block-image aligncenter size-large is-resized"><img src="image.png" alt="" loading="lazy" style="width:173px;height:auto" /></figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">Yeah, I didn&#8217;t want to write latex.</p>
+
+
+
+<p class="wp-block-paragraph">Now, consider the quadratic form of the Laplacian, <span class="math">\mathbf{f}^\top \mathbf{L} \mathbf{f}</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{f}^\top \mathbf{L} \mathbf{f} = \mathbf{f}^\top (\mathbf{D} - \mathbf{A}) \mathbf{f}</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \sum_{i} D_{ii}f_{i}^2 - \sum_{i,j} A_{ij}f_{i} f_{j}</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \sum_{i} \left(\sum_{j} A_{ij}\right) f_{i}^2 - \sum_{i,j} A_{ij}f_{i} f_{j}</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \frac{1}{2} \left( \sum_{i} \sum_{j} A_{ij}f_{i}^2 - 2\sum_{i,j} A_{ij}f_{i} f_{j} + \sum_{j} \sum_{i} A_{ji}f_{j}^2 \right)</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \frac{1}{2} \sum_{i,j} A_{ij}(f_{i}^2 - 2f_{i} f_{j} + f_{j}^2)</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">= \frac{1}{2} \sum_{i,j} A_{ij}(f_{i} - f_{j})^2</span></p>
+
+
+
+<p class="wp-block-paragraph">See? I promised you a square earlier! (keyword &#8211; quadratic-laplacian-square)</p>
+
+
+
+<p class="wp-block-paragraph">Now, observe the term <span class="math">(f_i - f_j)^2</span>:</p>
+
+
+
+<ul class="wp-block-list">
+<li>If <span class="math">f_i = f_j</span> (i.e., both nodes are in the same partition), <span class="math">(f_i - f_j)^2 = 0</span>.</li>
+
+
+
+<li>If <span class="math">f_i \neq f_j</span> (i.e., nodes are in different partitions), <span class="math">(f_i - f_j)^2 = (1 - (-1))^2 = 4</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">So / Therefore / Thus / Hence, <strong>minimizing the graph cut is equivalent to minimizing <span class="math">\mathbf{f}^\top \mathbf{L} \mathbf{f}</span></strong>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>How does this help us?</strong></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">The optimization problem <span class="math">\min_{\mathbf{f}} \mathbf{f}^\top \mathbf{L} \mathbf{f}</span> with the constraint that <span class="math">f_i \in {1, -1}</span> is still combinatorial.</p>
+
+
+
+<p class="wp-block-paragraph">So, what we do is &#8211; we relax. With multiple xs. The entries of <span class="math">\mathbf{f}</span> can take any real values now. So, we get</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\min_{\mathbf{f} \in \mathbb{R}^N} \mathbf{f}^\top \mathbf{L} \mathbf{f} \quad \text{subject to} \quad \mathbf{f}^\top \mathbf{f} = 1 \quad (\text{or some other normalization})</span></p>
+
+
+
+<p class="wp-block-paragraph">This is the formulation for minimizing the <strong>Rayleigh quotient</strong>. Its solution? Notice how its the same optimization problem we had in PCA?</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">The solution is given by the eigenvector of <span class="math">\mathbf{L}</span> corresponding to the smallest eigenvalue. </p>
+
+
+
+<p class="wp-block-paragraph">However, the smallest eigenvalue is <span class="math">\lambda_1=0</span> with eigenvector <span class="math">\mathbf{u}_1 = \mathbf{1}</span>. This is a trivial solution where all entries of <span class="math">\mathbf{f}</span> are constant, which does not define a partition.</p>
+
+
+
+<p class="wp-block-paragraph">So, the non-trivial solution must be orthogonal to this vector of ones. </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\min \mathbf{f}^\top \mathbf{L} \mathbf{f}</span> subject to <span class="math">\mathbf{f}^\top \mathbf{f} = 1</span> and <span class="math">\mathbf{f}^\top \mathbf{1} = 0</span></p>
+
+
+
+<p class="wp-block-paragraph">This is the eigenvector corresponding to the <strong>second-smallest eigenvalue</strong> of <span class="math">\mathbf{L}</span>. </p>
+
+
+
+<ul class="wp-block-list">
+<li>This eigenvector is known as the <strong>Fiedler vector</strong>.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="generalized">Generalized</h4>
+
+
+
+<p class="wp-block-paragraph">(I&#8217;m just going to get an LLM to generate it)</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Construct Similarity Graph:</strong> Given <span class="math">N</span> data points, construct the adjacency matrix <span class="math">\mathbf{A}</span>.</li>
+
+
+
+<li><strong>Compute Laplacian:</strong> Compute the degree matrix <span class="math">\mathbf{D}</span> and the Laplacian <span class="math">\mathbf{L} = \mathbf{D} - \mathbf{A}</span>.</li>
+
+
+
+<li><strong>Compute Eigenvectors:</strong> Find the first <span class="math">k</span> eigenvectors <span class="math">\mathbf{u}_1, \dots, \mathbf{u}_k</span> of <span class="math">\mathbf{L}</span> corresponding to the <span class="math">k</span> smallest eigenvalues.</li>
+
+
+
+<li><strong>Form Embedding:</strong> Construct a matrix <span class="math">\mathbf{U} \in \mathbb{R}^{N \times k}</span> with these eigenvectors as its columns.</li>
+
+
+
+<li><strong>Cluster Embedding:</strong> Treat each row of <span class="math">\mathbf{U}</span> as a new data point in a <span class="math">k</span>-dimensional space. Cluster these <span class="math">N</span> new points into <span class="math">k</span> clusters using a simple algorithm like <strong>k-means</strong>.</li>
+
+
+
+<li><strong>Assign Original Points:</strong> The cluster assignment of the <span class="math">i</span>-th row of <span class="math">\mathbf{U}</span> is the final cluster assignment for the original data point <span class="math">\mathbf{x}_i</span>.</li>
+</ol>
+
+
+
+<h3 class="wp-block-heading" id="t-distributed-stochastic-neighbor-embedding-t-sne">t-Distributed Stochastic Neighbor Embedding (t-SNE)</h3>
+
+
+
+<h4 class="wp-block-heading" id="why-not-just-pca">Why not just PCA?</h4>
+
+
+
+<p class="wp-block-paragraph">Remember kernel PCA? The one that solves the problem of PCA being linear? Yeah, t-SNE solves the same thing.</p>
+
+
+
+<h4 class="wp-block-heading" id="prerequisites">Prerequisites</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Gaussians</strong></p>
+
+
+
+<p class="wp-block-paragraph">The bell curve, duh. I am not explaining this further. Here&#8217;s the formula:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(x | \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x - \mu)^2}{2\sigma^2}\right)</span></p>
+
+
+
+<p class="wp-block-paragraph">The important thing to know here is that Gaussians have light tails. </p>
+
+
+
+<ul class="wp-block-list">
+<li>Values away from the mean are exceptionally unlikely.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"><strong>t-distribution</strong></p>
+
+
+
+<p class="wp-block-paragraph">These have heavier tails than Gaussians &#8211; defined by <strong> degrees of freedom (<span class="math">\nu=1</span>)</strong>.</p>
+
+
+
+<ul class="wp-block-list">
+<li>The PDF of the t-distribution decays polynomially, not exponentially.</li>
+
+
+
+<li>As <span class="math">\nu \to \infty</span>, the t-distribution converges to the Gaussian distribution.</li>
+
+
+
+<li>The specific case used in t-SNE is the t-distribution with <strong>one degree of freedom (<span class="math">\nu=1</span>)</strong>, also known as the <strong>Cauchy distribution</strong>. Its simplified PDF has the form:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(y) \propto \frac{1}{1+y^2}</span></p>
+
+
+
+<p class="wp-block-paragraph">Now, before moving on, I want to add a bit more context &#8211; the teacher is the gaussian and the student is the t-distribution (the lower dimension one).</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This is a crucial design choice to solve the <strong>&#8220;crowding problem&#8221;</strong>. In a 2D map, there isn&#8217;t enough space to accurately represent all the neighborhood distances from a high-D space. The heavy tails of the t-distribution mean that two points can be placed far apart in the map and still have a non-trivial similarity score. This allows t-SNE to place moderately dissimilar points far apart, effectively creating more space for the local neighborhoods to be modeled without being &#8220;crowded&#8221; together.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong>Kullback-Leibler (KL) Divergence</strong></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">It is a measure of how one probability distribution, <span class="math">Q</span>, is different from a second, reference probability distribution, <span class="math">P</span>. It is not a true distance metric (it is not symmetric), but it is often used to measure the &#8220;distance&#8221; or &#8220;divergence&#8221; between distributions.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">For discrete distributions over outcomes <span class="math">i</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">D_{KL}(P || Q) = \sum_i P(i) \log \frac{P(i)}{Q(i)}</span></p>
+
+
+
+<p class="wp-block-paragraph">Again, context &#8211; this is our cost function in t-SNE.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Oh? You want more on it? I want to cover both KL divergence and Gaussians more. But, for now, I think I can suggest <a href="https://en.wikipedia.org/wiki/Cauchy_distribution">Wikipedia</a>.</p>
+
+
+
+<h4 class="wp-block-heading" id="math">Math</h4>
+
+
+
+<p class="wp-block-paragraph">Three stages:</p>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Stage 1: Modeling High-Dimensional Similarities</span></strong></p>
+
+
+
+<p class="wp-block-paragraph">The similarity between two data points, <span class="math">\mathbf{x}_i</span> and <span class="math">\mathbf{x}_j</span>, is converted into a conditional probability, <span class="math">p_{j|i}</span>. This is interpreted as <span style="text-decoration: underline">the probability that <span class="math">\mathbf{x}_i</span> would choose <span class="math">\mathbf{x}_j</span> as its neighbor</span> if neighbors were picked in proportion to their probability density under a Gaussian distribution centered at <span class="math">\mathbf{x}_i</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p_{j|i} = \frac{\exp(-|\mathbf{x}_i - \mathbf{x}_j|^2 / 2\sigma_i^2)}{\sum_{k \neq i} \exp(-|\mathbf{x}_i - \mathbf{x}_k|^2 / 2\sigma_i^2)}</span></p>
+
+
+
+<p class="wp-block-paragraph">So, sorta like &#8220;j given i&#8221; but not exactly.</p>
+
+
+
+<p class="wp-block-paragraph">Ok, what is <span class="math">\sigma_i^2</span>? Variance of the local Gaussian. Yes, but how do we get this? We use something called Perplexity</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Perplexity</strong></p>
+
+
+
+<p class="wp-block-paragraph">(adding this as well &#8211; notice how it dictates the size of the neighbourhood in a way)</p>
+
+
+
+<p class="wp-block-paragraph">Yeah, you see how? (I just added the last sentence within brackets for fun)</p>
+
+
+
+<p class="wp-block-paragraph">Now, notice how the scale parameter <span class="math">\sigma_i</span> must be <strong>locally adaptive</strong>. Each data point <span class="math">\mathbf{x}_i</span> needs its own unique bandwidth <span class="math">\sigma_i</span> that is appropriate for its local neighborhood density.</p>
+
+
+
+<p class="wp-block-paragraph">Before everything else, focus on the following definition.</p>
+
+
+
+<p class="wp-block-paragraph">For each data point <span class="math">\mathbf{x}_i</span>, we have a conditional probability distribution <span class="math">P_i</span> over all other points, where <span class="math">P_i = \{p_{j|i}\}_{j \neq i}</span>. The <strong>Shannon entropy</strong> of this distribution, measured in bits, is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">H(P_i) = - \sum_{j \neq i} p_{j|i} \log_2 p_{j|i}</span></p>
+
+
+
+<p class="wp-block-paragraph">The entropy <span class="math">H(P_i)</span> quantifies the uncertainty involved in choosing a neighbor for point <span class="math">\mathbf{x}_i</span> according to the distribution <span class="math">P_i</span>.</p>
+
+
+
+<ul class="wp-block-list">
+<li>If the distribution is sharply peaked on one neighbor (low uncertainty), the entropy will be low.</li>
+
+
+
+<li>If the distribution is spread out over many neighbors (high uncertainty), the entropy will be high.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">The <strong>perplexity</strong> of the distribution <span class="math">P_i</span> is defined as the exponential of its Shannon entropy:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{Perp}(P_i) = 2^{H(P_i)}</span></p>
+
+
+
+<p class="wp-block-paragraph">(If you&#8217;ve done NLP, this would seem very familiar. That&#8217;s because it is.)</p>
+
+
+
+<p class="wp-block-paragraph">What does this do? Notice that if the probability distribution $P_i$ is uniform over $k$ neighbors (and zero for all others), its perplexity will be exactly $k$.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><strong>Perplexity can be interpreted as a smooth, continuous measure of the effective number of neighbors for point <span class="math">\mathbf{x}_i</span>.</strong></p>
+
+
+
+<p class="wp-block-paragraph">Ok, now, we don&#8217;t know <span class="math">H(P_i)</span> &#8211; wouldn&#8217;t we need the variances to calculate it?</p>
+
+
+
+<p class="wp-block-paragraph">Yes. So, here&#8217;s what we do:</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>User Input:</strong> The user specifies a single, global <strong>perplexity</strong> value. This value is the same for all points and typically ranges from 5 to 50. Let&#8217;s say the user chooses a perplexity of 30.</li>
+
+
+
+<li><strong>Per-Point Optimization:</strong> For <em>each data point</em> <span class="math">\mathbf{x}_i</span>, the t-SNE algorithm performs an independent optimization. It searches for the specific value of the Gaussian variance, <span class="math">\sigma_i^2</span>, that produces a conditional probability distribution <span class="math">P_i</span> whose perplexity is exactly equal to the user&#8217;s desired value (in this case, 30).</li>
+
+
+
+<li><strong>The Search Algorithm:</strong> This search is performed efficiently using binary search. The algorithm makes a guess for <span class="math">\sigma_i</span>, computes the resulting perplexity, and then adjusts <span class="math">\sigma_i</span> up or down until the target perplexity is met within a given tolerance.</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">Neat, isn&#8217;t it?</p>
+
+
+
+<p class="wp-block-paragraph">Last thing in this stage &#8211; <strong>Symmetrization.</strong></p>
+
+
+
+<p class="wp-block-paragraph">The conditional probabilities <span class="math">p_{j|i}</span> are not symmetric. To create a single joint probability distribution <span class="math">P</span> over all pairs of points, they are symmetrized:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p_{ij} = \frac{p_{j|i} + p_{i|j}}{2N}</span></p>
+
+
+
+<p class="wp-block-paragraph">where <span class="math">N</span> is the number of data points. This <span class="math">P</span> represents the target similarity structure that we wish to preserve.</p>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Stage 2: Modeling Low-Dimensional Similarities (<span class="math">Q</span>)</span></strong></p>
+
+
+
+<p class="wp-block-paragraph">Now, we define a similar probability distribution <span class="math">Q</span> for the points in the low-dimensional embedding space, <span class="math">{\mathbf{y}_1, \dots, \mathbf{y}_N}</span>.</p>
+
+
+
+<p class="wp-block-paragraph">Remember how I told you about the crowding problem? No? Go back. </p>
+
+
+
+<p class="wp-block-paragraph">The t-distribution is <strong>heavy-tailed</strong>, meaning it decays much more slowly with distance than a Gaussian.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">q_{ij} = \frac{(1 + |\mathbf{y}_i - \mathbf{y}_j|^2)^{-1}}{\sum_{k \neq l} (1 + |\mathbf{y}_k - \mathbf{y}_l|^2)^{-1}}</span></p>
+
+
+
+<p class="wp-block-paragraph">This is the student&#8217;s t-distribution with one degree of freedom.</p>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Stage 3: Optimization via KL Divergence Minimization</span></strong></p>
+
+
+
+<p class="wp-block-paragraph">We minimize the KL divergence:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">C = \text{KL}(P||Q) = \sum_{i&lt;j} p_{ij} \log \frac{p_{ij}}{q_{ij}}</span></p>
+
+
+
+<p class="wp-block-paragraph">If you are a dum-dum like me &#8211; <span class="math">i &lt; j</span> gives half of what <span class="math">i \neq j</span> does.</p>
+
+
+
+<p class="wp-block-paragraph">This is non-convex: has multiple minimas. So, we use iterative gradient descent and hope for the best.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\frac{\partial C}{\partial \mathbf{y}_i} = 4 \sum_{j} (p_{ij} - q_{ij})(1 + |\mathbf{y}_i - \mathbf{y}_j|^2)^{-1}(\mathbf{y}_i - \mathbf{y}_j)</span></p>
+
+
+
+<p class="wp-block-paragraph">(This makes t-SNE non-deterministic!)</p>
+
+
+
+<h4 class="wp-block-heading" id="why-not-just-kernel-pca">Why not just kernel PCA?</h4>
+
+
+
+<p class="wp-block-paragraph">Kernel PCA: finds an optimal linear projection in a non-linearly transformed space.</p>
+
+
+
+<ul class="wp-block-list">
+<li>Non-linear <strong>feature extraction</strong> and dimensionality reduction. It seeks to find a set of non-linear components that can be used for subsequent tasks (e.g., classification, regression).</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">t-SNE: finds a a faithful representation of the local data topology.</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Visualization</strong> and exploratory data analysis. It seeks to create a 2D or 3D map of the data that reveals its underlying local structure and clustering.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">Now, a very, very important point is that</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">Kernel PCA deals with global structure, t-SNE with local.</p>
+
+
+
+<p class="wp-block-paragraph">You use kernel PCA when you need non-linear feature extraction for a subsequent machine learning task.</p>
+
+
+
+<p class="wp-block-paragraph">You use t-SNE for visualizing / exploring a high-dimensional feature space.</p>
+
+
+
+<p class="wp-block-paragraph"><strong><em>Key takeaway:</em></strong> Do NOT use t-SNE for feature extraction.</p>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources </h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+
+
+
+<li>McGill lecture (<a href="https://www.cs.mcgill.ca/~dprecup/courses/ML/Lectures/ml-lecture13.pdf">link</a>)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

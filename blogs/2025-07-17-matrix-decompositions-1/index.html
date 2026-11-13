@@ -1,0 +1,571 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Matrix Decompositions 1 | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Matrix Decompositions 1</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-07-17T19:40:34">2025-07-17</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What&#8217;s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#eigen-decomposition">Eigen decomposition</a><ol><li><a class="wp-block-table-of-contents__entry" href="#wait">Wait&#8230;</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#basics">Basics!</a><ol><li><a class="wp-block-table-of-contents__entry" href="#linear-transformation">Linear Transformation</a></li><li><a class="wp-block-table-of-contents__entry" href="#eigenvectors-and-eigenvalues">Eigenvectors and eigenvalues</a></li><li><a class="wp-block-table-of-contents__entry" href="#important-matrix-types">Important matrix types</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#eigendecomposition-1">Eigendecomposition</a><ol><li><a class="wp-block-table-of-contents__entry" href="#basics-1">Basics</a></li><li><a class="wp-block-table-of-contents__entry" href="#when-can-you-eigendecompose">When can you eigendecompose?</a></li><li><a class="wp-block-table-of-contents__entry" href="#ok-why-can-you-eigendecompose">Ok, why can you eigendecompose?</a></li><li><a class="wp-block-table-of-contents__entry" href="#eigendecomposition-is-powerful">Eigendecomposition is powerful!</a></li><li><a class="wp-block-table-of-contents__entry" href="#the-spectral-theorem-for-symmetric-matrices">The Spectral Theorem for Symmetric Matrices</a></li><li><a class="wp-block-table-of-contents__entry" href="#cool-ok-but-where-do-i-use-it">Cool, ok, but where do I use it?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What&#8217;s there?</h3>
+
+
+
+<p class="wp-block-paragraph">There are basically 5 (ಐದು / पाँच) types of matrix decompositions that are like super important. I strive to go in depth into all of them. These are</p>
+
+
+
+<ol class="wp-block-list">
+<li>Eigendecomposition (This post!)</li>
+
+
+
+<li>QR decomposition</li>
+
+
+
+<li>Cholesky decomposition</li>
+
+
+
+<li>LU decomposition</li>
+
+
+
+<li>(perhaps the most important) Singular Value Decomposition</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"><em>Edit (July 20, 2025): </em>Added proof of spectral theorem.</p>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="eigen-decomposition">Eigen decomposition</h3>
+
+
+
+<h4 class="wp-block-heading" id="wait">Wait&#8230;</h4>
+
+
+
+<h3 class="wp-block-heading" id="basics">Basics!</h3>
+
+
+
+<h4 class="wp-block-heading" id="linear-transformation">Linear Transformation</h4>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">A linear transformation is a function <span class="math">\Phi: V \to W</span> between two vector spaces<span class="math">V</span> and<span class="math">W</span> that preserves the operations of vector addition and scalar multiplication. For finite-dimensional vector spaces, any linear transformation<span class="math">\Phi: \mathbb{R}^n \to \mathbb{R}^m</span> can be represented by an <span class="math">m \times n</span> matrix<span class="math">\mathbf{A}</span> . The action of the transformation on a vector<span class="math">\mathbf{x} \in \mathbb{R}^n</span> is given by matrix-vector multiplication:<span class="math">\Phi(\mathbf{x}) = \mathbf{A}\mathbf{x}</span>.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Ok, got it? Basic linear algebra.</p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="eigenvectors-and-eigenvalues">Eigenvectors and eigenvalues</h4>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Let <span class="math">\mathbf{A} \in \mathbb{R}^{n \times n}</span> be a square matrix. A nonzero vector <span class="math">\mathbf{x} \in \mathbb{R}^n \setminus {\mathbf{0}}</span> is an eigenvector of <span class="math">\mathbf{A}</span> if there exists a scalar <span class="math">\lambda \in \mathbb{C}</span> such that <span class="math">\mathbf{A}\mathbf{x} = \lambda\mathbf{x}</span>. The scalar <span class="math">\lambda</span> is called the eigenvalue corresponding to the eigenvector <span class="math">\mathbf{x}</span>.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">I will now add a bit of geometry. The equation states that the vector <span class="math">\mathbf{A}\mathbf{x}</span> (the result of the transformation) is collinear (fancy term for along the same line) with the original vector <span class="math">\mathbf{x}</span>. The eigenvalue <span class="math">\lambda</span> is the scaling factor.</p>
+
+
+
+<ul class="wp-block-list">
+<li>If <span class="math">\lambda &gt; 1</span>, the eigenvector is stretched.</li>
+
+
+
+<li>If <span class="math">0 &lt; \lambda &lt; 1</span>, the eigenvector is compressed.</li>
+
+
+
+<li>If <span class="math">\lambda &lt; 0</span>, the eigenvector is flipped and scaled.</li>
+
+
+
+<li>If <span class="math">\lambda = 1</span>, the eigenvector is unchanged.</li>
+
+
+
+<li>If <span class="math">\lambda = 0</span>, the eigenvector is mapped to the zero vector, meaning it lies in the null space of <span class="math">\mathbf{A}</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">Want a reminder on how to find these? The expression <span class="math">p_{\mathbf{A}}(\lambda) = \det(\mathbf{A} - \lambda\mathbf{I})</span> is a polynomial in <span class="math">\lambda</span> of degree <span class="math">n</span>, called the characteristic polynomial. The roots of this polynomial are the eigenvalues of <span class="math">\mathbf{A}</span>. By the fundamental theorem of algebra, an <span class="math">n</span>-degree polynomial has <span class="math">n</span> roots (counting multiplicity) in the complex plane <span class="math">\mathbb{C}</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="important-matrix-types">Important matrix types</h4>
+
+
+
+<p class="wp-block-paragraph">Ok, this is purely LLM generated. </p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Diagonal Matrices (<span class="math">\mathbf{D}</span>):</strong> Square matrices where all non-diagonal entries are zero (<span class="math">D_{ij} = 0</span> for <span class="math">i \neq j</span>). They represent pure scaling along the coordinate axes. Their powers (<span class="math">\mathbf{D}^k</span>) and inverses (<span class="math">\mathbf{D}^{-1}</span>) are trivial to compute.</li>
+
+
+
+<li><strong>Triangular Matrices (<span class="math">\mathbf{L}, \mathbf{U}</span>):</strong> Square matrices that are either lower triangular (<span class="math">\mathbf{L}</span>, where <span class="math">L_{ij} = 0</span> for <span class="math">i &lt; j</span>) or upper triangular (<span class="math">\mathbf{U}</span>, where <span class="math">U_{ij} = 0</span> for <span class="math">i &gt; j</span>). Systems of equations involving triangular matrices can be solved efficiently via forward or backward substitution.</li>
+
+
+
+<li><strong>Orthogonal Matrices (<span class="math">\mathbf{Q}</span>):</strong> Square matrices whose columns (and rows) form an orthonormal basis. They satisfy the property <span class="math">\mathbf{Q}^\top\mathbf{Q} = \mathbf{Q}\mathbf{Q}^\top = \mathbf{I}</span>, which implies <span class="math">\mathbf{Q}^{-1} = \mathbf{Q}^\top</span>. Geometrically, orthogonal matrices represent pure rotations or reflections, which preserve lengths and angles of vectors: <span class="math">|\mathbf{Q}\mathbf{x}|_2 = |\mathbf{x}|_2</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">I wrote this (!!) &#8211;</p>
+
+
+
+<ul class="wp-block-list">
+<li>Also, <strong><em><span style="text-decoration: underline">Diagonalizability</span></em></strong>. A square matrix <span class="math">\mathbf{A} \in \mathbb{R}^{n \times n}</span> is said to be <strong>diagonalizable</strong> if it has <span class="math">n</span> linearly independent eigenvectors. Such matrices are also known as <strong>non-defective matrices</strong>.</li>
+</ul>
+
+
+
+<h3 class="wp-block-heading" id="eigendecomposition-1">Eigendecomposition</h3>
+
+
+
+<h4 class="wp-block-heading" id="basics-1">Basics</h4>
+
+
+
+<p class="wp-block-paragraph">Ok, we can start now. For eigen decompositions, we are super concerned with endomorphisms. This is when the domain and the codomains of the linear transformation are in the same space. This is basically &#8211; <span class="math">\Phi: \mathbb{R}^n \to \mathbb{R}^n</span>, represented by a square matrix <span class="math">\mathbf{A} \in \mathbb{R}^{n \times n}</span>.</p>
+
+
+
+<p class="wp-block-paragraph">Why do you need to know this? You don&#8217;t. I knew this and barfed the information on you.</p>
+
+
+
+<h4 class="wp-block-heading" id="when-can-you-eigendecompose">When can you eigendecompose?</h4>
+
+
+
+<p class="wp-block-paragraph">If a matrix <span class="math">\mathbf{A} \in \mathbb{R}^{n \times n}</span> is diagonalizable, it can be factored as <span class="math">\mathbf{A} = \mathbf{P}\mathbf{D}\mathbf{P}^{-1}</span>, where:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\mathbf{P} \in \mathbb{R}^{n \times n}</span> is a matrix whose columns are the <span class="math">n</span> linearly independent eigenvectors of <span class="math">\mathbf{A}</span>, i.e., <span class="math">\mathbf{P} = [\mathbf{p}_1, \mathbf{p}_2, \dots, \mathbf{p}_n]</span>.</li>
+
+
+
+<li><span class="math">\mathbf{D} \in \mathbb{R}^{n \times n}</span> is a diagonal matrix whose diagonal entries are the corresponding eigenvalues, <span class="math">D_{ii} = \lambda_i</span>.</li>
+
+
+
+<li><span class="math">\mathbf{P}^{-1}</span> is the inverse of the matrix <span class="math">\mathbf{P}</span>. The existence of <span class="math">\mathbf{P}^{-1}</span> is guaranteed by the linear independence of the eigenvectors.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="ok-why-can-you-eigendecompose">Ok, why can you eigendecompose?</h4>
+
+
+
+<p class="wp-block-paragraph">Let <span class="math">\mathbf{A}</span> have <span class="math">n</span> linearly independent eigenvectors <span class="math">\mathbf{p}_1, \dots, \mathbf{p}_n</span> with corresponding eigenvalues <span class="math">\lambda_1, \dots, \lambda_n</span>. We can write the <span class="math">n</span> eigenvalue equations as:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}\mathbf{p}_i = \lambda_i\mathbf{p}_i, \quad i=1, \dots, n</span></p>
+
+
+
+<p class="wp-block-paragraph">We can concatenate these equations into a single matrix equation. Let <span class="math">\mathbf{P} = [\mathbf{p}_1, \dots, \mathbf{p}_n]</span>. Then:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}\mathbf{P} = \mathbf{A}[\mathbf{p}_1, \dots, \mathbf{p}_n] = [\mathbf{A}\mathbf{p}_1, \dots, \mathbf{A}\mathbf{p}_n] = [\lambda_1\mathbf{p}_1, \dots, \lambda_n\mathbf{p}_n]</span></p>
+
+
+
+<p class="wp-block-paragraph">The right-hand side can be expressed as the product of <span class="math">\mathbf{P}</span> and a diagonal matrix <span class="math">\mathbf{D}</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">[\lambda_1\mathbf{p}_1, \dots, \lambda_n\mathbf{p}_n] = [\mathbf{p}_1, \dots, \mathbf{p}_n] \begin{bmatrix} \lambda_1 &amp; 0 &amp; \dots &amp; 0 \\ 0 &amp; \lambda_2 &amp; \dots &amp; 0 \\ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\ 0 &amp; 0 &amp; \dots &amp; \lambda_n \end{bmatrix} = \mathbf{P}\mathbf{D}</span></p>
+
+
+
+<p class="wp-block-paragraph">Thus, we have the relationship <span class="math">\mathbf{A}\mathbf{P} = \mathbf{P}\mathbf{D}</span>. Since the eigenvectors are linearly independent, the matrix <span class="math">\mathbf{P}</span> is invertible. We can right-multiply by <span class="math">\mathbf{P}^{-1}</span> to obtain the eigendecomposition:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A} = \mathbf{P}\mathbf{D}\mathbf{P}^{-1}</span></p>
+
+
+
+<p class="wp-block-paragraph"><em>Side Note: </em>Notice how <span class="math">\mathbf{P} \in \mathbb{R}^{n \times n}</span> is not orthonormal. It can be, sure. Your call. Why? It&#8217;s inverse removes the norm of the individual columns. Trivial enough (math textbook, much?).</p>
+
+
+
+<h4 class="wp-block-heading" id="eigendecomposition-is-powerful">Eigendecomposition is powerful!</h4>
+
+
+
+<p class="wp-block-paragraph">Eigendecomposition reveals fundamental properties of a matrix:</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Determinant:</strong> The determinant of <span class="math">\mathbf{A}</span> is the product of its eigenvalues.</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\det(\mathbf{A}) = \det(\mathbf{P}\mathbf{D}\mathbf{P}^{-1}) = \det(\mathbf{P})\det(\mathbf{D})\det(\mathbf{P}^{-1}) = \det(\mathbf{D}) = \prod_{i=1}^n \lambda_i</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Trace:</strong> The trace of <span class="math">\mathbf{A}</span> is the sum of its eigenvalues.</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{tr}(\mathbf{A}) = \text{tr}(\mathbf{P}\mathbf{D}\mathbf{P}^{-1}) = \text{tr}(\mathbf{D}\mathbf{P}^{-1}\mathbf{P}) = \text{tr}(\mathbf{D}) = \sum_{i=1}^n \lambda_i</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Matrix Powers:</strong> Eigendecomposition simplifies the computation of matrix powers.</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}^k = (\mathbf{P}\mathbf{D}\mathbf{P}^{-1})^k = \mathbf{P}\mathbf{D}^k\mathbf{P}^{-1}</span></p>
+
+
+
+<h4 class="wp-block-heading" id="the-spectral-theorem-for-symmetric-matrices">The Spectral Theorem for Symmetric Matrices</h4>
+
+
+
+<p class="wp-block-paragraph">Ok, here&#8217;s a special case &#8211; what if the matrix is symmetric? (Why do we care about symmetric matrices? Remind yourself about covariance matrices.)</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Theorem (Spectral Theorem):</strong> For any real symmetric matrix <span class="math">\mathbf{A} \in \mathbb{R}^{n \times n}</span>:</p>
+
+
+
+<ol class="wp-block-list">
+<li>All eigenvalues of <span class="math">\mathbf{A}</span> are real numbers.</li>
+
+
+
+<li>There exists an orthonormal basis of <span class="math">\mathbb{R}^n</span> consisting of the eigenvectors of <span class="math">\mathbf{A}</span>. That is, the eigenvectors can be chosen to be mutually orthogonal and have unit norm.</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"><strong>Proof 1: Eigenvalues are Real</strong></p>
+
+
+
+<p class="wp-block-paragraph">Let <span class="math">\lambda</span> be an eigenvalue of <span class="math">\mathbf{A}</span> with a corresponding eigenvector <span class="math">\mathbf{x}</span>. These may be complex, so we start with the standard eigenvalue equation:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}\mathbf{x} = \lambda\mathbf{x}</span></p>
+
+
+
+<p class="wp-block-paragraph">Now, take the conjugate transpose (denoted by a star, <span class="math">*</span>) of both sides:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">(\mathbf{A}\mathbf{x})^* = (\lambda\mathbf{x})^*</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x}^*\mathbf{A}^* = \bar{\lambda}\mathbf{x}^*</span></p>
+
+
+
+<p class="wp-block-paragraph">Since the matrix <span class="math">\mathbf{A}</span> is real and symmetric, its conjugate transpose is itself (<span class="math">\mathbf{A}^* = \mathbf{A}^\top = \mathbf{A}</span>). This simplifies the equation to:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x}^{*}\mathbf{A} = \bar{\lambda}\mathbf{x}^{*}</span></p>
+
+
+
+<p class="wp-block-paragraph">Next, we right-multiply this equation by the original eigenvector <span class="math">\mathbf{x}</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x}^*\mathbf{A}\mathbf{x} = \bar{\lambda}\mathbf{x}^*\mathbf{x} \quad \cdots \text{(Eq. 1)}</span></p>
+
+
+
+<p class="wp-block-paragraph">Now, let&#8217;s return to the original equation, <span class="math">\mathbf{A}\mathbf{x} = \lambda\mathbf{x}</span>, and left-multiply it by <span class="math">\mathbf{x}^*</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x}^*\mathbf{A}\mathbf{x} = \mathbf{x}^*(\lambda\mathbf{x}) = \lambda\mathbf{x}^*\mathbf{x} \quad \cdots \text{(Eq. 2)}</span></p>
+
+
+
+<p class="wp-block-paragraph">By comparing Eq. 1 and Eq. 2, we can see that:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\lambda\mathbf{x}^*\mathbf{x} = \bar{\lambda}\mathbf{x}^*\mathbf{x}</span></p>
+
+
+
+<p class="wp-block-paragraph"><span class="math">(\lambda - \bar{\lambda})\mathbf{x}^*\mathbf{x} = 0</span></p>
+
+
+
+<p class="wp-block-paragraph">The term <span class="math">\mathbf{x}^*\mathbf{x}</span> is the squared magnitude of the vector <span class="math">\mathbf{x}</span>. Since an eigenvector cannot be a zero vector, <span class="math">\mathbf{x}^*\mathbf{x}</span> must be a positive real number. Therefore, we can safely divide by it, leaving:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\lambda - \bar{\lambda} = 0 \quad \implies \quad \lambda = \bar{\lambda}</span></p>
+
+
+
+<p class="wp-block-paragraph">A number is equal to its own complex conjugate if and only if it is a <strong>real number</strong>. This completes the proof that all eigenvalues of a real symmetric matrix are real.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Proof 2: Eigenvectors of Distinct Eigenvalues are Orthogonal</strong></p>
+
+
+
+<p class="wp-block-paragraph">Let <span class="math">\lambda_1</span> and <span class="math">\lambda_2</span> be two <strong>distinct</strong> eigenvalues (<span class="math">\lambda_1 \neq \lambda_2</span>) of <span class="math">\mathbf{A}</span>, with corresponding eigenvectors <span class="math">\mathbf{x}_1</span> and <span class="math">\mathbf{x}_2</span>. We have:</p>
+
+
+
+<ol class="wp-block-list">
+<li><span class="math">\mathbf{A}\mathbf{x}_1 = \lambda_1\mathbf{x}_1</span></li>
+
+
+
+<li><span class="math">\mathbf{A}\mathbf{x}_2 = \lambda_2\mathbf{x}_2</span></li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">Let&#8217;s start with the first equation and left-multiply by <span class="math">\mathbf{x}_2^\top</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x}_2^\top\mathbf{A}\mathbf{x}_1 = \mathbf{x}_2^\top(\lambda_1\mathbf{x}_1) = \lambda_1\mathbf{x}_2^\top\mathbf{x}_1</span></p>
+
+
+
+<p class="wp-block-paragraph">Now, let&#8217;s take the transpose of the entire expression. Since the result is a scalar, it is equal to its own transpose:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">(\mathbf{x}_2^\top\mathbf{A}\mathbf{x}_1)^\top = (\lambda_1\mathbf{x}_2^\top\mathbf{x}_1)^\top</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x}_1^\top\mathbf{A}^\top\mathbf{x}_2 = \lambda_1\mathbf{x}_1^\top\mathbf{x}_2</span></p>
+
+
+
+<p class="wp-block-paragraph">Because <span class="math">\mathbf{A}</span> is symmetric (<span class="math">\mathbf{A}^\top = \mathbf{A}</span>), this becomes:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x}_1^\top\mathbf{A}\mathbf{x}_2 = \lambda_1\mathbf{x}_1^\top\mathbf{x}_2 \quad \cdots \text{(Eq. 3)}</span></p>
+
+
+
+<p class="wp-block-paragraph">Next, we return to the second original equation (<span class="math">\mathbf{A}\mathbf{x}_2 = \lambda_2\mathbf{x}_2</span>) and left-multiply by <span class="math">\mathbf{x}_1^\top</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x}_1^\top\mathbf{A}\mathbf{x}_2 = \mathbf{x}_1^\top(\lambda_2\mathbf{x}_2) = \lambda_2\mathbf{x}_1^\top\mathbf{x}_2 \quad \cdots \text{(Eq. 4)}</span></p>
+
+
+
+<p class="wp-block-paragraph">By comparing Eq. 3 and Eq. 4, we get:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\lambda_1\mathbf{x}_1^\top\mathbf{x}_2 = \lambda_2\mathbf{x}_1^\top\mathbf{x}_2</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">(\lambda_1 - \lambda_2)\mathbf{x}_1^\top\mathbf{x}_2 = 0</span></p>
+
+
+
+<p class="wp-block-paragraph">We started with the assumption that the eigenvalues are distinct, so <span class="math">\lambda_1 - \lambda_2 \neq 0</span>. For the product to be zero, the other term must be zero:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x}_1^\top\mathbf{x}_2 = 0</span></p>
+
+
+
+<p class="wp-block-paragraph">This shows that the eigenvectors <span class="math">\mathbf{x}_1</span> and <span class="math">\mathbf{x}_2</span> are <strong>orthogonal</strong>.</p>
+
+
+
+<p class="wp-block-paragraph">Yeah, that&#8217;s it.</p>
+
+
+
+<p class="wp-block-paragraph">Cool, now think about eigendecomposition. <span class="math">\mathbf{P}</span> is suddenly an orthogonal matrix. Thus, for any real symmetric matrix <span class="math">\mathbf{A}</span>, its eigendecomposition is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A} = \mathbf{P}\mathbf{D}\mathbf{P}^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">This form has a powerful geometric interpretation: any transformation by a symmetric matrix can be understood as a sequence of three operations:</p>
+
+
+
+<ul class="wp-block-list">
+<li>A rotation back to the original coordinate system (<span class="math">\mathbf{P}</span>).</li>
+
+
+
+<li>A rotation or reflection (<span class="math">\mathbf{P}^\top</span>) to align the coordinate system with the eigenvectors.</li>
+
+
+
+<li>A scaling along these new axes by the eigenvalues (multiplication by <span class="math">\mathbf{D}</span>).</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">&#8220;Huh?&#8221;, you ask. Yeah, the above order is wrong.</p>
+
+
+
+<p class="wp-block-paragraph">When you apply the transformation <span class="math">\mathbf{A}</span> to a vector <span class="math">\mathbf{x}</span>, you calculate <span class="math">\mathbf{A}\mathbf{x} = \mathbf{P}\mathbf{D}\mathbf{P}^\top\mathbf{x}</span>. The correct sequence of geometric operations is:</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Rotation/Reflection (<span class="math">\mathbf{P}^\top</span>)</strong>: Aligns the coordinate system with the eigenvectors. This is essentially a change of basis.</li>
+
+
+
+<li><strong>Scaling (<span class="math">\mathbf{D}</span>)</strong>: Scales the vector along these new axes.</li>
+
+
+
+<li><strong>Rotation Back (<span class="math">\mathbf{P}</span>)</strong>: Returns to the original coordinate system.</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="cool-ok-but-where-do-i-use-it">Cool, ok, but where do I use it?</h4>
+
+
+
+<p class="wp-block-paragraph">I point you back to the &#8220;Eigendecomposition is powerful!&#8221; subsection. </p>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

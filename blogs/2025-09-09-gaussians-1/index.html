@@ -1,0 +1,573 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Gaussians 1 | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Gaussians 1</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-09-09T20:53:28">2025-09-09</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What’s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#introduction">Introduction</a><ol><li><a class="wp-block-table-of-contents__entry" href="#definition-of-a-univariate-gaussian">Definition of a Univariate Gaussian</a></li><li><a class="wp-block-table-of-contents__entry" href="#properties">Properties</a></li><li><a class="wp-block-table-of-contents__entry" href="#68-95-99-7-empirical-rule">68-95-99.7 Empirical Rule</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#stability-under-linear-transformation">Stability under linear transformation</a></li><li><a class="wp-block-table-of-contents__entry" href="#now-more-introductions">Now, more introductions</a><ol><li><a class="wp-block-table-of-contents__entry" href="#the-multivariate-gaussian-distribution">The Multivariate Gaussian Distribution</a></li><li><a class="wp-block-table-of-contents__entry" href="#the-geometry-of-the-mvn">The Geometry of the MVN</a></li><li><a class="wp-block-table-of-contents__entry" href="#partitioning-the-vector">Partitioning the vector</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#marginals-and-conditions">Marginals and Conditions</a><ol><li><a class="wp-block-table-of-contents__entry" href="#marginals">Marginals</a></li><li><a class="wp-block-table-of-contents__entry" href="#conditionals">Conditionals</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#product-of-gaussian-densities">Product of Gaussian Densities</a><ol><li><a class="wp-block-table-of-contents__entry" href="#bayesian-inference-context">Bayesian Inference Context</a></li><li><a class="wp-block-table-of-contents__entry" href="#what-this-is">What this is</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sums-and-linear-transformations-of-gaussians">Sums and Linear Transformations of Gaussians</a><ol><li><a class="wp-block-table-of-contents__entry" href="#setting">Setting</a></li><li><a class="wp-block-table-of-contents__entry" href="#vineeth-tells-you-what-s-up">Vineeth tells you what&#8217;s up</a></li><li><a class="wp-block-table-of-contents__entry" href="#special-case-sum-of-independent-gaussians">Special Case: Sum of Independent Gaussians</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What’s there?</h3>
+
+
+
+<p class="wp-block-paragraph">Started with some Probability and Statistics; doing Gaussians now. This is an info dump.</p>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="introduction">Introduction</h3>
+
+
+
+<h4 class="wp-block-heading" id="definition-of-a-univariate-gaussian">Definition of a Univariate Gaussian</h4>
+
+
+
+<p class="wp-block-paragraph">A random variable <span class="math">X</span> is said to follow a Gaussian distribution if its PDF is given by the specific functional form:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(x | \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{1}{2}\left(\frac{x - \mu}{\sigma}\right)^2\right)</span></p>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<h4 class="wp-block-heading" id="properties">Properties</h4>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Symmetry:</strong> The PDF is perfectly symmetric about its mean, <span class="math">\mu</span>. This implies that the <em>mean, median, and mode of the distribution are all equal</em>.</li>
+
+
+
+<li><strong>The Normalization Constant:</strong> The term <span class="math">\frac{1}{\sqrt{2\pi\sigma^2}}</span> is the normalization constant. It ensures that the total area under the curve integrates to 1, as required for any valid PDF:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{1}{2}\left(\frac{x - \mu}{\sigma}\right)^2\right) dx = 1</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>The Standard Normal Distribution:</strong> A special case of the Gaussian with <span class="math">\mu=0</span> and <span class="math">\sigma^2=1</span> is called the <strong>standard normal distribution</strong>, denoted <span class="math">\mathcal{N}(0, 1)</span>. Any Gaussian variable <span class="math">X \sim \mathcal{N}(\mu, \sigma^2)</span> can be transformed into a standard normal variable <span class="math">Z</span> via standardization:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">Z = \frac{X - \mu}{\sigma} \sim \mathcal{N}(0, 1)</span></p>
+
+
+
+<h4 class="wp-block-heading" id="68-95-99-7-empirical-rule">68-95-99.7 Empirical Rule</h4>
+
+
+
+<p class="wp-block-paragraph">I&#8217;m just adding this just like that.</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>One Standard Deviation (<span class="math">\mu \pm \sigma</span>):</strong> Approximately <strong>68.27%</strong> of the area under the curve lies within one standard deviation of the mean.</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(\mu - \sigma \le X \le \mu + \sigma) \approx 0.68</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Two Standard Deviations (<span class="math">\mu \pm 2\sigma</span>):</strong> Approximately <strong>95.45%</strong> of the area under the curve lies within two standard deviations of the mean.</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(\mu - 2\sigma \le X \le \mu + 2\sigma) \approx 0.95</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Three Standard Deviations (<span class="math">\mu \pm 3\sigma</span>):</strong> Approximately <strong>99.73%</strong> of the area under the curve lies within three standard deviations of the mean.</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(\mu - 3\sigma \le X \le \mu + 3\sigma) \approx 0.997</span></p>
+
+
+
+<h3 class="wp-block-heading" id="stability-under-linear-transformation">Stability under linear transformation</h3>
+
+
+
+<p class="wp-block-paragraph">The Gaussian distribution is <strong>stable</strong> under affine transformations. If <span class="math">X \sim \mathcal{N}(\mu, \sigma^2)</span> and <span class="math">Y = aX + b</span> for scalars <span class="math">a</span> and <span class="math">b</span>, then <span class="math">Y</span> is also a Gaussian random variable. Its mean and variance are:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\mathbb{E}[Y] = \mathbb{E}[aX+b] = a\mathbb{E}[X]+b = a\mu + b</span></li>
+
+
+
+<li><span class="math">\text{Var}(Y) = \text{Var}(aX+b) = a^2\text{Var}(X) = a^2\sigma^2</span><br>Therefore, <span class="math">Y \sim \mathcal{N}(a\mu+b, a^2\sigma^2)</span>. </li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">Also, the sum of two <em>independent</em> Gaussian random variables is a Gaussian random variable.</p>
+
+
+
+<h3 class="wp-block-heading" id="now-more-introductions">Now, more introductions</h3>
+
+
+
+<h4 class="wp-block-heading" id="the-multivariate-gaussian-distribution">The Multivariate Gaussian Distribution</h4>
+
+
+
+<p class="wp-block-paragraph">A random vector <span class="math">\mathbf{X} \in \mathbb{R}^D</span> is said to have a multivariate Gaussian distribution if its <strong>Probability Density Function (PDF)</strong> is given by:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(\mathbf{x} | \boldsymbol{\mu}, \mathbf{\Sigma}) = \frac{1}{(2\pi)^{D/2}|\mathbf{\Sigma}|^{1/2}} \exp\left(-\frac{1}{2}(\mathbf{x} - \boldsymbol{\mu})^\top\mathbf{\Sigma}^{-1}(\mathbf{x} - \boldsymbol{\mu})\right)</span></p>
+
+
+
+<p class="wp-block-paragraph">We use the notation <span class="math">\mathbf{X} \sim \mathcal{N}(\boldsymbol{\mu}, \mathbf{\Sigma})</span>.</p>
+
+
+
+<p class="wp-block-paragraph">Let&#8217;s deconstruct this formula &#8211;</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Normalization Constant:</strong> The term <span class="math">\frac{1}{(2\pi)^{D/2}|\mathbf{\Sigma}|^{1/2}}</span> <br>The term <span class="math">|\mathbf{\Sigma}|</span> is the determinant of the covariance matrix, which <em>geometrically represents the squared volume of the parallelepiped formed by the eigenvectors</em> of <span class="math">\mathbf{\Sigma}</span>.</li>
+
+
+
+<li><strong>The Exponential Argument:</strong> The term inside the exponent, <span class="math">\Delta^2 = (\mathbf{x} - \boldsymbol{\mu})^\top\mathbf{\Sigma}^{-1}(\mathbf{x} - \boldsymbol{\mu})</span><br>This quadratic form is known as the <strong>Mahalanobis distance</strong> squared. It measures the distance from a point <span class="math">\mathbf{x}</span> to the mean <span class="math">\boldsymbol{\mu}</span>, taking into account the covariance of the data. It is a unitless distance that accounts for the fact that the data cloud may be stretched and rotated.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="the-geometry-of-the-mvn">The Geometry of the MVN</h4>
+
+
+
+<p class="wp-block-paragraph">The loci of points with constant probability density (the <strong>isocontours</strong>) are the sets of <span class="math">\mathbf{x}</span> for which the Mahalanobis distance is constant:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">(\mathbf{x} - \boldsymbol{\mu})^\top\mathbf{\Sigma}^{-1}(\mathbf{x} - \boldsymbol{\mu}) = \text{const}</span></p>
+
+
+
+<p class="wp-block-paragraph">This is the equation of a <strong>hyperellipse</strong> centered at <span class="math">\boldsymbol{\mu}</span>. The shape and orientation of this hyperellipse are completely determined by the covariance matrix <span class="math">\mathbf{\Sigma}</span>.</p>
+
+
+
+<p class="wp-block-paragraph">Now, for understanding the geoemtry of the ellipse, do an eigendecomposition &#8211; </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{\Sigma} = \mathbf{P}\mathbf{D}\mathbf{P}^\top = \sum_{i=1}^D \lambda_i \mathbf{p}_i \mathbf{p}_i^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">where <span class="math">\mathbf{P}</span> is an orthogonal matrix whose columns <span class="math">{\mathbf{p}_i}</span> are the eigenvectors of <span class="math">\mathbf{\Sigma}</span>, and <span class="math">\mathbf{D}</span> is a diagonal matrix of the corresponding non-negative eigenvalues <span class="math">{\lambda_i}</span>.</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Principal Axes:</strong> The <strong>eigenvectors</strong> <span class="math">\mathbf{p}_i</span> of <span class="math">\mathbf{\Sigma}</span> define the directions of the <strong>principal axes</strong> of the hyperellipse.</li>
+
+
+
+<li><strong>Axis Lengths:</strong> The <strong>eigenvalues</strong> <span class="math">\lambda_i</span> determine the spread along these axes. The length of the semi-axis along the direction <span class="math">\mathbf{p}_i</span> is proportional to the square root of the corresponding eigenvalue, <span class="math">\sqrt{\lambda_i}</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">This means that the </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">MVN is a cloud of points whose main axes of variation are aligned with the eigenvectors of its covariance matrix.</p>
+</blockquote>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="partitioning-the-vector">Partitioning the vector</h4>
+
+
+
+<p class="wp-block-paragraph">We begin with a joint Gaussian distribution over a high-dimensional random vector <span class="math">\mathbf{x} \in \mathbb{R}^D</span>. Let&#8217;s partition this vector into two disjoint subsets, <span class="math">\mathbf{x}_a</span> and <span class="math">\mathbf{x}_b</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x} = \begin{bmatrix} \mathbf{x}_a \ \mathbf{x}_b \end{bmatrix}</span></p>
+
+
+
+<p class="wp-block-paragraph">The joint distribution is defined by a partitioned mean vector and a partitioned covariance matrix:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(\mathbf{x}_a, \mathbf{x}_b) = \mathcal{N}\left( \begin{bmatrix} \mathbf{x}_a \\ \mathbf{x}_b \end{bmatrix} \Bigg| \begin{bmatrix} \boldsymbol{\mu}_a \\ \boldsymbol{\mu}_b \end{bmatrix}, \begin{bmatrix} \mathbf{\Sigma}_{aa} &amp; \mathbf{\Sigma}_{ab} \\ \mathbf{\Sigma}_{ba} &amp; \mathbf{\Sigma}_{bb} \end{bmatrix} \right)</span></p>
+
+
+
+<p class="wp-block-paragraph">where <span class="math">\boldsymbol{\mu}_a, \boldsymbol{\mu}_b</span> are the mean vectors, <span class="math">\mathbf{\Sigma}_{aa}, \mathbf{\Sigma}_{bb}</span> are the covariance matrices of <span class="math">\mathbf{x}_a</span> and <span class="math">\mathbf{x}_b</span> respectively, and <span class="math">\mathbf{\Sigma}_{ab} = \mathbf{\Sigma}_{ba}^\top</span> is the cross-covariance matrix.</p>
+
+
+
+<p class="wp-block-paragraph">We can now ask two questions</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Marginalization:</strong> What is the distribution of one subset, <span class="math">p(\mathbf{x}_a)</span>, if we have no information about the other?</li>
+
+
+
+<li><strong>Conditioning:</strong> What is the distribution of one subset, <span class="math">p(\mathbf{x}_a | \mathbf{x}_b)</span>, if we <em>observe</em> the value of the other?</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<h3 class="wp-block-heading" id="marginals-and-conditions">Marginals and Conditions</h3>
+
+
+
+<h4 class="wp-block-heading" id="marginals">Marginals</h4>
+
+
+
+<p class="wp-block-paragraph">To find the marginal distribution <span class="math">p(\mathbf{x}_a)</span>, we must integrate out (or &#8220;marginalize&#8221;) the other variable, <span class="math">\mathbf{x}_b</span>, from the joint distribution:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(\mathbf{x}_a) = \int p(\mathbf{x}_a, \mathbf{x}_b) d\mathbf{x}_b</span></p>
+
+
+
+<p class="wp-block-paragraph">The marginal distribution of a joint Gaussian is also a Gaussian.<br>The result of this integration is remarkably simple. We effectively just &#8220;read off&#8221; the corresponding parts from the joint distribution&#8217;s parameters:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(\mathbf{x}_a) = \mathcal{N}(\mathbf{x}_a | \boldsymbol{\mu}_a, \mathbf{\Sigma}_{aa})</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Intuition:</strong> If you have a 2D Gaussian &#8220;mountain,&#8221; its shadow projected onto the x-axis (integrating out y) is a 1D Gaussian bell curve.</p>
+
+
+
+<h4 class="wp-block-heading" id="conditionals">Conditionals</h4>
+
+
+
+<p class="wp-block-paragraph">Remember that <span class="math">p(\mathbf{x}_a | \mathbf{x}_b) = p(\mathbf{x}_a, \mathbf{x}_b) / p(\mathbf{x}_b)</span>.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The conditional distribution of a joint Gaussian is also a Gaussian.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">The derivation involves algebraic manipulation of the exponents of the Gaussian PDFs (completing the square).</p>
+
+
+
+<p class="wp-block-paragraph">Without going too much into the maths, I&#8217;ll offer the following results &#8211; </p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Conditional Mean:</strong></li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\boldsymbol{\mu}_{a|b} = \boldsymbol{\mu}_a + \mathbf{\Sigma}_{ab}\mathbf{\Sigma}_{bb}^{-1}(\mathbf{x}_b - \boldsymbol{\mu}_b)</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Conditional Covariance:</strong></li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{\Sigma}_{a|b} = \mathbf{\Sigma}_{aa} - \mathbf{\Sigma}_{ab}\mathbf{\Sigma}_{bb}^{-1}\mathbf{\Sigma}_{ba}</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Interpretation:</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>The conditional mean is a linear function of the observed variable <span class="math">\mathbf{x}_b</span>. It starts at the prior mean <span class="math">\boldsymbol{\mu}_a</span> and is adjusted based on how surprising the observation <span class="math">\mathbf{x}_b</span> is (i.e., its deviation from its own mean, <span class="math">\mathbf{x}_b - \boldsymbol{\mu}_b</span>). The adjustment is scaled by the correlation term <span class="math">\mathbf{\Sigma}_{ab}\mathbf{\Sigma}_{bb}^{-1}</span>.</li>
+
+
+
+<li>The conditional covariance is <em>independent</em> of the observation <span class="math">\mathbf{x}_b</span>. Observing data reduces our uncertainty. The new covariance is the prior covariance <span class="math">\mathbf{\Sigma}_{aa}</span> minus a positive semi-definite term that represents the information gained from the observation.</li>
+</ul>
+
+
+
+<h3 class="wp-block-heading" id="product-of-gaussian-densities">Product of Gaussian Densities</h3>
+
+
+
+<p class="wp-block-paragraph">When applying Bayes&#8217; theorem, we often need to multiply a Gaussian likelihood by a Gaussian prior. This product is also related to the Gaussian family.</p>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<h4 class="wp-block-heading" id="bayesian-inference-context">Bayesian Inference Context</h4>
+
+
+
+<p class="wp-block-paragraph">In a Bayesian setting, the posterior is proportional to the likelihood times the prior:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(\boldsymbol{\theta} | \mathcal{D}) \propto p(\mathcal{D} | \boldsymbol{\theta}) p(\boldsymbol{\theta})</span></p>
+
+
+
+<p class="wp-block-paragraph">Yeah, this is just a fancy term.</p>
+
+
+
+<h4 class="wp-block-heading" id="what-this-is">What this is</h4>
+
+
+
+<p class="wp-block-paragraph">The product of two Gaussian PDFs is an unnormalized Gaussian PDF.<br>Let&#8217;s consider two Gaussian densities (not necessarily normalized distributions) over the same variable <span class="math">\mathbf{x}</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathcal{N}(\mathbf{x} | \boldsymbol{\mu}_a, \mathbf{A}) \quad \text{and} \quad \mathcal{N}(\mathbf{x} | \boldsymbol{\mu}_b, \mathbf{B})</span></p>
+
+
+
+<p class="wp-block-paragraph">Their product is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathcal{N}(\mathbf{x} | \boldsymbol{\mu}_a, \mathbf{A}) \mathcal{N}(\mathbf{x} | \boldsymbol{\mu}_b, \mathbf{B}) = c \cdot \mathcal{N}(\mathbf{x} | \boldsymbol{\mu}_c, \mathbf{C})</span></p>
+
+
+
+<p class="wp-block-paragraph">where the new covariance <span class="math">\mathbf{C}</span> and mean <span class="math">\boldsymbol{\mu}_c</span> of the resulting Gaussian are given by:</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>New Covariance:</strong> <span class="math">\mathbf{C} = (\mathbf{A}^{-1} + \mathbf{B}^{-1})^{-1}</span></li>
+
+
+
+<li><strong>New Mean:</strong> <span class="math">\boldsymbol{\mu}_c = \mathbf{C}(\mathbf{A}^{-1}\boldsymbol{\mu}_a + \mathbf{B}^{-1}\boldsymbol{\mu}_b)</span></li>
+
+
+
+<li>The term <span class="math">c</span> is a scaling constant that does not depend on <span class="math">\mathbf{x}</span>. It is the value needed to normalize the new Gaussian.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"><strong>Interpretation in terms of Information:</strong> The inverse of a covariance matrix is known as the <strong>precision matrix</strong>. The equations show that when multiplying Gaussians, we simply <strong>add their precisions</strong>. This aligns with the intuition that combining two sources of information results in a more precise (higher precision, lower variance) final belief. The new mean is a precision-weighted average of the original means.</p>
+
+
+
+<h3 class="wp-block-heading" id="sums-and-linear-transformations-of-gaussians">Sums and Linear Transformations of Gaussians</h3>
+
+
+
+<h4 class="wp-block-heading" id="setting">Setting</h4>
+
+
+
+<p class="wp-block-paragraph">We apply a linear (or more generally, affine) transformation to <span class="math">\mathbf{x}</span> to produce a new random variable <span class="math">\mathbf{y} \in \mathbb{R}^K</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{y} = \mathbf{A}\mathbf{x} + \mathbf{b}</span></p>
+
+
+
+<p class="wp-block-paragraph">where <span class="math">\mathbf{A} \in \mathbb{R}^{K \times D}</span> and <span class="math">\mathbf{b} \in \mathbb{R}^K</span>. </p>
+
+
+
+<p class="wp-block-paragraph">We want to know</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">What is the distribution of <span class="math">\mathbf{y}</span>?</p>
+</blockquote>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="vineeth-tells-you-what-s-up">Vineeth tells you what&#8217;s up</h4>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">An affine transformation of a Gaussian random variable is also a Gaussian random variable.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong>Computing the New Mean:</strong> We use the linearity of expectation:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbb{E}[\mathbf{y}] = \mathbb{E}[\mathbf{A}\mathbf{x} + \mathbf{b}] = \mathbf{A}\mathbb{E}[\mathbf{x}] + \mathbf{b} = \mathbf{A}\boldsymbol{\mu} + \mathbf{b}</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Computing the New Covariance:</strong> We use the property of covariance under affine transformations:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{Cov}(\mathbf{y}) = \text{Cov}(\mathbf{A}\mathbf{x} + \mathbf{b}) = \mathbf{A}\text{Cov}(\mathbf{x})\mathbf{A}^\top = \mathbf{A}\mathbf{\Sigma}\mathbf{A}^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">Therefore, the distribution of the transformed variable <span class="math">\mathbf{y}</span> is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><strong><span class="math">p(\mathbf{y}) = \mathcal{N}(\mathbf{y} | \mathbf{A}\boldsymbol{\mu} + \mathbf{b}, \mathbf{A}\mathbf{\Sigma}\mathbf{A}^\top)</span></strong></p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="special-case-sum-of-independent-gaussians">Special Case: Sum of Independent Gaussians</h4>
+
+
+
+<p class="wp-block-paragraph">If we have two <em>independent</em> Gaussian random variables, <span class="math">X \sim \mathcal{N}(\mu_X, \sigma_X^2)</span> and <span class="math">Y \sim \mathcal{N}(\mu_Y, \sigma_Y^2)</span>, their sum <span class="math">Z=X+Y</span> is also a Gaussian. This is a special case of the linear transformation where <span class="math">\mathbf{x} = [X, Y]^\top</span>, <span class="math">\mathbf{A}=[1, 1]</span>, and <span class="math">\mathbf{b}=0</span>. The resulting distribution is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">Z \sim \mathcal{N}(\mu_X + \mu_Y, \sigma_X^2 + \sigma_Y^2)</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The means add, and because of independence, the variances add.</p>
+</blockquote>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

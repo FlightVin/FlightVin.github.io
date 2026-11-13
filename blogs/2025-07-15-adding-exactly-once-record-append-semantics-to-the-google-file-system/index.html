@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Enhancing the GFS | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Enhancing the GFS</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-07-15T20:47:18">2025-07-15</time></p>
+      <article class="blog-content">
+
+<p class="wp-block-paragraph">(Written on 29th December, 2025; <a href="https://github.com/FlightVin/flightvin.github.io/blob/c9ceda1ade3b2669f342a14f4b70cf326db2a0ca/_posts/2024-12-29-a-project-on-the-gfs.md">GitHub permalink)</a></p>
+
+
+
+<p class="wp-block-paragraph">Essentially, I, along with a collaborator (<a href="https://www.linkedin.com/in/mitansh-kayathwal-888836227/">Mitansh K</a>), did the following &#8211;</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Localized Implementation:</strong> Implemented pretty much everything that&#8217;s offered by the Google File System inclusing
+<ol class="wp-block-list">
+<li>Write</li>
+
+
+
+<li>Read</li>
+
+
+
+<li>Replication</li>
+
+
+
+<li>Record Append</li>
+
+
+
+<li>Re-Replication</li>
+
+
+
+<li>Stale Replica Handling</li>
+
+
+
+<li>Garbage Collection</li>
+
+
+
+<li>Operation Log</li>
+
+
+
+<li>Data Integrity</li>
+</ol>
+</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">using a codebase of 7200 LOC in Go. Evidently, we missed out on snapshoting and directory management and have left them as to-dos.</p>
+
+
+
+<ol start="2" class="wp-block-list">
+<li><strong>Enhanced Consistency:</strong> Rather than the at-least once record append operations offered by the GFS, we implemented it to be exactly once. This was done using a modified version of the 2PC protocol and handling idempotency (do see our report!).</li>
+
+
+
+<li><strong>Comprehensive System Analysis:</strong> Validated system performance through extensive benchmarking, demonstrating near-linear scaling in throughput for reads, writes, and appends, while maintaining consistency and reliability.</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">The implementation could be found <a href="https://github.com/reimagining-gfs/main-repo">here</a> and the report <a href="https://github.com/reimagining-gfs/main-repo/blob/main/report.pdf">here</a>.</p>
+
+
+
+<p class="wp-block-paragraph">Any thoughts/improvements (especially on the GitHub issues) would be welcome.</p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

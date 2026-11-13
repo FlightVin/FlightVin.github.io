@@ -1,0 +1,303 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Estimation Theory (The Principles of Statistical Parameter Estimation) | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Estimation Theory (The Principles of Statistical Parameter&nbsp;Estimation)</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-09-14T19:05:31">2025-09-14</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What’s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#maximum-likelihood-estimation">Maximum Likelihood Estimation</a><ol><li><a class="wp-block-table-of-contents__entry" href="#foundational-principle">Foundational principle</a></li><li><a class="wp-block-table-of-contents__entry" href="#how-is-it-usually-done">How is it usually done?</a></li><li><a class="wp-block-table-of-contents__entry" href="#overfitting">Overfitting</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#maximum-a-posteriori-map-estimation">Maximum a Posteriori (MAP) Estimation</a><ol><li><a class="wp-block-table-of-contents__entry" href="#foundational-principles">Foundational principles</a></li><li><a class="wp-block-table-of-contents__entry" href="#connection-to-regularization">Connection to regularization</a></li><li><a class="wp-block-table-of-contents__entry" href="#is-it-perfect">Is it perfect?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#full-bayesian-estimation">Full Bayesian Estimation</a><ol><li><a class="wp-block-table-of-contents__entry" href="#basics">Basics</a></li><li><a class="wp-block-table-of-contents__entry" href="#theoretical-development">Theoretical development</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#summary">Summary</a></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What’s there?</h3>
+
+
+
+<p class="wp-block-paragraph">As an introduction to ML, I need to understand estimation theory &#8211; MLE, MAP and Bayesian Estimation.</p>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="maximum-likelihood-estimation">Maximum Likelihood Estimation</h3>
+
+
+
+<p class="wp-block-paragraph">We have covered this in brief earlier as well in <a href="../2025-07-21-pca-spectral-clustering-and-t-sne/">PCA, Spectral Clustering and t-SNE</a>.</p>
+
+
+
+<h4 class="wp-block-heading" id="foundational-principle">Foundational principle</h4>
+
+
+
+<p class="wp-block-paragraph">This answers</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">&#8220;What set of parameter values makes the observed data <em>most probable</em>?&#8221;</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong>Likelihood Function: </strong>We begin with a parameterized probability model <span class="math">p(\mathcal{D} | \boldsymbol{\theta})</span>, where <span class="math">\mathcal{D} = \{\mathbf{x}_n\}_{n=1}^N</span> is the observed dataset and <span class="math">\boldsymbol{\theta}</span> is the vector of model parameters. The <strong>likelihood function</strong>, <span class="math">L(\boldsymbol{\theta}; \mathcal{D})</span>, is defined as this probability, but viewed as a function of the parameters <span class="math">\boldsymbol{\theta}</span>, holding the data <span class="math">\mathcal{D}</span> fixed:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">L(\boldsymbol{\theta}; \mathcal{D}) = p(\mathcal{D} | \boldsymbol{\theta})</span></p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">The principle of maximum likelihood states that the optimal estimate for the parameters, <span class="math">\hat{\boldsymbol{\theta}}_{\text{ML}}</span>, is the value that maximizes the likelihood function.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\hat{\boldsymbol{\theta}}_{\text{ML}} = \arg\max_{\boldsymbol{\theta}} L(\boldsymbol{\theta}; \mathcal{D})</span></p>
+
+
+
+<h4 class="wp-block-heading" id="how-is-it-usually-done">How is it usually done?</h4>
+
+
+
+<p class="wp-block-paragraph">For computational stability and mathematical convenience, we almost always work with the <strong>log-likelihood</strong>. Since the logarithm is a strictly monotonically increasing function, maximizing the likelihood is equivalent to maximizing the log-likelihood. For an <span style="text-decoration: underline">i.i.d. dataset</span>, the likelihood is a product, which the logarithm turns into a sum:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\hat{\boldsymbol{\theta}}_{\text{ML}} = \arg\max_{\boldsymbol{\theta}} \sum_{n=1}^N \log p(\mathbf{x}_n | \boldsymbol{\theta})</span></p>
+
+
+
+<h4 class="wp-block-heading" id="overfitting">Overfitting</h4>
+
+
+
+<p class="wp-block-paragraph">MLE&#8217;s primary drawback is its tendency to <strong>overfit</strong>, especially with small datasets. It only considers the data it has seen, with no mechanism for regularization or expressing prior beliefs. </p>
+
+
+
+<p class="wp-block-paragraph">So, say, we flipped a coin three times and got only heads; this is our dataset. Then, our MLE estimation will always predict a head.</p>
+
+
+
+<h3 class="wp-block-heading" id="maximum-a-posteriori-map-estimation">Maximum a Posteriori (MAP) Estimation</h3>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">MAP estimation extends MLE by incorporating prior beliefs about the parameters.</p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="foundational-principles">Foundational principles</h4>
+
+
+
+<ul class="wp-block-list">
+<li><strong>The Bayesian Framework:</strong> Unlike the frequentist view, the Bayesian perspective treats the model parameters <span class="math">\boldsymbol{\theta}</span> not as fixed constants, but as <strong>random variables</strong> about which we can have beliefs.</li>
+
+
+
+<li><strong>The Prior Distribution (<span class="math">p(\boldsymbol{\theta})</span>):</strong> We encode our initial beliefs about the parameters <em>before</em> seeing any data in a <strong>prior probability distribution</strong>, <span class="math">p(\boldsymbol{\theta})</span>. This allows us to specify which parameter values are more or less plausible. 
+<ul class="wp-block-list">
+<li>For instance, a Gaussian prior centered at zero, <span class="math">\boldsymbol{\theta} \sim \mathcal{N}(\mathbf{0}, \alpha^2\mathbf{I})</span>, expresses a belief that smaller parameter values are more likely.</li>
+</ul>
+</li>
+
+
+
+<li><strong>The Posterior Distribution (<span class="math">p(\boldsymbol{\theta}|\mathcal{D})</span>):</strong> After observing data <span class="math">\mathcal{D}</span>, we update our beliefs using <strong>Bayes&#8217; theorem</strong> to obtain the <strong>posterior distribution</strong>:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(\boldsymbol{\theta} | \mathcal{D}) = \frac{p(\mathcal{D} | \boldsymbol{\theta}) \, p(\boldsymbol{\theta})}{p(\mathcal{D})} \propto \text{Likelihood} \times \text{Prior}</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>The MAP Principle:</strong> MAP estimation does not use the full posterior distribution. Instead, it seeks the single &#8220;best&#8221; point estimate for <span class="math">\boldsymbol{\theta}</span> by finding the <strong>mode</strong> of the posterior distribution. This is the point of highest probability density.</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\hat{\boldsymbol{\theta}}_{\text{MAP}} = \arg\max_{\boldsymbol{\theta}} p(\boldsymbol{\theta} | \mathcal{D}) = \arg\max_{\boldsymbol{\theta}} \left[ p(\mathcal{D} | \boldsymbol{\theta}) \, p(\boldsymbol{\theta}) \right]</span></p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="connection-to-regularization">Connection to regularization</h4>
+
+
+
+<p class="wp-block-paragraph">In linear regression, if we place a Gaussian prior on the parameters, <span class="math">\boldsymbol{\theta} \sim \mathcal{N}(\mathbf{0}, \alpha^2\mathbf{I})</span>, the log-prior is <span class="math">\log p(\boldsymbol{\theta}) = -\frac{1}{2\alpha^2}|\boldsymbol{\theta}|^2 + \text{const}</span>. Maximizing the log-posterior is equivalent to minimizing the negative log-posterior &#8211; </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\hat{\boldsymbol{\theta}}_{\text{MAP}} = \arg\min_{\boldsymbol{\theta}} \left[ \sum_{n=1}^N (y_n - \mathbf{x}_n^\top\boldsymbol{\theta})^2 + \lambda |\boldsymbol{\theta}|^2 \right] \quad (\text{where } \lambda \propto 1/\alpha^2)</span></p>
+
+
+
+<p class="wp-block-paragraph">This is the objective function for <strong>Ridge Regression</strong> (L2 regularization). </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">MAP estimation with a Gaussian prior is equivalent to L2 regularization. </p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="is-it-perfect">Is it perfect?</h4>
+
+
+
+<p class="wp-block-paragraph">Nope.</p>
+
+
+
+<p class="wp-block-paragraph">MAP still only provides a <strong>point estimate</strong> (<span class="math">\hat{\boldsymbol{\theta}}_{\text{MAP}}</span>). It finds the most probable parameters but discards all other information contained in the posterior distribution, such as its variance or shape. </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">It doesn&#8217;t quantify our uncertainty about the parameters.</p>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="full-bayesian-estimation">Full Bayesian Estimation</h3>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">&#8220;Full Bayesian estimation embraces the entire philosophy of the Bayesian framework. It does not seek a single best point estimate for the parameters; instead, its goal is to compute and use the <strong>entire posterior distribution</strong>.&#8221;</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">See? So good. Literally standing on the shoulders of giants all the time. </p>
+
+
+
+<h4 class="wp-block-heading" id="basics">Basics</h4>
+
+
+
+<p class="wp-block-paragraph">The primary goal is not parameter estimation itself, but <strong>making predictions</strong>.</p>
+
+
+
+<p class="wp-block-paragraph">Bayesian estimation propagates the full parameter uncertainty through to the predictions. The output of the learning process is not a single value <span class="math">\hat{\boldsymbol{\theta}}</span>, but the full probability distribution <span class="math">p(\boldsymbol{\theta}|\mathcal{D})</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="theoretical-development">Theoretical development</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>The Predictive Distribution:</strong> To make a prediction for a new data point <span class="math">\mathbf{x}_*</span>, we do not use a single point estimate. Instead, we compute the <strong>posterior predictive distribution</strong> by averaging the predictions of all possible parameter values, weighted by their posterior probability:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(y_* | \mathbf{x}_*, \mathcal{D}) = \int p(y_* | \mathbf{x}_*, \boldsymbol{\theta}) \, p(\boldsymbol{\theta} | \mathcal{D}) \, d\boldsymbol{\theta}</span></p>
+
+
+
+<p class="wp-block-paragraph">This can be written as an expectation:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(y_* | \mathbf{x}_*, \mathcal{D}) = \mathbb{E}_{\boldsymbol{\theta} \sim p(\boldsymbol{\theta}|\mathcal{D})} [p(y_* | \mathbf{x}_*, \boldsymbol{\theta})]</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>The Procedure:</strong> The core task of full Bayesian estimation is <strong>integration</strong>, not optimization. We must solve the integral above, as well as the integral in the denominator of Bayes&#8217; theorem (the marginal likelihood or evidence), <span class="math">p(\mathcal{D}) = \int p(\mathcal{D}|\boldsymbol{\theta})p(\boldsymbol{\theta})d\boldsymbol{\theta}</span>.</p>
+
+
+
+<h3 class="wp-block-heading" id="summary">Summary</h3>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th>Method</th><th><strong>MLE</strong></th><th><strong>MAP</strong></th><th><strong>Full Bayesian</strong></th></tr></thead><tbody><tr><td><strong>Core Principle</strong></td><td>Maximize Likelihood </td><td>Maximize posterior</td><td>Maximize Posterior </td></tr><tr><td><strong>View of Parameters <span class="math">\boldsymbol{\theta}</span></strong></td><td>Fixed, unknown constant</td><td>Random variable (but we only find its mode)</td><td>Random variable (we use its full distribution)</td></tr><tr><td><strong>Core Task</strong></td><td><strong>Optimization</strong></td><td><strong>Optimization</strong> (Regularized)</td><td><strong>Integration</strong></td></tr><tr><td><strong>Output of &#8220;Learning&#8221;</strong></td><td>A point estimate, <span class="math">\hat{\boldsymbol{\theta}}_{\text{ML}}</span></td><td>A point estimate, <span class="math">\hat{\boldsymbol{\theta}}_{\text{MAP}}</span></td><td>A probability distribution, <span class="math">p(\boldsymbol{\theta})</span></td></tr><tr><td><strong>Handles Overfitting?</strong></td><td>No (prone to overfitting)</td><td>Yes (via the prior, which acts as a regularizer)</td><td>Yes (by averaging over all parameters, it naturally avoids overfitting)</td></tr><tr><td><strong>Quantifies Uncertainty?</strong></td><td>No</td><td>No</td><td>Yes (the primary advantage)</td></tr></tbody></table></figure>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+</ol>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

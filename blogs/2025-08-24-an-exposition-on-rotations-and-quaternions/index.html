@@ -1,0 +1,713 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>An Exposition on Rotations and Quaternions | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">An Exposition on Rotations and&nbsp;Quaternions</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-08-24T17:58:46">2025-08-24</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What’s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#rotations-as-linear-transformations">Rotations as linear transformations</a><ol><li><a class="wp-block-table-of-contents__entry" href="#as-always-basics">As always, basics!</a></li><li><a class="wp-block-table-of-contents__entry" href="#rotations-in-2d-and-3d">Rotations in 2D and 3D</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#pre-and-post-multiplication-the-duality-of-coordinate-frames">Pre- and Post-Multiplication: The Duality of Coordinate Frames</a><ol><li><a class="wp-block-table-of-contents__entry" href="#foundations">Foundations</a></li><li><a class="wp-block-table-of-contents__entry" href="#scenario-a-pre-multiplication-rotations-in-a-fixed-global-frame">Scenario A: Pre-Multiplication (Rotations in a Fixed Global Frame)</a></li><li><a class="wp-block-table-of-contents__entry" href="#scenario-b-post-multiplication-rotations-relative-to-a-moving-local-frame">Scenario B: Post-Multiplication (Rotations Relative to a Moving Local Frame)</a></li><li><a class="wp-block-table-of-contents__entry" href="#how-do-you-determine-the-choice">How do you determine the choice?</a></li><li><a class="wp-block-table-of-contents__entry" href="#application-kinematic-chains">Application: Kinematic Chains</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#gimbal-lock">Gimbal Lock</a></li><li><a class="wp-block-table-of-contents__entry" href="#quaternions">Quaternions</a><ol><li><a class="wp-block-table-of-contents__entry" href="#hierarchy-of-number-systems">Hierarchy of number systems</a></li><li><a class="wp-block-table-of-contents__entry" href="#quaternion-algebra">Quaternion Algebra</a></li><li><a class="wp-block-table-of-contents__entry" href="#quaternion-operations">Quaternion Operations</a></li><li><a class="wp-block-table-of-contents__entry" href="#geometry-of-3d-rotations">Geometry of 3D Rotations</a></li><li><a class="wp-block-table-of-contents__entry" href="#spherical-linear-interpolation-slerp">Spherical Linear Interpolation (SLERP)</a></li><li><a class="wp-block-table-of-contents__entry" href="#applications">Applications</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What’s there?</h3>
+
+
+
+<p class="wp-block-paragraph">I want to try and cover every other kinda trivial / small things related to matrices / LinAlg in this. This covers</p>
+
+
+
+<ol class="wp-block-list">
+<li>Affine spaces (<a href="../2025-08-24-other-important-matrix-bits/">Other important matrix&nbsp;bits</a>)</li>
+
+
+
+<li>Inner products of functions (<a href="../2025-08-24-other-important-matrix-bits/">Other important matrix&nbsp;bits</a>)</li>
+
+
+
+<li>Orthogonal projections (<a href="../2025-08-24-other-important-matrix-bits/">Other important matrix&nbsp;bits</a>)</li>
+
+
+
+<li>Matrix approximation (<a href="../2025-08-24-other-important-matrix-bits/">Other important matrix&nbsp;bits</a>)</li>
+
+
+
+<li>Rotations and quaternions (This post!)</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="rotations-as-linear-transformations">Rotations as linear transformations</h3>
+
+
+
+<h4 class="wp-block-heading" id="as-always-basics">As always, basics!</h4>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Isometry</span></strong> </p>
+
+
+
+<p class="wp-block-paragraph">The defining characteristic of a rigid body motion is that it preserves the distances between all points on the body.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">A transformation that preserves distances is called an <strong>isometry</strong>.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">In a vector space equipped with an inner product (and its induced norm), this means a transformation <span class="math">\Phi: \mathbb{R}^n \to \mathbb{R}^n</span> <em>must preserve the norm of vectors <span style="text-decoration: underline">and</span> the angles between them</em>. This is mathematically equivalent to preserving the inner product:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\langle \Phi(\mathbf{x}), \Phi(\mathbf{y}) \rangle = \langle \mathbf{x}, \mathbf{y} \rangle \quad \forall \mathbf{x}, \mathbf{y} \in \mathbb{R}^n</span></p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Orthogonal Matrices preserve norms</span></strong></p>
+
+
+
+<p class="wp-block-paragraph">For any linear transformation represented by a matrix <span class="math">\mathbf{R}</span>, the inner product preservation property is <span class="math">(\mathbf{R}\mathbf{x})^\top(\mathbf{R}\mathbf{y}) = \mathbf{x}^\top\mathbf{y}</span>. This expands to <span class="math">\mathbf{x}^\top\mathbf{R}^\top\mathbf{R}\mathbf{y} = \mathbf{x}^\top\mathbf{I}\mathbf{y}</span>.</p>
+
+
+
+<p class="wp-block-paragraph">This implies the defining property of an <strong>orthogonal matrix</strong>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{R}^\top\mathbf{R} = \mathbf{I}</span></p>
+
+
+
+<p class="wp-block-paragraph">This means the inverse of an orthogonal matrix is its transpose, <span class="math">\mathbf{R}^{-1} = \mathbf{R}^\top</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><em>There you go, said it in a roundabout way since I&#8217;ve spoken about this atleast twice now:)</em></p>
+
+
+
+<p class="wp-block-paragraph"><span style="text-decoration: underline"><strong>Distinguishing Rotations from Reflections</strong></span></p>
+
+
+
+<p class="wp-block-paragraph">Orthogonal matrices represent all <span style="text-decoration: underline">isometries that fix the origin</span>.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This is a set which includes both rotations and reflections.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">The determinant of an orthogonal matrix is always <span class="math">\det(\mathbf{R}) = \pm 1</span>. </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><em>A transformation is said to preserve orientation (or &#8220;handedness&#8221;) if its determinant is positive. </em></p>
+
+
+
+<p class="wp-block-paragraph">A pure rotation is an <span style="text-decoration: underline">orientation-preserving isometry</span>. Therefore, a rotation is represented by an orthogonal matrix with a <strong>determinant of +1.</strong></p>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Special Orthogonal Group SO(n)</span></strong></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The set of all <span class="math">n \times n</span> rotation matrices forms a mathematical group under matrix multiplication. This group is known as the <strong>Special Orthogonal Group</strong>, denoted <span class="math">SO(n)</span>. </p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">E.g., <span class="math">SO(2)</span> represents rotations in the plane, and <span class="math">SO(3)</span> represents rotations in 3D space.</p>
+
+
+
+<h4 class="wp-block-heading" id="rotations-in-2d-and-3d">Rotations in 2D and 3D</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Rotations in 2D, <span class="math">SO(2)</span>:</strong> The action of a 2D rotation on the standard basis vectors <span class="math">\mathbf{e}_1=[1,0]^\top, \mathbf{e}_2=[0,1]^\top</span> completely defines the transformation. A counter-clockwise rotation by an angle <span class="math">\theta</span> maps <span class="math">\mathbf{e}_1 \mapsto [\cos\theta, \sin\theta]^\top</span> and <span class="math">\mathbf{e}_2 \mapsto [-\sin\theta, \cos\theta]^\top</span>. The columns of the rotation matrix are these transformed basis vectors, yielding:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{R}(\theta) = \begin{bmatrix} \cos\theta &amp; -\sin\theta \\ \sin\theta &amp; \cos\theta \end{bmatrix} \in SO(2)</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Rotations in 3D</strong> can also be derived to be</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{R}_x(\theta) = \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; \cos\theta &amp; -\sin\theta \\ 0 &amp; \sin\theta &amp; \cos\theta \end{bmatrix} </span> </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{R}_y(\theta) = \begin{bmatrix} \cos\theta &amp; 0 &amp; \sin\theta \\ 0 &amp; 1 &amp; 0 \\ -\sin\theta &amp; 0 &amp; \cos\theta \end{bmatrix} </span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"> <span class="math">\mathbf{R}_z(\theta) = \begin{bmatrix} \cos\theta &amp; -\sin\theta &amp; 0 \\ \sin\theta &amp; \cos\theta &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix}</span></p>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"></p>
+
+
+
+<h3 class="wp-block-heading" id="pre-and-post-multiplication-the-duality-of-coordinate-frames">Pre- and Post-Multiplication: The Duality of Coordinate Frames</h3>
+
+
+
+<p class="wp-block-paragraph">This is actually a <span style="text-decoration: underline">very important concept</span>!</p>
+
+
+
+<p class="wp-block-paragraph">The non-commutativity of matrix multiplication (<span class="math">\mathbf{A}\mathbf{B} \neq \mathbf{B}\mathbf{A}</span>) is not a mathematical inconvenience; it is the essential property that allows matrices to capture the non-commutative nature of 3D rotations. The choice of whether to pre-multiply (<span class="math">\mathbf{R}_{\text{new}}\mathbf{R}_{\text{old}}</span>) or post-multiply (<span class="math">\mathbf{R}_{\text{old}}\mathbf{R}_{\text{new}}</span>) depends entirely on the <strong>coordinate frame</strong> in which the new rotation is defined!</p>
+
+
+
+<h4 class="wp-block-heading" id="foundations">Foundations</h4>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Coordinate Frames</span></strong></p>
+
+
+
+<p class="wp-block-paragraph">A coordinate frame, which we denote <span class="math">\{A\}</span>, is a coordinate system used to represent the position and orientation of objects. In <span class="math">\mathbb{R}^n</span>, it consists of an origin point and a set of <span class="math">n</span> orthonormal basis vectors.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><em>A vector&#8217;s components are only meaningful with respect to a specific frame. </em></p>
+
+
+
+<p class="wp-block-paragraph">We denote a vector <span class="math">\mathbf{p}</span> expressed in frame <span class="math">\{A\}</span> as <span class="math">\mathbf{p}^A</span>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Active vs. Passive Transformations</span></strong></p>
+
+
+
+<p class="wp-block-paragraph">A rotation matrix can be interpreted in two ways  &#8211; </p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Active Rotation:</strong> The coordinate system is fixed, and the object (represented by a vector) is rotated. <br>The matrix transforms the vector&#8217;s coordinates to new coordinates <em>within the same frame</em>. This is the more common interpretation.</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{p}'^A = \mathbf{R} \mathbf{p}^A</span></p>
+
+
+
+<ol start="2" class="wp-block-list">
+<li><strong>Passive Rotation:</strong> The object is fixed in space, and the coordinate system is rotated. <br>The matrix transforms the vector&#8217;s coordinates from the old frame to the new frame. <em>This is a change of basis. </em><br>A rotation of the frame by <span class="math">\mathbf{R}</span> means the coordinates of a fixed vector in the new frame are given by <span class="math">\mathbf{R}^\top</span> times the old coordinates.</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">The choice between pre- and post-multiplication arises when we compose multiple rotations. This is best understood by considering two primary scenarios: rotations defined with respect to a fixed, <strong>global frame</strong> versus rotations defined with respect to a moving, <strong>local frame</strong>.</p>
+
+
+
+<h4 class="wp-block-heading" id="scenario-a-pre-multiplication-rotations-in-a-fixed-global-frame">Scenario A: Pre-Multiplication (Rotations in a Fixed Global Frame)</h4>
+
+
+
+<p class="wp-block-paragraph">This is the case where all rotations are defined with respect to the same, unchanging, external coordinate system. </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This is called the<strong> world frame </strong>or<strong> global frame,</strong> which we will denote as <span class="math">\{G\}</span>.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Here, for two successive rotations, we write:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{R}_{\text{total}} = \mathbf{R}_2 \mathbf{R}_1</span></p>
+
+
+
+<p class="wp-block-paragraph">The new rotation matrix, <span class="math">\mathbf{R}_2</span>, is <strong>pre-multiplied</strong> (multiplied on the left) to the existing rotation matrix, <span class="math">\mathbf{R}_1</span>. The order of matrix multiplication (<span class="math">\mathbf{R}_2</span> then <span class="math">\mathbf{R}_1</span>) is the same as the order of application to the vector (first <span class="math">\mathbf{R}_1</span>, then <span class="math">\mathbf{R}_2</span>).</p>
+
+
+
+<h4 class="wp-block-heading" id="scenario-b-post-multiplication-rotations-relative-to-a-moving-local-frame">Scenario B: Post-Multiplication (Rotations Relative to a Moving Local Frame)</h4>
+
+
+
+<p class="wp-block-paragraph">This is the case where a sequence of rotations is defined with respect to the object&#8217;s own, changing coordinate system. </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This is often called the <strong>body frame</strong> or <strong>local frame</strong>, which we will denote as <span class="math">\{B\}</span>.</p>
+</blockquote>
+</blockquote>
+
+
+
+<ul class="wp-block-list">
+<li><strong>The Transformation:</strong> An object initially has an orientation described by the matrix <span class="math">\mathbf{R}_1</span>, which represents the orientation of its local frame <span class="math">\{B\}</span> with respect to the global frame <span class="math">\{G\}</span>. Let&#8217;s denote this as <span class="math">\mathbf{R}_{GB_1}</span>.</li>
+
+
+
+<li><strong>Composition:</strong> Now, we want to apply a <em>second</em> rotation, <span class="math">\mathbf{R}_2</span>, but this rotation is defined relative to the object&#8217;s current, rotated frame, <span class="math">{B_1}</span>. This local rotation transforms frame <span class="math">{B_1}</span> to a new frame <span class="math">{B_2}</span>, and is denoted <span class="math">\mathbf{R}_{B_1 B_2}</span>. We want to find the final orientation of the object, <span class="math">\mathbf{R}_{GB_2}</span>, in the global frame.</li>
+
+
+
+<li><strong>The Rule:</strong> To find the final orientation, we chain the transformations. The orientation of the new frame <span class="math">{B_2}</span> relative to the global frame <span class="math">{G}</span> is the orientation of <span class="math">{B_1}</span> in <span class="math">{G}</span> followed by the orientation of <span class="math">{B_2}</span> in <span class="math">{B_1}</span>. This corresponds to a matrix product:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{R}_{GB_2} = \mathbf{R}_{GB_1} \mathbf{R}_{B_1 B_2}</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">If we let <span class="math">\mathbf{R}_1 = \mathbf{R}_{GB_1}</span> and <span class="math">\mathbf{R}_2 = \mathbf{R}_{B_1 B_2}</span>, the final orientation is:</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{R}_{\text{final}} = \mathbf{R}_1 \mathbf{R}_2</span></p>
+
+
+
+<p class="wp-block-paragraph">The new rotation matrix, <span class="math">\mathbf{R}_2</span>, is <strong>post-multiplied</strong> (multiplied on the right) to the existing rotation matrix, <span class="math">\mathbf{R}_1</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="how-do-you-determine-the-choice">How do you determine the choice?</h4>
+
+
+
+<p class="wp-block-paragraph">The choice between these two conventions is not arbitrary; it is dictated by the problem&#8217;s physical or conceptual setup.</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th>Convention</th><th><strong>Pre-multiplication: <span class="math">\mathbf{R}_{\text{new}} = \mathbf{R}_{\text{global}} \mathbf{R}_{\text{old}}</span></strong></th><th><strong>Post-multiplication: <span class="math">\mathbf{R}_{\text{new}} = \mathbf{R}_{\text{old}} \mathbf{R}_{\text{local}}</span></strong></th></tr></thead><tbody><tr><td><strong>Interpretation</strong></td><td>Rotations are applied with respect to a fixed, external (world) coordinate system.</td><td>Rotations are applied with respect to the object&#8217;s own, moving (body) coordinate system.</td></tr><tr><td><strong>Analogy</strong></td><td>An air traffic controller describing an airplane&#8217;s orientation relative to the ground. &#8220;First turn 90 degrees North, then pitch up 20 degrees.&#8221;</td><td>A pilot inside the cockpit describing their maneuvers. &#8220;First I will pitch up 20 degrees, then I will yaw 10 degrees to my right.&#8221;</td></tr></tbody></table></figure>
+
+
+
+<h4 class="wp-block-heading" id="application-kinematic-chains">Application: Kinematic Chains</h4>
+
+
+
+<p class="wp-block-paragraph">A robot arm is a chain of links, where each link&#8217;s frame is attached to the previous one. The orientation of link 2 is defined relative to link 1. The orientation of link 3 is defined relative to link 2, and so on. The orientation of the end-effector (frame <span class="math">{E}</span>) with respect to the base (frame <span class="math">{0}</span>) is the post-multiplication of the successive joint rotations:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{R}_{0E} = \mathbf{R}_{01}(\theta_1) \mathbf{R}_{12}(\theta_2) \mathbf{R}_{23}(\theta_3) \cdots \mathbf{R}_{(n-1)E}(\theta_n)</span></p>
+
+
+
+<h3 class="wp-block-heading" id="gimbal-lock">Gimbal Lock</h3>
+
+
+
+<p class="wp-block-paragraph">Getting back to <span class="math">SO(3)</span>, any arbitrary rotation is is a sequence of three rotations about principal axes, known as <strong>Euler angles</strong> (e.g., yaw, pitch, roll).</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This suffers from a singularity where two of the three rotational axes align, causing the loss of one degree of freedom. This is called the <strong>Gimbal lock</strong>.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">At this point, it is impossible to perform small rotations about one of the original axes, leading to instability in control and animation systems.</p>
+
+
+
+<p class="wp-block-paragraph">I really cannot explain it better mathematically than <a href="https://math.stackexchange.com/a/8984">this StackExchange Answer</a> and this <a href="https://www.youtube.com/watch?v=zc8b2Jo7mno">YT video</a> for a demo.</p>
+
+
+
+<p class="wp-block-paragraph">How do you solve this? Quaternions.</p>
+
+
+
+<h3 class="wp-block-heading" id="quaternions">Quaternions</h3>
+
+
+
+<h4 class="wp-block-heading" id="hierarchy-of-number-systems">Hierarchy of number systems</h4>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Real Numbers (<span class="math">\mathbb{R}</span>):</strong> Ordered, commutative, associative. Lacks algebraic closure (e.g., <span class="math">x^2+1=0</span> has no real solution).</li>
+
+
+
+<li><strong>Complex Numbers (<span class="math">\mathbb{C}</span>):</strong> Adds the imaginary unit <span class="math">i</span> where <span class="math">i^2=-1</span>. The system is algebraically closed, commutative, and associative. It sacrifices the property of being an <strong>ordered field</strong>.</li>
+
+
+
+<li><strong>Quaternions (<span class="math">\mathbb{H}</span>):</strong> Adds two more imaginary units, <span class="math">j</span> and <span class="math">k</span>. The system is associative but sacrifices the property of <strong>commutativity</strong> in multiplication (<span class="math">ab \neq ba</span>). This non-commutativity is not a flaw; it is the essential feature that allows quaternions to model non-commutative 3D rotations.</li>
+
+
+
+<li><strong>Octonions (<span class="math">\mathbb{O}</span>):</strong> Adds four more units. The system is neither commutative nor associative, sacrificing <strong>associativity</strong> in multiplication (<span class="math">(ab)c \neq a(bc)</span>).</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="quaternion-algebra">Quaternion Algebra</h4>
+
+
+
+<p class="wp-block-paragraph">A quaternion <span class="math">q \in \mathbb{H}</span> is an element of the form:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">q = w + x\mathbf{i} + y\mathbf{j} + z\mathbf{k}</span></p>
+
+
+
+<p class="wp-block-paragraph">where <span class="math">w, x, y, z</span> are real numbers, and <span class="math">{\mathbf{1}, \mathbf{i}, \mathbf{j}, \mathbf{k}}</span> form a basis for this 4D vector space.</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">w</span> is the <strong>scalar part</strong>, denoted <span class="math">\text{Re}(q)</span>.</li>
+
+
+
+<li><span class="math">\mathbf{v} = x\mathbf{i} + y\mathbf{j} + z\mathbf{k}</span> is the <strong>vector part</strong>, denoted <span class="math">\text{Im}(q)</span>. A quaternion with a zero scalar part is called a <strong>pure quaternion</strong>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">The algebra is defined by the <strong>Hamiltonian rules</strong> for the basis elements:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{i}^2 = \mathbf{j}^2 = \mathbf{k}^2 = \mathbf{i}\mathbf{j}\mathbf{k} = -1</span></p>
+
+
+
+<p class="wp-block-paragraph">This single, compact relation generates the entire non-commutative multiplication table:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\begin{aligned} \mathbf{i}\mathbf{j} = \mathbf{k} \quad &amp;\text{and} \quad \mathbf{j}\mathbf{i} = -\mathbf{k} \\ \mathbf{j}\mathbf{k} = \mathbf{i} \quad &amp;\text{and} \quad \mathbf{k}\mathbf{j} = -\mathbf{i} \\ \mathbf{k}\mathbf{i} = \mathbf{j} \quad &amp;\text{and} \quad \mathbf{i}\mathbf{k} = -\mathbf{j} \end{aligned}</span></p>
+
+
+
+<p class="wp-block-paragraph">The multiplication of two general quaternions <span class="math">q_1 = w_1 + \mathbf{v}_1</span> and <span class="math">q_2 = w_2 + \mathbf{v}_2</span> is defined by distributing terms and applying these rules. This leads to a more compact formula relating quaternion multiplication to the vector dot and cross products:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">q_1 q_2 = (w_1w_2 - \mathbf{v}_1 \cdot \mathbf{v}_2) + (w_1\mathbf{v}_2 + w_2\mathbf{v}_1 + \mathbf{v}_1 \times \mathbf{v}_2)</span></p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="quaternion-operations">Quaternion Operations</h4>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Conjugate:</strong> <span class="math">q^* = w - x\mathbf{i} - y\mathbf{j} - z\mathbf{k} = w - \mathbf{v}</span>. The conjugate of a product is the reversed product of the conjugates: <span class="math">(q_1 q_2)^* = q_2^* q_1^*</span>.</li>
+
+
+
+<li><strong>Norm:</strong> The norm of a quaternion, <span class="math">|q|</span>, is a non-negative real number defined as:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">|q| = \sqrt{q q^*} = \sqrt{(w+\mathbf{v})(w-\mathbf{v})} = \sqrt{w^2 - \mathbf{v}^2 - (\mathbf{v} \times \mathbf{v} - \mathbf{v}\cdot\mathbf{v})} = \sqrt{w^2 + \mathbf{v}\cdot\mathbf{v}} = \sqrt{w^2 + x^2 + y^2 + z^2}</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This is the standard Euclidean norm in <span class="math">\mathbb{R}^4</span>. The norm is multiplicative: <span class="math">|q_1 q_2| = |q_1||q_2|</span>.</p>
+</blockquote>
+</blockquote>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Inverse:</strong> The multiplicative inverse of a non-zero quaternion <span class="math">q</span> is:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">q^{-1} = \frac{q^*}{|q|^2}</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This ensures that <span class="math">\mathbb{H}</span> is a <strong>division algebra</strong>: every non-zero element has an inverse.</p>
+</blockquote>
+</blockquote>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Unit Quaternion:</strong> A quaternion with a norm of 1, <span class="math">|q|=1</span>. For unit quaternions, the inverse is simply the conjugate: <span class="math">q^{-1} = q^*</span>. The set of all unit quaternions forms a 3-dimensional sphere (<span class="math">S^3</span>) embedded in <span class="math">\mathbb{R}^4</span>.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="geometry-of-3d-rotations">Geometry of 3D Rotations</h4>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Representing Rotations with Unit Quaternions</span></strong></p>
+
+
+
+<p class="wp-block-paragraph">A rotation in <span class="math">\mathbb{R}^3</span> is uniquely defined by an axis of rotation (a unit vector <span class="math">\mathbf{u} \in \mathbb{R}^3</span>) and a right-handed angle of rotation <span class="math">\theta \in [0, 2\pi)</span>.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph"><strong>Euler&#8217;s Rotation Theorem</strong> states that any composition of rotations is equivalent to a single rotation about some axis.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">I mean, this makes sense intuitive as well right? Not gonna prove it.</p>
+
+
+
+<p class="wp-block-paragraph">A unit quaternion <span class="math">q</span> represents such a rotation via the <strong>Euler-Rodrigues formula</strong>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">q = \cos(\theta/2) + \mathbf{u}\sin(\theta/2) = \cos(\theta/2) + (u_x\mathbf{i} + u_y\mathbf{j} + u_z\mathbf{k})\sin(\theta/2)</span></p>
+
+
+
+<p class="wp-block-paragraph">Notice the use of the half-angle $\theta/2$. This implies that</p>
+
+
+
+<ul class="wp-block-list">
+<li>A rotation of <span class="math">2\pi</span> about any axis corresponds to <span class="math">q = \cos(\pi) + \mathbf{u}\sin(\pi) = -1</span>, and</li>
+
+
+
+<li>A rotation of <span class="math">4\pi</span> is required to return to the identity quaternion <span class="math">q=1</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">This mathematical structure is known as a <strong>double cover</strong>: the group of unit quaternions (denoted <span class="math">Sp(1)</span> or <span class="math">S^3</span>) is a double cover of the group of 3D rotations <span class="math">SO(3)</span>. </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The two quaternions <span class="math">q</span> and <span class="math">-q</span> correspond to the exact same physical rotation in 3D space.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">The Sandwich Product</span></strong></p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Embed:</strong> Lift the vector <span class="math">\mathbf{v}</span> into the quaternion algebra by representing it as a pure quaternion <span class="math">p</span>:</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p = 0 + v_x\mathbf{i} + v_y\mathbf{j} + v_z\mathbf{k}</span></p>
+
+
+
+<ol start="2" class="wp-block-list">
+<li><strong>Transform:</strong> Apply the rotation via the <strong>sandwich product</strong>:</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p' = q p q^{-1} = q p q^*</span></p>
+
+
+
+<ol start="3" class="wp-block-list">
+<li><strong>Project:</strong> The result <span class="math">p'</span> is guaranteed to be another pure quaternion. The vector part of <span class="math">p'</span> is the rotated vector <span class="math">\mathbf{v}'</span>.</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Composition of Rotations</span></strong></p>
+
+
+
+<p class="wp-block-paragraph">If a rotation represented by <span class="math">q_1</span> is followed by a rotation represented by <span class="math">q_2</span>, the single composite rotation is represented by the quaternion product:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">q_{\text{total}} = q_2 q_1</span></p>
+
+
+
+<p class="wp-block-paragraph">The non-commutativity of quaternion multiplication (<span class="math">q_2 q_1 \neq q_1 q_2</span>) correctly reflects the non-commutativity of 3D rotations (e.g., rotating 90 degrees about the x-axis then the y-axis is different from the reverse). </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This is a significant advantage over Euler angles, where composition is complex and unintuitive.</p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="spherical-linear-interpolation-slerp">Spherical Linear Interpolation (SLERP)</h4>
+
+
+
+<p class="wp-block-paragraph">To smoothly interpolate between two orientations represented by unit quaternions <span class="math">q_1</span> and <span class="math">q_2</span>, we need to find a <span style="text-decoration: underline">path of constant rotational velocity</span> on the surface of the <span class="math">S^3</span> hypersphere.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This path is a great-circle arc.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">What this means that it&#8217;s a circle arc in 4 dimensions. We use SLERP for this.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{Slerp}(q_1, q_2, t) = \frac{\sin((1-t)\Omega)}{\sin\Omega}q_1 + \frac{\sin(t\Omega)}{\sin\Omega}q_2</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">where <span class="math">t \in [0,1]</span> is the interpolation parameter and <span class="math">\Omega</span> is the angle between the four-dimensional vectors corresponding to <span class="math">q_1</span> and <span class="math">q_2</span>, given by <span class="math">\cos\Omega = w_1w_2 + x_1x_2 + y_1y_2 + z_1z_2</span>. </p>
+
+
+
+<p class="wp-block-paragraph">This formula produces <em>smooth, constant-velocity rotations, a feat that is notoriously difficult and unstable with Euler angles.</em></p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="applications">Applications</h4>
+
+
+
+<p class="wp-block-paragraph">Duh, you rotate everywhere in robotics.</p>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

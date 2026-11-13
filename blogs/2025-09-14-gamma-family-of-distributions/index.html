@@ -1,0 +1,561 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Gamma Family of Distributions  | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Gamma Family of Distributions </h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-09-14T16:45:23">2025-09-14</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What’s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#gamma">Gamma</a><ol><li><a class="wp-block-table-of-contents__entry" href="#foundations">Foundations</a></li><li><a class="wp-block-table-of-contents__entry" href="#theory">Theory</a></li><li><a class="wp-block-table-of-contents__entry" href="#why-is-this-cool">Why is this cool?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#chi-squared-latex-chi-2">Chi-Squared (<span class="math">\chi^2</span>)</a><ol><li><a class="wp-block-table-of-contents__entry" href="#first-principles">First principles</a></li><li><a class="wp-block-table-of-contents__entry" href="#fundamental-theorems-of-calculus">Fundamental theorems of calculus</a></li><li><a class="wp-block-table-of-contents__entry" href="#as-a-special-case-of-gamma">As a special case of Gamma</a></li><li><a class="wp-block-table-of-contents__entry" href="#where-is-this-distribution-used">Where is this distribution used?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#student-s-t">Student&#8217;s t-</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-does-this-exist">Why does this exist?</a></li><li><a class="wp-block-table-of-contents__entry" href="#theoretical-development">Theoretical development</a></li><li><a class="wp-block-table-of-contents__entry" href="#where-is-it-used">Where is it used?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What’s there?</h3>
+
+
+
+<p class="wp-block-paragraph">This one explores some more distributions &#8211; Gamma, Chi-Squared, and Student&#8217;s t-distributions. Why?</p>
+
+
+
+<ul class="wp-block-list">
+<li>The Gamma distribution provides a flexible model for positive continuous random variables, such as waiting times.</li>
+
+
+
+<li>The Chi-Squared and Student&#8217;s t-distributions are special cases and transformations derived from the Gamma and Normal distributions.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="gamma">Gamma</h3>
+
+
+
+<p class="wp-block-paragraph">It is a continuous distribution defined on the positive real line. This just means that it&#8217;s defined for <span class="math">x &gt; 0</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="foundations">Foundations</h4>
+
+
+
+<p class="wp-block-paragraph">We&#8217;ve described the gamma function in <a href="../2025-09-13-uniform-exponential-beta-dirichlet/">Uniform, Exponential, Beta &amp; Dirichlet</a>. As a recap, it is,</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\Gamma(z) = \int_0^\infty t^{z-1}e^{-t} dt</span></p>
+
+
+
+<p class="wp-block-paragraph">Back to the topic, what are we even trying to do? What&#8217;s the intuitive goal?</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">We want to model the waiting time until the <span class="math">\alpha</span>-th event occurs in a Poisson process with a rate of <span class="math">\beta</span>.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Recall the <strong>Exponential distribution</strong> models the waiting time for the <em>first</em> event. The Gamma distribution generalizes this to the sum of waiting times for <em>multiple</em> events.</p>
+
+
+
+<p class="wp-block-paragraph">Before everything, I just want to recap Poisson from <a href="../2025-09-07-fundamental-discrete-probability-distributions/">Fundamental Discrete Probability Distributions</a>.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The Poisson distribution is a statistical tool used to model the <em>probability of a <span style="text-decoration: underline">certain number of events</span> happening within a fixed interval of time or space</em>, provided these events occur at <em>a <span style="text-decoration: underline">known constant average rate and independently of the time</span> since the last event.</em></p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">For instance, &#8220;How many emails will I receive in the next hour?&#8221;</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(X=k) = \frac{\lambda^k e^{-\lambda}}{k!}</span></p>
+
+
+
+<p class="wp-block-paragraph">Where:</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>k</strong> is the number of events you are interested in (e.g., 5 phone calls).</li>
+
+
+
+<li><strong>λ (lambda)</strong> is the average number of events per interval (e.g., an average of 3 phone calls per hour).</li>
+
+
+
+<li><strong>e</strong> is Euler&#8217;s number (approximately 2.71828).</li>
+
+
+
+<li><strong>k!</strong> is the factorial of k.</li>
+</ul>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="theory">Theory</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Formal Definition:</strong> A continuous random variable <span class="math">X</span> follows a <strong>Gamma distribution</strong>, denoted <span class="math">X \sim \text{Gamma}(\alpha, \beta)</span>, if its PDF is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f(x | \alpha, \beta) = \frac{\beta^\alpha}{\Gamma(\alpha)} x^{\alpha-1}e^{-\beta x}, \quad x &gt; 0</span></p>
+
+
+
+<p class="wp-block-paragraph">The distribution is governed by two parameters:</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Shape parameter (<span class="math">\alpha &gt; 0</span>):</strong> Controls the shape of the distribution. For <span class="math">\alpha \le 1</span>, the density is monotonically decreasing. For <span class="math">\alpha &gt; 1</span>, it has a single peak. As <span class="math">\alpha \to \infty</span>, the Gamma distribution approaches a Normal distribution.</li>
+
+
+
+<li><strong>Rate parameter (<span class="math">\beta &gt; 0</span>):</strong> Controls the scale of the distribution (inverse of the scale parameter).</li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Moments:</strong>
+<ul class="wp-block-list">
+<li>Expectation: <span class="math">\mathbb{E}[X] = \alpha/\beta</span></li>
+
+
+
+<li>Variance: <span class="math">\text{Var}(X) = \alpha/\beta^2</span></li>
+</ul>
+</li>
+
+
+
+<li><strong>Relationship to other distributions:</strong>
+<ul class="wp-block-list">
+<li>If <span class="math">\alpha=1</span>, the Gamma distribution becomes the <strong>Exponential distribution</strong>: <span class="math">\text{Gamma}(1, \beta) = \text{Exp}(\beta)</span>.</li>
+
+
+
+<li>The sum of <span class="math">k</span> independent <span class="math">\text{Exp}(\beta)</span> variables is a <span class="math">\text{Gamma}(k, \beta)</span> variable.</li>
+
+
+
+<li>The <strong>Chi-Squared distribution</strong> is a special case of the Gamma distribution.</li>
+</ul>
+</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="why-is-this-cool">Why is this cool?</h4>
+
+
+
+<p class="wp-block-paragraph">The sum of independent Gamma-distributed random variables with the same rate parameter is also a Gamma-distributed variable. Specifically, if <span class="math">X_i \sim \text{Gamma}(\alpha_i, \beta)</span> are independent, then:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\sum_{i=1}^k X_i \sim \text{Gamma}\left(\sum_{i=1}^k \alpha_i, \beta\right)</span></p>
+
+
+
+<p class="wp-block-paragraph">The shape parameters add, while the rate parameter remains the same.</p>
+
+
+
+<h3 class="wp-block-heading" id="chi-squared-latex-chi-2">Chi-Squared (<span class="math">\chi^2</span>)</h3>
+
+
+
+<h4 class="wp-block-heading" id="first-principles">First principles</h4>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<ul class="wp-block-list">
+<li><strong>The Core Definition:</strong> Let <span class="math">Z_1, Z_2, \dots, Z_k</span> be <span class="math">k</span> independent random variables, each following a standard normal distribution, <span class="math">Z_i \sim \mathcal{N}(0, 1)</span>. The <strong>Chi-Squared distribution with <span class="math">k</span> degrees of freedom</strong>, denoted <span class="math">\chi^2_k</span>, is the distribution of the sum of the squares of these variables:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">Q = \sum_{i=1}^k Z_i^2 \sim \chi^2_k</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Degrees of Freedom (<span class="math">k</span>):</strong> The single parameter of the distribution, <span class="math">k</span>, is the <strong>degrees of freedom</strong>. It corresponds to the number of independent standard normal variables being summed. It dictates the shape of the distribution.</li>
+</ul>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="fundamental-theorems-of-calculus">Fundamental theorems of calculus</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>First one</strong></p>
+
+
+
+<p class="wp-block-paragraph">If <span class="math">F</span> is an antiderivative of a continuous function <span class="math">f</span> on an interval <span class="math">[a, b]</span>, then:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\int_a^b f(x) \,dx = F(b) - F(a)</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Second one</strong></p>
+
+
+
+<p class="wp-block-paragraph">If <span class="math">f</span> is a continuous function on an interval, then for any <span class="math">a</span> in that interval, the function defined by <span class="math">F(x) = \int_a^x f(t) \,dt</span> is an antiderivative of <span class="math">f</span>. That is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\frac{d}{dx} \int_a^x f(t) \,dt = f(x)</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Ok, cool, what if <span class="math">a</span> was function of <span class="math">x</span>?</strong> This is the <strong><span style="text-decoration: underline">Leibniz Integral Rule</span></strong>.</p>
+
+
+
+<p class="wp-block-paragraph">If you have an integral of the form:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">F(x) = \int_{a(x)}^{b(x)} f(t) \,dt</span></p>
+
+
+
+<p class="wp-block-paragraph">Its derivative with respect to <span class="math">x</span> is:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\frac{dF}{dx} = f(b(x)) \cdot b'(x) - f(a(x)) \cdot a'(x)</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<h4 class="wp-block-heading" id="as-a-special-case-of-gamma">As a special case of Gamma</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Step 1: Find the distribution of <span class="math">Y = Z^2</span> where <span class="math">Z \sim \mathcal{N}(0, 1)</span>.</strong></p>
+
+
+
+<p class="wp-block-paragraph">We can derive this using the change of variables technique. Let <span class="math">F_Y(y)</span> be the CDF of <span class="math">Y</span>. For <span class="math">y &gt; 0</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\begin{aligned} F_Y(y) &amp;= P(Y \le y) \\ &amp;= P(Z^2 \le y) \\ &amp;= P(-\sqrt{y} \le Z \le \sqrt{y}) \end{aligned}</span></p>
+
+
+
+<p class="wp-block-paragraph">This probability is the integral of the standard normal PDF, <span class="math">\phi(z) = \frac{1}{\sqrt{2\pi}}e^{-z^2/2}</span>, between <span class="math">-\sqrt{y}</span> and <span class="math">\sqrt{y}</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">F_Y(y) = \int_{-\sqrt{y}}^{\sqrt{y}} \frac{1}{\sqrt{2\pi}}e^{-z^2/2} dz</span></p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">We find the pdf using the Leibniz Integral rule &#8211; </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\begin{aligned} f_Y(y) = \frac{d}{dy} F_Y(y) &amp;= \phi(\sqrt{y}) \cdot \frac{d}{dy}(\sqrt{y}) - \phi(-\sqrt{y}) \cdot \frac{d}{dy}(-\sqrt{y}) \\ &amp;= \frac{1}{\sqrt{2\pi}}e^{-y/2} \cdot \frac{1}{2\sqrt{y}} - \frac{1}{\sqrt{2\pi}}e^{-y/2} \cdot \left(-\frac{1}{2\sqrt{y}}\right) \\ &amp;= 2 \cdot \frac{1}{\sqrt{2\pi}}e^{-y/2} \cdot \frac{1}{2\sqrt{y}} \\ &amp;= \frac{1}{\sqrt{2\pi}} y^{-1/2} e^{-y/2} \end{aligned}</span></p>
+
+
+
+<p class="wp-block-paragraph">Now, we compare this PDF to the Gamma PDF, <span class="math">f_X(x; \alpha, \beta) = \frac{\beta^\alpha}{\Gamma(\alpha)} x^{\alpha-1}e^{-\beta x}</span>.<br>We need to match the terms.</p>
+
+
+
+<ul class="wp-block-list">
+<li>The exponential term <span class="math">e^{-y/2}</span> suggests the rate parameter is <span class="math">\beta = 1/2</span>.</li>
+
+
+
+<li>The polynomial term <span class="math">y^{-1/2}</span> suggests that the shape parameter is <span class="math">\alpha-1 = -1/2 \implies \alpha = 1/2</span>.<br>Let&#8217;s check if the normalization constant matches. For <span class="math">\text{Gamma}(1/2, 1/2)</span>, the constant is <span class="math">\frac{(1/2)^{1/2}}{\Gamma(1/2)}</span>. It is a known property of the Gamma function that <span class="math">\Gamma(1/2) = \sqrt{\pi}</span>. So the constant is <span class="math">\frac{1/\sqrt{2}}{\sqrt{\pi}} = \frac{1}{\sqrt{2\pi}}</span>.<br>This matches perfectly. Therefore, we have proven that the square of a single standard normal variable follows a Gamma distribution:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">Z^2 \sim \text{Gamma}\left(\alpha=\frac{1}{2}, \beta=\frac{1}{2}\right)</span></p>
+
+
+
+<p class="wp-block-paragraph">A Chi-Squared distribution with <strong>one</strong> degree of freedom is identical to this Gamma distribution: <span class="math">\chi^2_1 = \text{Gamma}(1/2, 1/2)</span>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Step 2: Find the distribution of <span class="math">Q = \sum_{i=1}^k Z_i^2</span>.</strong></p>
+
+
+
+<p class="wp-block-paragraph">Since each <span class="math">Z_i^2</span> is an independent <span class="math">\text{Gamma}(1/2, 1/2)</span> random variable, we can use the additive property of the Gamma distribution. The sum of <span class="math">k</span> such variables will be:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">Q = \sum_{i=1}^k Z_i^2 \sim \text{Gamma}\left(\sum_{i=1}^k \frac{1}{2}, \frac{1}{2}\right) = \text{Gamma}\left(\frac{k}{2}, \frac{1}{2}\right)</span></p>
+
+
+
+<p class="wp-block-paragraph">By definition, <span class="math">Q \sim \chi^2_k</span>. Thus, we have established the equivalence:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\chi^2_k = \text{Gamma}\left(\alpha = \frac{k}{2}, \beta = \frac{1}{2}\right)</span></p>
+
+
+
+<h4 class="wp-block-heading" id="where-is-this-distribution-used">Where is this distribution used?</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Example 1: Testing the Variance of a Population (Goodness-of-Fit)</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Scenario:</strong> A manufacturer produces bolts that are supposed to have a diameter variance of <span class="math">\sigma^2 = 0.01 \text{ mm}^2</span>. To perform quality control, a sample of <span class="math">n=20</span> bolts is taken, and their sample variance is calculated to be <span class="math">s^2 = 0.015 \text{ mm}^2</span>. Does this provide significant evidence that the true variance of the manufacturing process has increased?</li>
+
+
+
+<li><strong>Application:</strong> Under the null hypothesis that the population is normal and the true variance is indeed <span class="math">\sigma^2=0.01</span>, the test statistic:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\chi^2_{\text{stat}} = \frac{(n-1)s^2}{\sigma^2} = \frac{(19)(0.015)}{0.01} = 28.5</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">follows a Chi-Squared distribution with <span class="math">n-1=19</span> degrees of freedom. We can then compare this value to the <span class="math">\chi^2_{19}</span> distribution. We would calculate the probability <span class="math">P(\chi^2_{19} \ge 28.5)</span>. If this probability (the p-value) is very low (e.g., &lt; 0.05), we would reject the null hypothesis and conclude that the manufacturing process variance has likely increased.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong>Example 2: Likelihood-Ratio Tests in Machine Learning</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Scenario:</strong> In machine learning, we often want to compare two nested models: a simpler model (e.g., linear regression) and a more complex model that includes the simpler one as a special case (e.g., polynomial regression). We want to know if the additional complexity of the second model provides a statistically significant improvement in fit.</li>
+
+
+
+<li><strong>Application:</strong> Let <span class="math">L_0</span> be the maximum likelihood value for the simple model and <span class="math">L_1</span> be the maximum likelihood for the complex model. The <strong>likelihood-ratio test statistic</strong> is:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">D = -2 \log \left( \frac{L_0}{L_1} \right) = 2(\log L_1 - \log L_0)</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">According to <strong>Wilks&#8217;s theorem</strong>, as the number of data points becomes large, this statistic <span class="math">D</span> approximately follows a Chi-Squared distribution. The degrees of freedom <span class="math">k</span> are equal to the difference in the number of free parameters between the two models. This provides a formal statistical test for <strong>model selection</strong> and is used to justify adding parameters to a model.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">We will discuss this later as well under statistics.</p>
+
+
+
+<h3 class="wp-block-heading" id="student-s-t">Student&#8217;s t-</h3>
+
+
+
+<h4 class="wp-block-heading" id="why-does-this-exist">Why does this exist?</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Z-statistic</strong></p>
+
+
+
+<p class="wp-block-paragraph">The formula <span class="math">Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}}</span> is a way to standardize the sample mean. It tells us how many standard errors our sample mean (<span class="math">\bar{X}</span>) is away from the true population mean (<span class="math">\mu</span>). If we know the true population standard deviation (<span class="math">\sigma</span>), this Z-score will perfectly follow a standard normal distribution (a bell curve with a mean of 0 and a standard deviation of 1). T</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This is wonderful because the properties of the normal distribution are well-understood, making it easy to calculate probabilities and test hypotheses.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">But, we know neither <span class="math">\sigma</span> nor <span class="math">\mu</span>.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This is where the <strong>Student&#8217;s t-distribution</strong> comes in. It was developed specifically to solve this problem.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Since we don&#8217;t know the population standard deviation (<span class="math">\sigma</span>), we have to estimate it using the <strong>sample standard deviation</strong> (<span class="math">s</span>). We then substitute <span class="math">s</span> into the formula, creating a new quantity called the <strong>t-statistic</strong>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">t = \frac{\bar{X}-\mu}{s/\sqrt{n}}</span></p>
+
+
+
+<p class="wp-block-paragraph">To account for this added uncertainty, the t-statistic doesn&#8217;t follow a perfect normal distribution. Instead, it follows a <strong>t-distribution</strong>.</p>
+
+
+
+<h4 class="wp-block-heading" id="theoretical-development">Theoretical development</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Formal Definition:</strong> Let <span class="math">Z \sim \mathcal{N}(0, 1)</span> be a standard normal random variable and <span class="math">V \sim \chi^2_k</span> be a Chi-Squared random variable with <span class="math">k</span> degrees of freedom. If <span class="math">Z</span> and <span class="math">V</span> are independent, then the random variable <span class="math">T</span> defined as:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">T = \frac{Z}{\sqrt{V/k}}</span></p>
+
+
+
+<p class="wp-block-paragraph">follows a <strong>Student&#8217;s t-distribution with <span class="math">k</span> degrees of freedom</strong>, denoted <span class="math">T \sim t_k</span>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Derivation of the t-statistic:</strong> In the context of the sample mean, we have <span class="math">Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}}</span> and we know that <span class="math">V = \frac{(n-1)s^2}{\sigma^2} \sim \chi^2_{n-1}</span>. Substituting these into the definition of <span class="math">T</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">T = \frac{\frac{\bar{X}-\mu}{\sigma/\sqrt{n}}}{\sqrt{\frac{(n-1)s^2/\sigma^2}{n-1}}} = \frac{\frac{\bar{X}-\mu}{\sigma/\sqrt{n}}}{\sqrt{s^2/\sigma^2}} = \frac{\bar{X}-\mu}{s/\sqrt{n}}</span></p>
+
+
+
+<p class="wp-block-paragraph">This statistic, which uses the sample standard deviation <span class="math">s</span>, follows a t-distribution with <span class="math">n-1</span> degrees of freedom.</p>
+
+
+
+<p class="wp-block-paragraph">Importantly, </p>
+
+
+
+<ul class="wp-block-list">
+<li>The t-distribution approaches the standard normal distribution as the degrees of freedom <span class="math">k \to \infty</span>. This makes sense: as the sample size grows, our estimate <span class="math">s</span> of the true standard deviation <span class="math">\sigma</span> becomes very accurate, and the uncertainty from estimating it vanishes.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="where-is-it-used">Where is it used?</h4>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Machine Learning (t-SNE):</strong> As discussed previously, the t-distribution with one degree of freedom is used in the low-dimensional space of t-SNE to create embeddings where clusters are more clearly separated. Its heavy tails are the key to this property.</li>
+
+
+
+<li><strong>Hint for Hypothesis Testing:</strong> The t-distribution is the basis for the <strong>Student&#8217;s t-test</strong>, one of the most widely used statistical tests. It is used to compare the means of two groups, or to test whether a sample mean is significantly different from a hypothesized value, when the population variance is unknown. The t-statistic <span class="math">\frac{\bar{X}-\mu}{s/\sqrt{n}}</span> is calculated, and its value is compared to the critical values of the t-distribution to determine statistical significance. It is the go-to tool for inference on means with small sample sizes.</li>
+</ul>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

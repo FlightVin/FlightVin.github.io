@@ -1,0 +1,577 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Other important matrix bits | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Other important matrix&nbsp;bits</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-08-24T16:01:38">2025-08-24</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What’s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#affine-spaces">Affine Spaces</a><ol><li><a class="wp-block-table-of-contents__entry" href="#definition-s">Definition(s)</a></li><li><a class="wp-block-table-of-contents__entry" href="#very-math-stuff-what-s-the-use">Very math stuff &#8211; what&#8217;s the use?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#inner-products-of-functions">Inner Products (of functions)</a><ol><li><a class="wp-block-table-of-contents__entry" href="#starting-from-dot-products">Starting from dot products</a></li><li><a class="wp-block-table-of-contents__entry" href="#theoretical-development">Theoretical Development</a></li><li><a class="wp-block-table-of-contents__entry" href="#where-can-i-see-this-in-action">Where can I see this in action?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#orthogonal-projections">Orthogonal Projections</a><ol><li><a class="wp-block-table-of-contents__entry" href="#what-is-it-exactly">What is it, exactly?</a></li><li><a class="wp-block-table-of-contents__entry" href="#two-cases">Two Cases</a></li><li><a class="wp-block-table-of-contents__entry" href="#projection-onto-a-subspace">Projection onto a subspace</a></li><li><a class="wp-block-table-of-contents__entry" href="#where-have-we-seen-this">Where have we seen this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#matrix-approximation">Matrix Approximation</a><ol><li><a class="wp-block-table-of-contents__entry" href="#applications">Applications</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What’s there?</h3>
+
+
+
+<p class="wp-block-paragraph">I want to try and cover every other kinda trivial / small things related to matrices / LinAlg in this. This covers</p>
+
+
+
+<ol class="wp-block-list">
+<li>Affine spaces (This post!)</li>
+
+
+
+<li>Inner products of functions (This post!)</li>
+
+
+
+<li>Orthogonal projections (This post!)</li>
+
+
+
+<li>Matrix approximation (This post!)</li>
+
+
+
+<li>Rotations and quaternions</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="affine-spaces">Affine Spaces</h3>
+
+
+
+<h4 class="wp-block-heading" id="definition-s">Definition(s)</h4>
+
+
+
+<p class="wp-block-paragraph">An <strong>affine space</strong> <span class="math">A</span> is a set of elements called <strong>points</strong>, together with a vector space <span class="math">V</span>, and an operation of vector addition that acts on points. This operation, <span class="math">+: A \times V \to A</span>, satisfies the following axioms:</p>
+
+
+
+<ol class="wp-block-list">
+<li>For any point <span class="math">P \in A</span>, <span class="math">P + \mathbf{0} = P</span>.</li>
+
+
+
+<li>For any point <span class="math">P \in A</span> and any two vectors <span class="math">\mathbf{v}_1, \mathbf{v}_2 \in V</span>, <span class="math">(P + \mathbf{v}_1) + \mathbf{v}_2 = P + (\mathbf{v}_1 + \mathbf{v}_2)</span>.</li>
+
+
+
+<li>For any two points <span class="math">P, Q \in A</span>, there exists a unique vector <span class="math">\mathbf{v} \in V</span> such that <span class="math">P + \mathbf{v} = Q</span>. This unique vector is denoted <span class="math">\vec{PQ} = Q - P</span>.</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">The vector space <span class="math">V</span> is called the <strong>direction space</strong> associated with the affine space <span class="math">A</span>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Some other definitions</span></strong></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Affine Subspaces:</strong> An <strong>affine subspace</strong> <span class="math">L</span> of an affine space <span class="math">A</span> is a subset of <span class="math">A</span> that is itself an affine space with a direction space <span class="math">U</span> that is a vector subspace of <span class="math">V</span>. More concretely, an affine subspace is formed by taking a vector subspace and translating it.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">L = P_0 + U := { P_0 + \mathbf{u} \mid \mathbf{u} \in U }</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">where <span class="math">P_0 \in A</span> is a <strong>support point</strong> (an origin for the subspace) and <span class="math">U \subseteq V</span> is the direction space. A vector space is a special case of an affine subspace where the support point is the origin.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong>Parametric Representation:</strong> If the direction space <span class="math">U</span> has a basis <span class="math">{\mathbf{b}_1, \dots, \mathbf{b}_k}</span>, then any point <span class="math">P</span> in the affine subspace <span class="math">L</span> can be uniquely represented in parametric form as:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P = P_0 + \sum_{i=1}^k \lambda_i \mathbf{b}_i, \quad \text{where } \lambda_i \in \mathbb{R}</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Examples include lines (<span class="math">k=1</span>) and planes (<span class="math">k=2</span>). A <strong>hyperplane</strong> is an affine subspace of codimension 1 (i.e., of dimension <span class="math">n-1</span> in an <span class="math">n</span>-dimensional space).</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong>Affine Mappings:</strong> An <strong>affine map</strong> <span class="math">f: A \to B</span> between two affine spaces is a function that preserves the structure of affine subspaces. It can be shown that any affine map can be uniquely decomposed into a linear map on the underlying vector spaces plus a translation. In a coordinate system, this takes the familiar form:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">f(\mathbf{x}) = \mathbf{A}\mathbf{x} + \mathbf{t}</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">where <span class="math">\mathbf{A}</span> is the matrix of the underlying linear map and <span class="math">\mathbf{t}</span> is a translation vector.</p>
+</blockquote>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="very-math-stuff-what-s-the-use">Very math stuff &#8211; what&#8217;s the use?</h4>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Use 1: Support Vector Machines!</span></strong></p>
+
+
+
+<p class="wp-block-paragraph">The separating hyperplane in a Support Vector Machine (SVM) is actually an affine subspace!</p>
+
+
+
+<p class="wp-block-paragraph"> In a <span class="math">D</span>-dimensional feature space, the hyperplane is defined by the set of points <span class="math">\mathbf{x}</span> satisfying the equation:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\langle \mathbf{w}, \mathbf{x} \rangle + b = 0</span></p>
+
+
+
+<p class="wp-block-paragraph">Here, <span class="math">\mathbf{w}</span> is the normal vector that defines the direction space&#8217;s orthogonal complement, and <span class="math">b</span> is a scalar related to the translation from the origin.</p>
+
+
+
+<h3 class="wp-block-heading" id="inner-products-of-functions">Inner Products (of functions)</h3>
+
+
+
+<h4 class="wp-block-heading" id="starting-from-dot-products">Starting from dot products</h4>
+
+
+
+<p class="wp-block-paragraph">The concept of an inner product on a space of functions is a <span style="text-decoration: underline">direct generalization</span> of the dot product on finite-dimensional Euclidean space <span class="math">\mathbb{R}^n</span>.</p>
+
+
+
+<ol class="wp-block-list">
+<li>The dot product in <span class="math">\mathbb{R}^n</span> is defined as <span class="math">\langle \mathbf{x}, \mathbf{y} \rangle = \mathbf{x}^\top\mathbf{y} = \sum_{i=1}^n x_i y_i</span>. It satisfies the axioms of an inner product: bilinearity, symmetry, and positive definiteness.</li>
+
+
+
+<li>Now, a function <span class="math">f: [a,b] \to \mathbb{R}</span> can be conceptualized as an infinite-dimensional vector, where each point <span class="math">x \in [a,b]</span> corresponds to a component with value <span class="math">f(x)</span>. In this view, the discrete sum of the dot product becomes a continuous integral.</li>
+
+
+
+<li>Further, to ensure the integrals are well-defined, we consider a vector space of functions, typically the space of square-integrable functions on an interval <span class="math">[a,b]</span>, denoted <span class="math">L^2([a,b])</span>.</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"><strong>Formal Definition:</strong> The <strong>inner product</strong> of two real-valued functions <span class="math">f(x)</span> and <span class="math">g(x)</span> in the space <span class="math">L^2([a,b])</span> is defined as:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\langle f, g \rangle := \int_a^b f(x) g(x) dx</span></p>
+
+
+
+<p class="wp-block-paragraph">More generally, a weight function <span class="math">w(x) &gt; 0</span> can be introduced: <span class="math">\langle f, g \rangle_w = \int_a^b f(x) g(x) w(x) dx</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="theoretical-development">Theoretical Development</h4>
+
+
+
+<p class="wp-block-paragraph">Gonna info dump some things &#8211; </p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Induced Norm:</strong> The inner product induces a norm, known as the <span class="math">L^2</span>-norm, which measures the &#8220;length&#8221; or &#8220;magnitude&#8221; of a function:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">|f|_{L^2} = \sqrt{\langle f, f \rangle} = \left(\int_a^b f(x)^2 dx\right)^{1/2}</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Orthogonality of Functions:</strong> Two functions <span class="math">f</span> and <span class="math">g</span> are <strong>orthogonal</strong> if their inner product is zero:</li>
+</ul>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\langle f, g \rangle = \int_a^b f(x) g(x) dx = 0</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Orthogonal Basis and Fourier Series:</strong> A set of functions <span class="math">{\phi_k(x)}</span> is an orthogonal basis if its members are mutually orthogonal. </li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="where-can-i-see-this-in-action">Where can I see this in action?</h4>
+
+
+
+<p class="wp-block-paragraph"><strong><span style="text-decoration: underline">Use 1: Fourier Series</span></strong></p>
+
+
+
+<p class="wp-block-paragraph">Functional analysis says that many well-behaved functions can be represented as a linear combination of orthogonal basis functions. </p>
+
+
+
+<p class="wp-block-paragraph">E.g., <strong>Fourier series</strong>, which represents a periodic function as a sum of sines and cosines, which form an orthogonal set on the interval <span class="math">[-\pi, \pi]</span>. </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The coefficient for each basis function <span class="math">\phi_k</span> is found by projecting <span class="math">f</span> onto it: <span class="math">c_k = \frac{\langle f, \phi_k \rangle}{|\phi_k|^2}</span>.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Other than this, you can actually show that solutions <em>relating</em> to Kernel methods, unknown functions in robotics (e.g., friction), etc. can be written as inner products of functions.</p>
+
+
+
+<h3 class="wp-block-heading" id="orthogonal-projections">Orthogonal Projections</h3>
+
+
+
+<h4 class="wp-block-heading" id="what-is-it-exactly">What is it, exactly?</h4>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">An orthogonal projection is a mapping that takes a vector and finds its closest point within a given subspace.</p>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><em>It is the formalization of the geometric idea of casting a shadow.</em></p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Ok, find, but what is it?</p>
+
+
+
+<p class="wp-block-paragraph">Given a vector space <span class="math">V</span> and a subspace <span class="math">U \subseteq V</span>, for any vector <span class="math">\mathbf{v} \in V</span>, we want to find the unique vector <span class="math">\mathbf{u} \in U</span> that is closest to <span class="math">\mathbf{v}</span>. This is equivalent to minimizing the distance:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{proj}_U(\mathbf{v}) = \arg\min_{\mathbf{u} \in U} |\mathbf{v} - \mathbf{u}|</span></p>
+
+
+
+<p class="wp-block-paragraph">The solution to this minimization problem occurs when the &#8220;error&#8221; vector, <span class="math">\mathbf{v} - \mathbf{u}</span>, is orthogonal to the subspace <span class="math">U</span>. That is, <span class="math">\langle \mathbf{v} - \mathbf{u}, \mathbf{z} \rangle = 0</span> for all <span class="math">\mathbf{z} \in U</span>.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This is basically the <strong>Geometric Condition</strong>!</p>
+</blockquote>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="two-cases">Two Cases</h4>
+
+
+
+<p class="wp-block-paragraph">You can either</p>
+
+
+
+<ol class="wp-block-list">
+<li>Project onto a line, or,</li>
+
+
+
+<li>Project onto a subspace</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"><strong>Projection onto a Line:</strong> The simplest case is projecting a vector <span class="math">\mathbf{v}</span> onto the line spanned by a single non-zero vector <span class="math">\mathbf{b}</span>. The projection is a scaled version of <span class="math">\mathbf{b}</span>, <span class="math">\text{proj}_{\mathbf{b}}(\mathbf{v}) = \lambda \mathbf{b}</span>. Using the orthogonality condition:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\langle \mathbf{v} - \lambda\mathbf{b}, \mathbf{b} \rangle = 0 \implies \langle \mathbf{v}, \mathbf{b} \rangle - \lambda\langle \mathbf{b}, \mathbf{b} \rangle = 0 \implies \lambda = \frac{\langle \mathbf{v}, \mathbf{b} \rangle}{|\mathbf{b}|^2}</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The projection is thus <span class="math">\text{proj}_{\mathbf{b}}(\mathbf{v}) = \frac{\langle \mathbf{v}, \mathbf{b} \rangle}{|\mathbf{b}|^2} \mathbf{b}</span>. In matrix form for the standard dot product in <span class="math">\mathbb{R}^n</span>, this is represented by the <strong>projection matrix</strong>: <span class="math">\mathbf{P} = \frac{\mathbf{b}\mathbf{b}^\top}{\mathbf{b}^\top\mathbf{b}}</span>.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong><em>Hold up here. </em></strong>Notice that <span class="math">\text{proj}_{\mathbf{b}}(\mathbf{v})</span> is a vector. This is the vector of the projection. The magnituge of the projection, just the &#8220;size&#8221; of the shadow so to say, is the <span style="text-decoration: underline">complement</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"> <span class="math">\text{comp}_{\mathbf{b}}(\mathbf{v}) = \frac{\langle \mathbf{v}, \mathbf{b} \rangle}{|\mathbf{b}|}</span></p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong>Projection onto a Subspace:</strong> This generalizes to projecting onto a subspace <span class="math">U</span> spanned by the columns of a matrix <span class="math">\mathbf{A} \in \mathbb{R}^{m \times n}</span> (with linearly independent columns). The projection <span class="math">\mathbf{p}</span> is in the column space, so <span class="math">\mathbf{p} = \mathbf{A}\hat{\mathbf{x}}</span> for some coefficient vector <span class="math">\hat{\mathbf{x}}</span>. The error vector <span class="math">\mathbf{b} - \mathbf{A}\hat{\mathbf{x}}</span> must be orthogonal to the column space of <span class="math">\mathbf{A}</span>. This means it must be in the left null space of <span class="math">\mathbf{A}</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}^\top(\mathbf{b} - \mathbf{A}\hat{\mathbf{x}}) = \mathbf{0} \implies \mathbf{A}^\top\mathbf{A}\hat{\mathbf{x}} = \mathbf{A}^\top\mathbf{b}</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This is the <strong>normal equation</strong>. Solving for <span class="math">\hat{\mathbf{x}}</span> and plugging back gives the projection <span class="math">\mathbf{p}</span>:</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\hat{\mathbf{x}} = (\mathbf{A}^\top\mathbf{A})^{-1}\mathbf{A}^\top\mathbf{b} \implies \mathbf{p} = \mathbf{A}(\mathbf{A}^\top\mathbf{A})^{-1}\mathbf{A}^\top\mathbf{b}</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">The projection matrix is <span class="math">\mathbf{P} = \mathbf{A}(\mathbf{A}^\top\mathbf{A})^{-1}\mathbf{A}^\top</span>. If the columns of <span class="math">\mathbf{A}</span> are orthonormal, then <span class="math">\mathbf{A}^\top\mathbf{A} = \mathbf{I}</span>, and the formula simplifies to <span class="math">\mathbf{P} = \mathbf{A}\mathbf{A}^\top</span>.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><span style="text-decoration: underline">Wait this doesn&#8217;t make sense directly:(</span> Ok, imma write it again!</p>
+
+
+
+<h4 class="wp-block-heading" id="projection-onto-a-subspace">Projection onto a subspace</h4>
+
+
+
+<p class="wp-block-paragraph">Yes, its own section. </p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th>Concept</th><th>Projection onto a Line (1D)</th><th>Projection onto a Subspace (nD)</th></tr></thead><tbody><tr><td><strong>The &#8220;Ground&#8221;</strong></td><td>A single line defined by one vector <strong>b</strong>.</td><td>A &#8220;floor&#8221; or subspace defined by multiple basis vectors, which are the columns of a matrix <strong>A</strong>.</td></tr><tr><td><strong>The &#8220;Shadow&#8221;</strong></td><td>The projection <strong>p</strong> is on the line, so it&#8217;s a scaled version of <strong>b</strong>.</td><td>The projection <strong>p</strong> is on the &#8220;floor,&#8221; so it&#8217;s a <em>linear combination</em> of the basis vectors in <strong>A</strong>.</td></tr><tr><td><strong>Orthogonality</strong></td><td>The error vector (<strong>b</strong> &#8211; <strong>p</strong>) must be orthogonal to the line&#8217;s direction vector <strong>b</strong>.</td><td>The error vector (<strong>b</strong> &#8211; <strong>p</strong>) must be orthogonal to the <em>entire subspace</em>. This means it must be orthogonal to <strong>every column</strong> of <strong>A</strong>.</td></tr></tbody></table></figure>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Now, let&#8217;s derive!</p>
+
+
+
+<p class="wp-block-paragraph"><strong>State the Goal</strong>: We want to find the projection <span class="math">\mathbf{p}</span>, which we know is a combination of <span class="math">\mathbf{A}</span>&#8216;s columns: <span class="math">\mathbf{p} = \mathbf{A}\hat{\mathbf{x}}</span>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Use the Orthogonality Condition</strong>: The error vector (<span class="math">\mathbf{b} - \mathbf{p}</span>) must be orthogonal to the column space of <span class="math">\mathbf{A}</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}^\top(\mathbf{b} - \mathbf{p}) = \mathbf{0}</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Substitute <span class="math">\mathbf{p}</span></strong>: Replace <span class="math">\mathbf{p}</span> with what we know it is, <span class="math">\mathbf{A}\hat{\mathbf{x}}</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}^\top(\mathbf{b} - \mathbf{A}\hat{\mathbf{x}}) = \mathbf{0}</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Solve for the Coefficients <span class="math">\hat{\mathbf{x}}</span></strong>: Distribute <span class="math">\mathbf{A}^\top</span> to get the <strong>normal equation</strong>. This equation&#8217;s name comes from the fact that it enforces the &#8220;normal&#8221; (orthogonal) condition.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}^\top\mathbf{b} - \mathbf{A}^\top\mathbf{A}\hat{\mathbf{x}} = \mathbf{0}</span></p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A}^\top\mathbf{A}\hat{\mathbf{x}} = \mathbf{A}^\top\mathbf{b}</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Now, solve for the coefficient vector <span class="math">\hat{\mathbf{x}}</span>:</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\hat{\mathbf{x}} = (\mathbf{A}^\top\mathbf{A})^{-1}\mathbf{A}^\top\mathbf{b}</span></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This formula gives us the perfect &#8220;recipe&#8221; of coefficients to create the projection.</p>
+</blockquote>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"><strong>Find the Projection Vector <span class="math">\mathbf{p}</span></strong>: Now that we have the recipe (<span class="math">\hat{\mathbf{x}}</span>), we can build the projection vector <span class="math">\mathbf{p}</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{p} = \mathbf{A}\hat{\mathbf{x}} = \mathbf{A}(\mathbf{A}^\top\mathbf{A})^{-1}\mathbf{A}^\top\mathbf{b}</span></p>
+
+
+
+<p class="wp-block-paragraph">The <strong>projection matrix</strong> is the part that does all the work: <span class="math">\mathbf{P} = \mathbf{A}(\mathbf{A}^\top\mathbf{A})^{-1}\mathbf{A}^\top</span>. It&#8217;s a single matrix that takes any vector <span class="math">\mathbf{b}</span> and spits out its projection onto the subspace defined by <span class="math">\mathbf{A}</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="where-have-we-seen-this">Where have we seen this?</h4>
+
+
+
+<p class="wp-block-paragraph">The solution to the least-squares problem, <span class="math">\min_{\boldsymbol{\theta}} |\mathbf{y} - \mathbf{X}\boldsymbol{\theta}|_2^2</span>, is found by solving the normal equation <span class="math">\mathbf{X}^\top\mathbf{X}\boldsymbol{\theta} = \mathbf{X}^\top\mathbf{y}</span>. </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">This solution, <span class="math">\hat{\mathbf{y}} = \mathbf{X}\boldsymbol{\theta}</span>, is the <strong>orthogonal projection</strong> of the observed target vector <span class="math">\mathbf{y}</span> onto the column space of the design matrix <span class="math">\mathbf{X}</span>. </p>
+</blockquote>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="matrix-approximation">Matrix Approximation</h3>
+
+
+
+<p class="wp-block-paragraph">I just wanted to add this as a heading since it&#8217;s not directly evident that this is just the EYM theorem discussed in depth within <a href="../2025-08-23-matrix-decompositions-3/">Matrix Decompositions 3</a>. Anyway, here&#8217;s the statement again &#8211;</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Theorem (Eckart-Young-Mirsky):</strong> Let the SVD of a matrix <span class="math">\mathbf{M} \in \mathbb{R}^{m \times n}</span> of rank <span class="math">r</span> be <span class="math">\mathbf{M} = \mathbf{U}\mathbf{S}\mathbf{V}^\top = \sum_{i=1}^{r} \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span>. The best rank-<span class="math">k</span> approximation to <span class="math">\mathbf{M}</span> (for <span class="math">k &lt; r</span>) that minimizes the error <span class="math">|\mathbf{M} - \mathbf{M}_k|</span> (in both spectral and Frobenius norms) is given by the truncated SVD sum:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{M}_k = \arg\min_{\text{rank}(\mathbf{B})=k} |\mathbf{M} - \mathbf{B}| = \sum_{i=1}^{k} \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">The theorem states that to get the best approximation, one should keep the components corresponding to the largest singular values and discard the rest. The singular values quantify the &#8220;importance&#8221; of each rank-one component.</p>
+
+
+
+<h4 class="wp-block-heading" id="applications">Applications</h4>
+
+
+
+<p class="wp-block-paragraph">Gosh, what&#8217;s not there? </p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Machine Learning (Principal Component Analysis):</strong> PCA is the most direct application of this theorem. It seeks the best rank-$k$ approximation of a centered data matrix. The SVD provides both the optimal subspace (spanned by the first $k$ right-singular vectors) and the coordinates of the data projected onto it.</li>
+
+
+
+<li><strong>Machine Learning (Recommender Systems):</strong> A user-item rating matrix is often very large, sparse, and assumed to be approximately low-rank. Low-rank matrix factorization, which is a form of matrix approximation, is used to fill in the missing entries. The SVD finds the optimal low-rank approximation, uncovering latent factors that describe user preferences and item characteristics.</li>
+
+
+
+<li><strong>AI (Natural Language Processing &#8211; Topic Modeling):</strong> In Latent Semantic Analysis (LSA), a large term-document matrix is constructed. Its low-rank approximation via SVD is used to find a &#8220;semantic space&#8221; where terms and documents with similar meanings are close together. The singular vectors represent abstract &#8220;topics.&#8221;</li>
+</ul>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)<br></li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

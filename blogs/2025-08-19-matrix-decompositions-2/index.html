@@ -1,0 +1,553 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Matrix Decompositions 2 | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Matrix Decompositions 2</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-08-19T21:22:37">2025-08-19</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What&#8217;s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#qr-decomposition">QR Decomposition</a><ol><li><a class="wp-block-table-of-contents__entry" href="#basics">Basics?</a></li><li><a class="wp-block-table-of-contents__entry" href="#ok-what-is-it">Ok, what is it?</a></li><li><a class="wp-block-table-of-contents__entry" href="#ok-but-why">Ok, but why?</a></li><li><a class="wp-block-table-of-contents__entry" href="#how-do-i-do-it">How do I do it?</a></li><li><a class="wp-block-table-of-contents__entry" href="#applications">Applications!!</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#cholesky-decomposition">Cholesky decomposition</a><ol><li><a class="wp-block-table-of-contents__entry" href="#axiomatic-basis">Axiomatic basis</a></li><li><a class="wp-block-table-of-contents__entry" href="#what-is-it">What is it?</a></li><li><a class="wp-block-table-of-contents__entry" href="#isn-t-this-very-specific">Isn&#8217;t this very specific?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#lu-decomposition">LU decomposition</a><ol><li><a class="wp-block-table-of-contents__entry" href="#definition">Definition</a></li><li><a class="wp-block-table-of-contents__entry" href="#how-do-i-do-it-1">How do I do it?</a></li><li><a class="wp-block-table-of-contents__entry" href="#applications-1">Applications</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What&#8217;s there?</h3>
+
+
+
+<p class="wp-block-paragraph">There are basically 5 (ಐದು / पाँच) types of matrix decompositions that are like super important. I strive to go in depth into all of them. These are</p>
+
+
+
+<ol class="wp-block-list">
+<li>Eigendecomposition (<a href="../2025-07-17-matrix-decompositions-1/">Matrix Decompositions 1</a>)</li>
+
+
+
+<li>QR decomposition (This post!)</li>
+
+
+
+<li>Cholesky decomposition (This post!)</li>
+
+
+
+<li>LU decomposition (This post!)</li>
+
+
+
+<li>(perhaps the most important) Singular Value Decomposition</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="qr-decomposition">QR Decomposition</h3>
+
+
+
+<h4 class="wp-block-heading" id="basics">Basics?</h4>
+
+
+
+<p class="wp-block-paragraph">Yeah, you remember vector spaces and orthogonality? Yeah, that&#8217;s it.</p>
+
+
+
+<h4 class="wp-block-heading" id="ok-what-is-it">Ok, what is it?</h4>
+
+
+
+<p class="wp-block-paragraph">A factorization of a matrix <span class="math">\mathbf{A} \in \mathbb{R}^{m \times n}</span> into the product of two specific types of matrices: an orthogonal matrix <span class="math">\mathbf{Q}</span> and an upper triangular matrix <span class="math">\mathbf{R}</span>.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Definition (QR Decomposition):</strong> Let <span class="math">\mathbf{A}</span> be an <span class="math">m \times n</span> matrix with linearly independent columns. The QR decomposition of <span class="math">\mathbf{A}</span> is a factorization:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A} = \mathbf{Q}\mathbf{R}</span></p>
+
+
+
+<p class="wp-block-paragraph">where:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\mathbf{Q}</span> is an <span class="math">m \times n</span> matrix with <strong>orthonormal columns</strong>. Thus, <span class="math">\mathbf{Q}^\top \mathbf{Q} = \mathbf{I}_n</span>, where <span class="math">\mathbf{I}_n</span> is the <span class="math">n \times n</span> identity matrix.</li>
+
+
+
+<li><span class="math">\mathbf{R}</span> is an <span class="math">n \times n</span> <strong>upper triangular matrix</strong>. This means all entries below the main diagonal are zero (<span class="math">R_{ij} = 0</span> for <span class="math">i &gt; j</span>).
+<ul class="wp-block-list">
+<li>R? Right? Right-upper? And Q preceded R? Get it? Idk.</li>
+</ul>
+</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="ok-but-why">Ok, but why?</h4>
+
+
+
+<p class="wp-block-paragraph">Orthogonal matrices are awesome. </p>
+
+
+
+<p class="wp-block-paragraph">QR decomposition formalizes a process of transforming an arbitrary basis (the columns of <span class="math">\mathbf{A}</span>) into an orthonormal basis (the columns of <span class="math">\mathbf{Q}</span>), while encoding the transformation information in the upper triangular matrix <span class="math">\mathbf{R}</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="how-do-i-do-it">How do I do it?</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Gram-Schmidt process!</strong></p>
+
+
+
+<p class="wp-block-paragraph"><a href="https://www.math.ucla.edu/~yanovsky/Teaching/Math151B/handouts/GramSchmidt.pdf">This handout from UCLA</a> is awesome. I have realised that I&#8217;m not made out of time and want to make these notes more for intuition and rigorous math only for places that I deem super important (around ~50%).</p>
+
+
+
+<h4 class="wp-block-heading" id="applications">Applications!!</h4>
+
+
+
+<p class="wp-block-paragraph">This is why I do this &#8211; yayyy (first time I got to this section in under ~20 minutes).</p>
+
+
+
+<ol class="wp-block-list">
+<li>Solving Linear Systems and Least-Squares Problems</li>
+
+
+
+<li>In robotics?</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"><strong><em>Solving Linear Systems and Least-Squares Problems</em></strong></p>
+
+
+
+<p class="wp-block-paragraph">Say we want to solve <span class="math">\mathbf{A}\mathbf{x} = \mathbf{b}</span>. We can write &#8211;</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{Q}\mathbf{R}\mathbf{x} = \mathbf{b}</span></p>
+
+
+
+<p class="wp-block-paragraph">Since <span class="math">\mathbf{Q}</span> is orthogonal, <span class="math">\mathbf{Q}^{-1} = \mathbf{Q}^\top</span>. We can multiply by <span class="math">\mathbf{Q}^\top</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{Q}^\top\mathbf{Q}\mathbf{R}\mathbf{x} = \mathbf{Q}^\top\mathbf{b} \implies \mathbf{R}\mathbf{x} = \mathbf{Q}^\top\mathbf{b}</span></p>
+
+
+
+<p class="wp-block-paragraph">This new system is trivial to solve because <span class="math">\mathbf{R}</span> is upper triangular. We can solve for the components of <span class="math">\mathbf{x}</span> starting from the last one and moving upwards, a process known as <strong>back substitution</strong>.</p>
+
+
+
+<p class="wp-block-paragraph">Now, for the linear least squares regression.</p>
+
+
+
+<p class="wp-block-paragraph">The objective is to find the vector <span class="math">\mathbf{x}</span> that minimizes the squared Euclidean norm of the residual:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\min_{\mathbf{x}} |\mathbf{A}\mathbf{x} - \mathbf{b}|_2^2</span></p>
+
+
+
+<p class="wp-block-paragraph">That means, for us,</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">|\mathbf{Q}\mathbf{R}\mathbf{x} - \mathbf{b}|_2^2 = |\mathbf{Q}^\top(\mathbf{Q}\mathbf{R}\mathbf{x} - \mathbf{b})|_2^2 = |\mathbf{R}\mathbf{x} - \mathbf{Q}^\top\mathbf{b}|_2^2</span></p>
+
+
+
+<p class="wp-block-paragraph">How did we do this? <strong>Orthogonal transformations preserve the Euclidean norm</strong>!!!</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">Very cool and smart sounding, right? <strong><span style="text-decoration: underline"><em>But, why did we do this?</em></span></strong></p>
+
+
+
+<p class="wp-block-paragraph">The main issue lies with the formation of <span class="math">\mathbf{A}^\top\mathbf{A}</span>. <strong>It has a high condition number and is less numerically stable.</strong></p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">A condition number is a score that measures how sensitive a function or a matrix is to small changes in its input.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">This means that &#8211; </p>
+</blockquote>
+
+
+
+<ul class="wp-block-list">
+<li>A low condition number means a matrix is well-conditioned. Small changes in the input data will only cause small changes in the output or solution. This is stable and reliable.</li>
+
+
+
+<li>A high condition number means a matrix is ill-conditioned. Tiny, insignificant changes in the input data can cause huge, dramatic changes in the solution. This is unstable and unreliable.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">In numerical calculations, an ill-conditioned matrix can amplify tiny rounding errors into completely wrong answers.</p>
+
+
+
+<p class="wp-block-paragraph">Forming the matrix <span class="math">\mathbf{A}^\top\mathbf{A}</span> can be disastrous for numerical stability. Mathematically, the condition number of <span class="math">\mathbf{A}^\top\mathbf{A}</span> is the square of the condition number of <span class="math">\mathbf{A}</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">cond(\mathbf{A}^\top\mathbf{A}) = [cond(\mathbf{A})]^2</span></p>
+
+
+
+<p class="wp-block-paragraph">This means that if your original matrix <span class="math">\mathbf{A}</span> is even slightly ill-conditioned, the matrix <span class="math">\mathbf{A}^\top\mathbf{A}</span> you need to work with will be <strong>extremely</strong> ill-conditioned.</p>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<p class="wp-block-paragraph">The QR method is superior because it cleverly bypasses the need to form the unstable <span class="math">\mathbf{A}^\top\mathbf{A}</span> matrix.</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Decomposition</strong>: First, it decomposes the original matrix <span class="math">\mathbf{A}</span> into <span class="math">\mathbf{Q}\mathbf{R}</span>, where <span class="math">\mathbf{Q}</span> is an orthogonal matrix and <span class="math">\mathbf{R}</span> is an upper triangular matrix. This decomposition process itself is numerically stable.</li>
+
+
+
+<li><strong>Stable Transformation</strong>: The next step uses a key property of orthogonal matrices: they don&#8217;t change the length (Euclidean norm) of vectors when they multiply them. This allows the problem to be transformed without amplifying errors:</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">|\mathbf{A}\mathbf{x} - \mathbf{b}|_2^2 = |\mathbf{Q}\mathbf{R}\mathbf{x} - \mathbf{b}|_2^2 = |\mathbf{R}\mathbf{x} - \mathbf{Q}^\top\mathbf{b}|_2^2</span></p>
+
+
+
+<p class="wp-block-paragraph">This transformation is numerically stable because the condition number of <span class="math">\mathbf{R}</span> is the same as the original matrix <span class="math">\mathbf{A}</span>. We haven&#8217;t made the problem worse:))))</p>
+
+
+
+<p class="wp-block-paragraph"><strong><em>In Robotics?</em></strong></p>
+
+
+
+<p class="wp-block-paragraph">Literally anywhere you use least squares. Example &#8211; Levenberg-Marquardt algorithm in inverse kinematics:)</p>
+
+
+
+<hr class="wp-block-separator has-alpha-channel-opacity" />
+
+
+
+<h3 class="wp-block-heading" id="cholesky-decomposition">Cholesky decomposition</h3>
+
+
+
+<h4 class="wp-block-heading" id="axiomatic-basis">Axiomatic basis</h4>
+
+
+
+<p class="wp-block-paragraph">We do have something for this!</p>
+
+
+
+<p class="wp-block-paragraph">The entire theory of Cholesky decomposition rests upon the properties of <strong>Symmetric Positive Definite (SPD)</strong> matrices. Let <span class="math">\mathbf{A} \in \mathbb{R}^{n \times n}</span> be a square matrix.</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Symmetry:</strong> The matrix is symmetric if it is equal to its transpose, <span class="math">\mathbf{A} = \mathbf{A}^\top</span>. This means <span class="math">A_{ij} = A_{ji}</span> for all <span class="math">i, j</span> (the more you know!). </li>
+
+
+
+<li><strong>Positive Definiteness:</strong> A symmetric matrix <span class="math">\mathbf{A}</span> is positive definite if for every non-zero vector <span class="math">\mathbf{x} \in \mathbb{R}^n \setminus {\mathbf{0}}</span>, the quadratic form <span class="math">\mathbf{x}^\top \mathbf{A} \mathbf{x}</span> is strictly positive.</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x}^\top \mathbf{A} \mathbf{x} &gt; 0 \quad \forall \mathbf{x} \neq \mathbf{0}</span></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Key Properties of SPD Matrices:</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>All eigenvalues of an SPD matrix are real and strictly positive.</li>
+
+
+
+<li>All diagonal elements (<span class="math">A_{ii}</span>) are strictly positive.</li>
+
+
+
+<li>The matrix is always invertible (since no eigenvalue is zero).</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"><strong>Proofs!</strong></p>
+
+
+
+<h4 class="wp-block-heading" id="what-is-it">What is it?</h4>
+
+
+
+<p class="wp-block-paragraph">Let <span class="math">\mathbf{A}</span> be a symmetric, positive definite matrix. Its Cholesky decomposition is a factorization of the form:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A} = \mathbf{L}\mathbf{L}^\top</span></p>
+
+
+
+<p class="wp-block-paragraph">where:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\mathbf{L}</span> is a <strong>lower triangular matrix</strong> with strictly positive diagonal entries (<span class="math">L_{ii} &gt; 0</span>).</li>
+
+
+
+<li><span class="math">\mathbf{L}^\top</span> is the transpose of <span class="math">\mathbf{L}</span>, which is an <strong>upper triangular matrix</strong>.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="isn-t-this-very-specific">Isn&#8217;t this very specific?</h4>
+
+
+
+<p class="wp-block-paragraph">So, why do we need this?</p>
+
+
+
+<p class="wp-block-paragraph">Ee often need to generate random samples from a multivariate Gaussian distribution <span class="math">\mathcal{N}(\boldsymbol{\mu}, \mathbf{\Sigma})</span>. The covariance matrix <span class="math">\mathbf{\Sigma}</span> is, by definition, SPD.</p>
+
+
+
+<p class="wp-block-paragraph">How do we use it?</p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Generate Standard Normal Variates:</strong> Generate a vector <span class="math">\mathbf{z} \in \mathbb{R}^D</span> where each component <span class="math">z_i</span> is an independent sample from the standard normal distribution <span class="math">\mathcal{N}(0, 1)</span>. This vector <span class="math">\mathbf{z}</span> has a mean of <span class="math">\mathbf{0}</span> and a covariance matrix of <span class="math">\mathbf{I}</span>.</li>
+
+
+
+<li><strong>Decompose:</strong> Compute the Cholesky factor <span class="math">\mathbf{L}</span> of the target covariance matrix, <span class="math">\mathbf{\Sigma} = \mathbf{L}\mathbf{L}^\top</span>.</li>
+
+
+
+<li><strong>Transform:</strong> Create the desired sample <span class="math">\mathbf{x}</span> using the affine transformation:</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{x} = \boldsymbol{\mu} + \mathbf{L}\mathbf{z}</span></p>
+
+
+
+<p class="wp-block-paragraph">This works because the mean and covariance of the transformed variable <span class="math">\mathbf{x}</span> are:</p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\mathbb{E}[\mathbf{x}] = \mathbb{E}[\boldsymbol{\mu} + \mathbf{L}\mathbf{z}] = \boldsymbol{\mu} + \mathbf{L}\mathbb{E}[\mathbf{z}] = \boldsymbol{\mu}</span>.</li>
+
+
+
+<li><span class="math">\text{Cov}(\mathbf{x}) = \text{Cov}(\boldsymbol{\mu} + \mathbf{L}\mathbf{z}) = \mathbf{L}\text{Cov}(\mathbf{z})\mathbf{L}^\top = \mathbf{L}\mathbf{I}\mathbf{L}^\top = \mathbf{L}\mathbf{L}^\top = \mathbf{\Sigma}</span>.<br>The Cholesky decomposition provides the correct linear transformation <span class="math">\mathbf{L}</span> to &#8220;color&#8221; the uncorrelated noise <span class="math">\mathbf{z}</span> into the correlated noise specified by <span class="math">\mathbf{\Sigma}</span>.</li>
+</ul>
+
+
+
+<hr class="wp-block-separator has-alpha-channel-opacity" />
+
+
+
+<h3 class="wp-block-heading" id="lu-decomposition">LU decomposition</h3>
+
+
+
+<h4 class="wp-block-heading" id="definition">Definition</h4>
+
+
+
+<p class="wp-block-paragraph">The LU decomposition of a square matrix <span class="math">\mathbf{A}</span> is a factorization:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A} = \mathbf{L}\mathbf{U}</span></p>
+
+
+
+<p class="wp-block-paragraph">where <span class="math">\mathbf{L}</span> is a unit lower triangular matrix and <span class="math">\mathbf{U}</span> is an upper triangular matrix. Not every matrix has an LU decomposition. However, if row swaps are allowed, a stable factorization is always possible. This leads to the more general form <span class="math">\mathbf{P}\mathbf{A} = \mathbf{L}\mathbf{U}</span>, where <span class="math">\mathbf{P}</span> is a <strong>permutation matrix</strong> that records the row swaps.</p>
+
+
+
+<h4 class="wp-block-heading" id="how-do-i-do-it-1">How do I do it?</h4>
+
+
+
+<p class="wp-block-paragraph">Remember how Guassian elimination does elementary operations? And, these elementary operations can be written as elementary matrices? So, we can do &#8211; </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{A} = (\mathbf{E}_{32}\mathbf{E}_{31}\mathbf{E}_{21})^{-1}\mathbf{U} = \mathbf{E}_{21}^{-1}\mathbf{E}_{31}^{-1}\mathbf{E}_{32}^{-1}\mathbf{U}</span></p>
+
+
+
+<p class="wp-block-paragraph">Now, if you work it out &#8211; the elementary matrices will be lower triangular and their product will also be lower triangular. A nice property is that these lower triangular elementary matrices is that their product is also simple: the multipliers <span class="math">l_{ij}</span> slot directly into the matrix.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{L} = \mathbf{E}_{21}^{-1}\mathbf{E}_{31}^{-1}\mathbf{E}_{32}^{-1} = \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ l_{21} &amp; 1 &amp; 0 \\ l_{31} &amp; l_{32} &amp; 1 \end{bmatrix}</span></p>
+
+
+
+<p class="wp-block-paragraph">Now,<strong> what if one of the pivots is 0?</strong> Or like, super small &#8211; leading to instability?</p>
+
+
+
+<p class="wp-block-paragraph">To prevent this, we perform <strong>pivoting</strong>: swapping the current row with a subsequent row that has a larger pivot element.</p>
+
+
+
+<p class="wp-block-paragraph">Each row swap can be represented by left-multiplication with a <strong>permutation matrix</strong> <span class="math">\mathbf{P}</span>. A permutation matrix is an identity matrix with its rows reordered. Applying all necessary row swaps to <span class="math">\mathbf{A}</span> at the beginning gives the general and stable form of the decomposition:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbf{P}\mathbf{A} = \mathbf{L}\mathbf{U}</span></p>
+
+
+
+<p class="wp-block-paragraph">This factorization exists for any square matrix <span class="math">\mathbf{A}</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="applications-1">Applications</h4>
+
+
+
+<p class="wp-block-paragraph">Literally any decomposition can help<strong> Solving Linear Systems</strong> easier. I&#8217;m gonna skip this but that&#8217;s the primary use (again).</p>
+
+
+
+<p class="wp-block-paragraph">Other than that, the decomposition provides an efficient way to calculate the determinant.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\det(\mathbf{P}\mathbf{A}) = \det(\mathbf{L})\det(\mathbf{U}) \implies \det(\mathbf{P})\det(\mathbf{A}) = \det(\mathbf{L})\det(\mathbf{U})</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\det(\mathbf{L}) = 1</span> (since it is unit triangular).</li>
+
+
+
+<li><span class="math">\det(\mathbf{U}) = \prod_{i=1}^n U_{ii}</span> (the product of its diagonal elements).</li>
+
+
+
+<li><span class="math">\det(\mathbf{P}) = (-1)^s</span>, where <span class="math">s</span> is the number of row swaps performed.<br>Therefore, <span class="math">\det(\mathbf{A}) = (-1)^s \prod_{i=1}^n U_{ii}</span>.</li>
+</ul>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+</ol>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

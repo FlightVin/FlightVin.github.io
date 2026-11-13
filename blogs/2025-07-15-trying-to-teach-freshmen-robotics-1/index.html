@@ -1,0 +1,313 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Trying to Teach Freshmen Robotics 1 | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Trying to Teach Freshmen Robotics&nbsp;1</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-07-15T20:44:34">2025-07-15</time></p>
+      <article class="blog-content">
+
+<p class="wp-block-paragraph">(Written on 25th December, 2025; <a href="https://github.com/FlightVin/flightvin.github.io/blob/c9ceda1ade3b2669f342a14f4b70cf326db2a0ca/_posts/2024-12-25-trying-to-teach-freshmen-robotics-1.md">GitHub permalink</a>)</p>
+
+
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#week-1-introduction-and-getting-your-hands-dirty-on-software">Week 1: introduction and getting your hands dirty on software</a><ol><li><a class="wp-block-table-of-contents__entry" href="#installing-ros">Installing ROS</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#week-2-getting-started-with-ros">Week 2: getting started with ROS</a><ol><li><a class="wp-block-table-of-contents__entry" href="#a-very-very-gentle-introduction">A very, very gentle introduction</a></li><li><a class="wp-block-table-of-contents__entry" href="#reading-the-docs">Reading the docs</a></li><li><a class="wp-block-table-of-contents__entry" href="#week-2-the-next-bits-gazebo">Week 2: The next bits &#8211; Gazebo</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#weeks-3-and-4-mlllll">Weeks 3 and 4: MLLLLL</a><ol><li><a class="wp-block-table-of-contents__entry" href="#essential-reading">Essential Reading</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#next-steps">Next Steps</a></li></ol>
+
+
+
+<h5 class="wp-block-heading" id="week-1-introduction-and-getting-your-hands-dirty-on-software">Week 1: introduction and getting your hands dirty on software</h5>
+
+
+
+<p class="wp-block-paragraph">I recently undertook the task of introducing a bunch of freshmen to robotics. I&#8217;ll keep updating this as they progress.</p>
+
+
+
+<p class="wp-block-paragraph">Here&#8217;s the first email that I had sent to a mentee (with some bits removed).</p>
+
+
+
+<hr class="wp-block-separator has-alpha-channel-opacity" />
+
+
+
+<p class="wp-block-paragraph">A short introduction &#8211; I&#8217;m Vineeth, a UG4 CSE Honours student under Prof. Madhava Krishna. I&#8217;ve worked on Visual Place Recognition, Video Object Detection, Object Identification and Localization, and am currently focused on building a navigation stack (lots of robotics terms &#8211; you&#8217;ll learn them as you go).</p>
+
+
+
+<p class="wp-block-paragraph">Considering that you probably won&#8217;t be doing courses such as DASS and ISS (<em>some introductory courses for CS majors at IIIT on software</em>) that give you a glance into Software Engineering, and since it is vital part of running any experiment successfully, I would like to get you started off with reading the following (skim, don&#8217;t go much in-depth):</p>
+
+
+
+<ol class="wp-block-list">
+<li>An Introduction to Abstraction (<a href="https://www.lesswrong.com/posts/CHSBRLWY5bzZdchFF/a-thorough-introduction-to-abstraction">link</a>)</li>
+
+
+
+<li>Writing Modular Code (<a href="https://best-practice-and-impact.github.io/qa-of-code-guidance/modular_code.html">link</a>)</li>
+
+
+
+<li>Python for Research (<a href="https://rits.github-pages.ucl.ac.uk/doctoral-programming-intro/">link</a>, please skim this &#8211; see the headings and figure out whether you know the general information in it)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">I expect this to take 2-3 days at most, and will then give you resources for:</p>
+
+
+
+<ol class="wp-block-list">
+<li>ROS (Please dual boot with Ubuntu 20 for this; If you use some other Linux Distro, check compatibility)</li>
+
+
+
+<li>Basic Optimization Theory (Brush up on your linear algebra for this)</li>
+
+
+
+<li>Neural Networks and DL (Basics of ML)</li>
+
+
+
+<li>Post this, I would like to introduce you to some concepts in computer vision (such as camera matrices, key-point descriptors, multi-view geometry, etc.), take you into larger networks such as CNNs &amp; Transformers, and SLAM.</li>
+</ol>
+
+
+
+<h6 class="wp-block-heading" id="installing-ros"><strong>Installing ROS</strong></h6>
+
+
+
+<ol class="wp-block-list">
+<li>Set up dual boot with Ubuntu 20.04 (make sure the version matches).</li>
+
+
+
+<li>Install ROS following the instructions for <a href="https://wiki.ros.org/noetic/Installation/Ubuntu">Noetic</a>.</li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li>If you’re adventurous, try Zorin OS. Its installation is similar to Ubuntu.</li>
+</ul>
+
+
+
+<ol class="wp-block-list">
+<li>For a modern approach, consider Docker. While dual booting is recommended for ROS, Docker is a valuable and intriguing tool worth exploring.</li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li><a href="https://roboticseabass.com/2021/04/21/docker-and-ros/">Resource 1</a></li>
+
+
+
+<li><a href="https://www.reddit.com/r/ROS/comments/19d3fgk/running_ros_in_docker_pros_and_cons/">Resource 2</a></li>
+</ul>
+
+
+
+<h5 class="wp-block-heading" id="week-2-getting-started-with-ros">Week 2: getting started with ROS</h5>
+
+
+
+<h6 class="wp-block-heading" id="a-very-very-gentle-introduction">A very, very gentle introduction</h6>
+
+
+
+<p class="wp-block-paragraph">Check <a href="https://app.theconstruct.ai/courses/">this</a> out. Find the “ROS Basics in 5 Days” course (choose either C++ or Python) &#8211; this course isn’t entirely free, but the parts that are very nicely explain the fundamental uses (and quirks) of ROS.</p>
+
+
+
+<h6 class="wp-block-heading" id="reading-the-docs">Reading the docs</h6>
+
+
+
+<p class="wp-block-paragraph">Familiarize yourself with the official <a href="https://wiki.ros.org/noetic">ROS Noetic documentation</a>. Read</p>
+
+
+
+<ul class="wp-block-list">
+<li><a href="https://wiki.ros.org/ROS/Introduction">The introduction</a>, and,</li>
+
+
+
+<li><a href="https://wiki.ros.org/ROS/Tutorials">The Beginner Tutorials</a>: Complete “1.1 Beginner Level” and up to “5 Defining Custom Messages” in the “1.2 Intermediate Level” section.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">While doing this, you should be putting a particular emphasis on <em>topics</em>, <em>services</em> and <em>visualization tools</em>.</p>
+
+
+
+<h6 class="wp-block-heading" id="week-2-the-next-bits-gazebo">Week 2: The next bits &#8211; Gazebo</h6>
+
+
+
+<ol class="wp-block-list">
+<li>Install and read about Gazebo from the <a href="https://classic.gazebosim.org/tutorials?cat=guided_b&amp;tut=guided_b1">Guided B Tutorials</a>.</li>
+
+
+
+<li>From the <a href="https://classic.gazebosim.org/tutorials?cat=get_started">Getting Started page</a>, explore:</li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li>Quick Start</li>
+
+
+
+<li>Gazebo Components</li>
+
+
+
+<li>Gazebo Architecture</li>
+</ul>
+
+
+
+<ol class="wp-block-list">
+<li>Build a robot model (<a href="https://classic.gazebosim.org/tutorials?tut=build_robot&amp;cat=build_robot">Tutorial</a>)</li>
+
+
+
+<li>Add a sensor to the robot (<a href="https://classic.gazebosim.org/tutorials?tut=add_laser&amp;cat=build_robot">Tutorial</a>)</li>
+
+
+
+<li>Attempt this project: <a href="https://www.youtube.com/watch?v=594Gmkdo-_s">YouTube Tutorial</a></li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li>Use LLMs (e.g., Perplexity) to convert ROS2 commands to ROS-compatible ones.</li>
+
+
+
+<li>Download project files from the video description.</li>
+</ul>
+
+
+
+<h5 class="wp-block-heading" id="weeks-3-and-4-mlllll">Weeks 3 and 4: MLLLLL</h5>
+
+
+
+<h6 class="wp-block-heading" id="essential-reading">Essential Reading</h6>
+
+
+
+<ol class="wp-block-list">
+<li><a href="https://www.lesswrong.com/posts/qE73pqxAZmeACsAdF/a-short-introduction-to-machine-learning">A Short Introduction to Machine Learning</a></li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li>I highly recommend this, given my affinity for LessWrong&#8217;s content.</li>
+</ul>
+
+
+
+<ol class="wp-block-list">
+<li><a href="https://mml-book.github.io/">Mathematics for Machine Learning</a></li>
+</ol>
+
+
+
+<ul class="wp-block-list">
+<li>Quickly review the linear algebra sections before diving into the rest of the book.</li>
+
+
+
+<li>Linear algebra is incredibly cool—not just for ML, but also for robotics! Concepts like transformations, projections, and matrix factorizations are the backbone of everything from optimizing neural networks to understanding camera geometry in robotics. A strong foundation in linear algebra, optimization, and related math ensures you&#8217;re well-equipped to tackle complex problems in both fields.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">How much time should it take you?</p>
+
+
+
+<ul class="wp-block-list">
+<li>Brief review: 2-3 days</li>
+
+
+
+<li>In-depth study: 2 weeks (2 hours daily)</li>
+</ul>
+
+
+
+<h5 class="wp-block-heading" id="next-steps">Next Steps</h5>
+
+
+
+<p class="wp-block-paragraph">Once you&#8217;ve completed this, reach out to begin with PyTorch. This book forms the foundation for understanding ML, so take it seriously.</p>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

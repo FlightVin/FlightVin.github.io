@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Ch1: Reliable, Scalable and Maintainable Apps | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Ch1: Reliable, Scalable and Maintainable&nbsp;Apps</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-08-24T14:54:54">2025-08-24</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What’s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#introduction">Introduction</a><ol><li><a class="wp-block-table-of-contents__entry" href="#standard-building-blocks">Standard building blocks</a></li><li><a class="wp-block-table-of-contents__entry" href="#why-the-single-umbrella-of-data-systems">Why the single umbrella of data systems?</a></li><li><a class="wp-block-table-of-contents__entry" href="#how-do-you-describe-such-systems">How do you describe such systems?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#reliability">Reliability</a><ol><li><a class="wp-block-table-of-contents__entry" href="#fault-tolerant-or-fault-resistant">Fault Tolerant or Fault Resistant?</a></li><li><a class="wp-block-table-of-contents__entry" href="#do-we-handle-faults-or-failures">Do we handle faults or failures?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#scalability">Scalability</a><ol><li><a class="wp-block-table-of-contents__entry" href="#load-parameters">Load parameters</a></li><li><a class="wp-block-table-of-contents__entry" href="#describing-performance">Describing Performance</a></li><li><a class="wp-block-table-of-contents__entry" href="#coping-with-load">Coping with load</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#maintainability">Maintainability</a></li><li><a class="wp-block-table-of-contents__entry" href="#takeaways">Takeaways</a></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What’s there?</h3>
+
+
+
+<p class="wp-block-paragraph">I&#8217;ve started reading DDIA!  These are some short notes form Chapter 1.</p>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<p class="wp-block-paragraph">Also, just reading the textbook will in any case lead to forgetting parts of it. So, thought that I might as well (yay, repetition!) write some short notes for a quick overview later. </p>
+
+
+
+<h3 class="wp-block-heading" id="introduction">Introduction</h3>
+
+
+
+<h4 class="wp-block-heading" id="standard-building-blocks">Standard building blocks</h4>
+
+
+
+<p class="wp-block-paragraph">Stuff that pretty much everyone is familiar with &#8211;</p>
+
+
+
+<ol class="wp-block-list">
+<li>Databases</li>
+
+
+
+<li>Caches</li>
+
+
+
+<li>Search indexes</li>
+
+
+
+<li>Stream processing</li>
+
+
+
+<li>Batch processing</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="why-the-single-umbrella-of-data-systems">Why the single umbrella of data systems?</h4>
+
+
+
+<p class="wp-block-paragraph">Soo many different things &#8211; why do we group them as one?</p>
+
+
+
+<ol class="wp-block-list">
+<li>Many tools are optimizes for a variety of different use cases. <br>E.g., Redis, a datastore, can also be used as a message queue.</li>
+
+
+
+<li>Many apps demand multiple requirements that can be encompassed as a single application code.</li>
+</ol>
+
+
+
+<h4 class="wp-block-heading" id="how-do-you-describe-such-systems">How do you describe such systems?</h4>
+
+
+
+<p class="wp-block-paragraph">Three things &#8211; </p>
+
+
+
+<ol class="wp-block-list">
+<li>Reliability</li>
+
+
+
+<li>Maintainability</li>
+
+
+
+<li>Scalability</li>
+</ol>
+
+
+
+<h3 class="wp-block-heading" id="reliability">Reliability</h3>
+
+
+
+<h4 class="wp-block-heading" id="fault-tolerant-or-fault-resistant">Fault Tolerant or Fault Resistant?</h4>
+
+
+
+<p class="wp-block-paragraph">Resistant. You cannot guarantee that no fault will ever occur.</p>
+
+
+
+<h4 class="wp-block-heading" id="do-we-handle-faults-or-failures">Do we handle faults or failures?</h4>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">A fault is one component of a system failing.</p>
+
+
+
+<p class="wp-block-paragraph">A failure is the system going down.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">We handle failures. </p>
+
+
+
+<h3 class="wp-block-heading" id="scalability">Scalability</h3>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">A system&#8217;s ability to cope with additional load. </p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="load-parameters">Load parameters</h4>
+
+
+
+<p class="wp-block-paragraph">How you describe the load. E.g., the number of writes / reads per second.</p>
+
+
+
+<h4 class="wp-block-heading" id="describing-performance">Describing Performance</h4>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">What happens when the load increases?</p>
+</blockquote>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Service Level Objectives (SLOs) and Service Level Agreements (SLAs)</strong></li>
+</ul>
+
+
+
+<ul class="wp-block-list">
+<li>Percentile based measurement</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="coping-with-load">Coping with load</h4>
+
+
+
+<p class="wp-block-paragraph">There are just two ways</p>
+
+
+
+<ol class="wp-block-list">
+<li>Scaling up (vertical)</li>
+
+
+
+<li>Scaling out (horizontal)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph">The best designs are <em>generally </em>a combination of the two.</p>
+
+
+
+<h3 class="wp-block-heading" id="maintainability">Maintainability</h3>
+
+
+
+<p class="wp-block-paragraph">I think this just revolves around the broader concepts of tech debts, but the major stuff are</p>
+
+
+
+<ol class="wp-block-list">
+<li>Operability</li>
+
+
+
+<li>Simplicity</li>
+
+
+
+<li>Evolvability</li>
+</ol>
+
+
+
+<h3 class="wp-block-heading" id="takeaways">Takeaways</h3>
+
+
+
+<p class="wp-block-paragraph">Yeah, this was a very basic introductory chapter that was (kinda?) trivial since I had done distributed systems in school. The main takeaways are:</p>
+
+
+
+<ul class="wp-block-list">
+<li>Access patterns matter!</li>
+
+
+
+<li>There is no one solution.</li>
+
+
+
+<li>You should always factor in reliability, scalability and maintainability.</li>
+</ul>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Designing Data-Intensive Applications (<a href="https://dataintensive.net/">link</a>)</li>
+</ol>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>

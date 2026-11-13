@@ -1,0 +1,573 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Foundations of Probability | Vineeth Bhat</title>
+    <meta name="author" content="Vineeth Bhat">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FNFTP289PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FNFTP289PZ');
+    </script>
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="shortcut icon" href="../../images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../../blogs/blog.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('span.math').forEach(function (el) {
+          katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="blog-topbar">
+      <a href="../">&larr; All blogs</a>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+    <main class="blog-container">
+      <h1 class="blog-title">Foundations of Probability</h1>
+      <p class="blog-meta"><a href="../../">Vineeth Bhat</a> &middot; <time datetime="2025-09-07T14:22:05">2025-09-07</time></p>
+      <article class="blog-content">
+
+<ol><li><a class="wp-block-table-of-contents__entry" href="#what-s-there">What’s there?</a><ol><li><a class="wp-block-table-of-contents__entry" href="#why-do-i-write-this">Why do I write this?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#axioms-of-probability">Axioms of Probability</a></li><li><a class="wp-block-table-of-contents__entry" href="#random-variables">Random Variables</a><ol><li><a class="wp-block-table-of-contents__entry" href="#pdf-and-pmf">PDF and PMF</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#conditional-probability-independence-and-the-chain-rule">Conditional Probability, Independence, and the Chain Rule</a><ol><li><a class="wp-block-table-of-contents__entry" href="#chain-rule">Chain Rule</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#bayes-theorem">Bayes&#8217; Theorem</a><ol><li><a class="wp-block-table-of-contents__entry" href="#terminology">Terminology</a></li><li><a class="wp-block-table-of-contents__entry" href="#the-theorem-itself">The theorem itself</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#expectation-variance-and-moments">Expectation, Variance and Moments</a><ol><li><a class="wp-block-table-of-contents__entry" href="#moments">Moments</a></li><li><a class="wp-block-table-of-contents__entry" href="#random-facts-about-central-moments">Random facts about central moments</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#covariance-and-correlation">Covariance and correlation</a></li><li><a class="wp-block-table-of-contents__entry" href="#law-of-large-numbers-lln">Law of Large Numbers (LLN)</a><ol><li><a class="wp-block-table-of-contents__entry" href="#theoretical-development-forms-of-the-law">Theoretical Development: Forms of the Law</a></li><li><a class="wp-block-table-of-contents__entry" href="#why-is-this-important-in-ml">Why is this important in ML?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#central-limit-theorem-clt">Central Limit Theorem (CLT)</a><ol><li><a class="wp-block-table-of-contents__entry" href="#foundations">Foundations</a></li><li><a class="wp-block-table-of-contents__entry" href="#theoretical-development">Theoretical Development</a></li><li><a class="wp-block-table-of-contents__entry" href="#why-s-this-so-cool">Why&#8217;s this so cool?</a></li></ol></li><li><a class="wp-block-table-of-contents__entry" href="#sources">Sources</a></li></ol>
+
+
+
+<h3 class="wp-block-heading" id="what-s-there">What’s there?</h3>
+
+
+
+<p class="wp-block-paragraph">I want to cover like some basics of probability before I get into Gaussians. Saliently, this covers LLN and CLT.</p>
+
+
+
+<h4 class="wp-block-heading" id="why-do-i-write-this">Why do I write this?</h4>
+
+
+
+<p class="wp-block-paragraph">I wanted to create an authoritative document I could refer to for later. Thought that I might as well make it public (build in public, serve society and that sort of stuff).</p>
+
+
+
+<h3 class="wp-block-heading" id="axioms-of-probability">Axioms of Probability</h3>
+
+
+
+<p class="wp-block-paragraph">Imma just drone on about theory in this post.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Sample Space (<span class="math">\Omega</span>):</strong> The <strong>sample space</strong> is the set of <em>all possible elementary outcomes</em> of a random experiment. Each outcome <span class="math">\omega \in \Omega</span> must be mutually exclusive and the set must be exhaustive.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Event Space (<span class="math">\mathcal{F}</span>):</strong> An <strong>event</strong> is a <em>subset</em> of the sample space <span class="math">\Omega</span>. The <strong>event space</strong>, denoted <span class="math">\mathcal{F}</span>, is a collection of events to which we can assign probabilities. It is not always the set of <em>all</em> possible subsets (the power set), but it must be a <strong><span class="math">\sigma</span>-algebra</strong>, which is a collection of subsets of <span class="math">\Omega</span> that satisfies three properties &#8211; </p>
+
+
+
+<ol class="wp-block-list">
+<li>The empty set is included: <span class="math">\emptyset \in \mathcal{F}</span>.</li>
+
+
+
+<li>Closure under complementation: If an event <span class="math">A \in \mathcal{F}</span>, then its complement <span class="math">\Omega \setminus A</span> is also in <span class="math">\mathcal{F}</span>.</li>
+
+
+
+<li>Closure under countable unions: If <span class="math">A_1, A_2, \dots</span> is a countable sequence of events in <span class="math">\mathcal{F}</span>, then their union $latex</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"><strong>Probability Measure (<span class="math">P</span>):</strong> The <strong>probability measure</strong> is a function that maps an event in the event space <span class="math">\mathcal{F}</span> to a real number. This function must satisfy the <strong>Kolmogorov Axioms</strong> &#8211; </p>
+
+
+
+<ol class="wp-block-list">
+<li><strong>Non-negativity:</strong> The probability of any event is non-negative.</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(A) \ge 0 \quad \forall A \in \mathcal{F}</span></p>
+
+
+
+<ol start="2" class="wp-block-list">
+<li><strong>Normalization (Unit Measure):</strong> The probability of the entire sample space is 1. This means that <em>some</em> outcome is guaranteed to occur.</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(\Omega) = 1</span></p>
+
+
+
+<ol start="3" class="wp-block-list">
+<li><strong>Countable Additivity (or <span class="math">\sigma</span>-additivity):</strong> For any countable sequence of pairwise disjoint events <span class="math">A_1, A_2, \dots</span> in <span class="math">\mathcal{F}</span> (i.e., <span class="math">A_i \cap A_j = \emptyset</span> for <span class="math">i \neq j</span>), the probability of their union is the sum of their individual probabilities.</li>
+</ol>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P\left(\bigcup_{i=1}^\infty A_i\right) = \sum_{i=1}^\infty P(A_i)</span></p>
+
+
+
+<h3 class="wp-block-heading" id="random-variables">Random Variables</h3>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">A random variable <span class="math">X</span> is a function <span class="math">X: \Omega \to \mathbb{R}</span> that assigns a real number to every possible outcome <span class="math">\omega \in \Omega</span>. </p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">The key technical requirement is that this function must be <strong>measurable</strong>, which ensures that sets of the form <span class="math">\{\omega \in \Omega \mid X(\omega) \le x\}</span> are valid events in <span class="math">\mathcal{F}</span>, allowing us to assign probabilities to them.</p>
+
+
+
+<h4 class="wp-block-heading" id="pdf-and-pmf">PDF and PMF</h4>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">The behavior of a <strong>discrete random variable</strong> is described by its PMF, <span class="math">p_X(x)</span>, which gives the probability of the variable taking on a specific value <span class="math">x</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p_X(x) = P(X=x) := P(\{\omega \in \Omega \mid X(\omega) = x\})</span></p>
+
+
+
+<p class="wp-block-paragraph">The PMF satisfies <span class="math">p_X(x) \ge 0</span> and <span class="math">\sum_x p_X(x) = 1</span>.</p>
+
+
+
+<p class="wp-block-paragraph">The probability that a <strong>continuous random variable</strong> takes on any single specific value is zero. Instead, we describe its behavior with a PDF, <span class="math">f_X(x)</span>. The probability of the variable falling within an interval <span class="math">[a, b]</span> is the integral of the PDF over that interval:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(a \le X \le b) = \int_a^b f_X(x) dx</span></p>
+
+
+
+<p class="wp-block-paragraph">The PDF satisfies <span class="math">f_X(x) \ge 0</span> and <span class="math">\int_{-\infty}^\infty f_X(x) dx = 1</span>. Note that, unlike a PMF, a PDF can have values greater than 1.</p>
+
+
+
+<p class="wp-block-paragraph">Also gonna throw this in here</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">A random variable is <strong>mixed</strong> if it has properties of both discrete and continuous variables. </p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Its probability distribution is a mixture of a PMF (for the discrete parts) and a PDF (for the continuous parts).</p>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="conditional-probability-independence-and-the-chain-rule">Conditional Probability, Independence, and the Chain Rule</h3>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph"><strong>Conditional Probability:</strong> The conditional probability of event <span class="math">A</span> occurring, <em>given that</em> event <span class="math">B</span> has already occurred, is denoted <span class="math">P(A|B)</span>. It represents an update to our belief about <span class="math">A</span> in light of the new information that <span class="math">B</span> is true. It is defined as:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(A|B) = \frac{P(A \cap B)}{P(B)}, \quad \text{provided } P(B) &gt; 0</span></p>
+
+
+
+<p class="wp-block-paragraph">Geometrically, this is a re-normalization of the probability space: we restrict our attention to the outcomes within event <span class="math">B</span> and re-normalize their probabilities to sum to one.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Statistical Independence:</strong> Two events <span class="math">A</span> and <span class="math">B</span> are <strong>statistically independent</strong> if the occurrence of one does not provide any information about the occurrence of the other. Mathematically (this is all I care about rn ngl), this means:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(A|B) = P(A) \quad \text{and} \quad P(B|A) = P(B)</span></p>
+
+
+
+<p class="wp-block-paragraph">Substituting this into the definition of conditional probability yields the more common test for independence:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(A \cap B) = P(A)P(B)</span></p>
+
+
+
+<p class="wp-block-paragraph">Two random variables <span class="math">X</span> and <span class="math">Y</span> are independent if this property holds for all possible values they can take: <span class="math">p(x, y) = p(x)p(y)</span>.</p>
+
+
+
+<h4 class="wp-block-heading" id="chain-rule">Chain Rule</h4>
+
+
+
+<p class="wp-block-paragraph">In the language of random variables, for a set of variables <span class="math">X_1, \dots, X_n</span>, the chain rule allows us to express their joint distribution as:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">p(x_1, \dots, x_n) = \prod_{i=1}^n p(x_i | x_1, \dots, x_{i-1})</span></p>
+
+
+
+<h3 class="wp-block-heading" id="bayes-theorem">Bayes&#8217; Theorem</h3>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Bayes&#8217; theorem provides a formal mechanism for <strong>inverting conditional probabilities</strong>.</p>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="terminology">Terminology</h4>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Hypothesis (<span class="math">H</span>):</strong> A proposition about the world whose truth we are uncertain about (e.g., &#8220;The patient has the disease,&#8221; &#8220;This email is spam&#8221;).</li>
+
+
+
+<li><strong>Evidence (<span class="math">E</span>):</strong> A new piece of data or observation that is relevant to the hypothesis.</li>
+
+
+
+<li><strong>Prior (<span class="math">P(H)</span>):</strong> Our initial belief in the hypothesis <em>before</em> observing the evidence.</li>
+
+
+
+<li><strong>Likelihood (<span class="math">P(E|H)</span>):</strong> The probability of observing the evidence <em>if</em> the hypothesis were true. This is the forward, generative model.</li>
+
+
+
+<li><strong>Posterior (<span class="math">P(H|E)</span>):</strong> Our updated belief in the hypothesis <em>after</em> observing the evidence. This is the quantity we want to compute.</li>
+</ul>
+
+
+
+<h4 class="wp-block-heading" id="the-theorem-itself">The theorem itself</h4>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(H|E) = \frac{P(E|H)P(H)}{P(E)}</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>The Marginal Likelihood (or Evidence):</strong> The denominator, <span class="math">P(E)</span>, is the total probability of observing the evidence, averaged over all possible hypotheses. It is computed using the law of total probability: <span class="math">P(E) = P(E|H)P(H) + P(E|H^c)P(H^c)</span>. It acts as a normalization constant, ensuring that the posterior probabilities sum to one.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">The theorem can be written in a more memorable form using the terms:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\text{Posterior} = \frac{\text{Likelihood} \times \text{Prior}}{\text{Evidence}}</span></p>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="expectation-variance-and-moments">Expectation, Variance and Moments</h3>
+
+
+
+<p class="wp-block-paragraph">Imma just skip the basic stuff. </p>
+
+
+
+<p class="wp-block-paragraph">This is the <strong>Expectation of a Function</strong> &#8211; </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mathbb{E}[g(X)] = \sum_{x} g(x) \, p(x) \quad \text{or} \quad \int_{-\infty}^{\infty} g(x) \, f(x) dx</span></p>
+
+
+
+<h4 class="wp-block-heading" id="moments">Moments</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Moments about the Origin:</strong> The <strong><span class="math">k</span>-th moment</strong> of a random variable <span class="math">X</span> about the origin is defined as the expected value of <span class="math">X^k</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mu'_k = \mathbb{E}[X^k]</span></p>
+
+
+
+<p class="wp-block-paragraph">The first moment, <span class="math">\mu'_1 = \mathbb{E}[X]</span>, is the <strong>mean</strong>.</p>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<p class="wp-block-paragraph"><strong>Central Moments (Moments about the Mean):</strong> The <strong><span class="math">k</span>-th central moment</strong> is the expected value of the <span class="math">k</span>-th power of the deviation from the mean, <span class="math">(X-\mu)^k</span>:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\mu_k = \mathbb{E}[(X - \mu)^k]</span></p>
+
+
+
+<h4 class="wp-block-heading" id="random-facts-about-central-moments">Random facts about central moments</h4>
+
+
+
+<ul class="wp-block-list">
+<li>The first central moment is always zero: <span class="math">\mu_1 = \mathbb{E}[X-\mu] = \mathbb{E}[X] - \mu = 0</span>.</li>
+
+
+
+<li>The second central moment, <span class="math">\mu_2 = \mathbb{E}[(X - \mu)^2]</span>, is the <strong>variance</strong>. It is the most important measure of the spread or dispersion of the distribution. It is denoted <span class="math">\text{Var}(X)</span> or <span class="math">\sigma^2</span>. The <strong>standard deviation</strong>, <span class="math">\sigma = \sqrt{\text{Var}(X)}</span>, is the square root of the variance, returned to the original units of the variable.</li>
+
+
+
+<li>The third central moment (normalized) is related to the <strong>skewness</strong>, which measures the asymmetry of the distribution.</li>
+
+
+
+<li>The fourth central moment (normalized) is related to the <strong>kurtosis</strong>, which measures the &#8220;tailedness&#8221; or propensity for outliers.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<h3 class="wp-block-heading" id="covariance-and-correlation">Covariance and correlation</h3>
+
+
+
+<p class="wp-block-paragraph">We&#8217;ve discussed covariance in <a href="../2025-07-21-pca-spectral-clustering-and-t-sne/">PCA, Spectral Clustering and t-SNE</a>.</p>
+
+
+
+<p class="wp-block-paragraph">Now, notice that the magnitude of the covariance is difficult to interpret because it depends on the units and variances of the individual variables. </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">A covariance of 100 might be very strong for one pair of variables but very weak for another.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">To create a standardized, unit-free measure of the linear relationship, we normalize the covariance by the standard deviations of the two variables. This gives the <strong>Pearson correlation coefficient</strong>, <span class="math">\rho</span> &#8211; </p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\rho(X, Y) = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y}</span></p>
+
+
+
+<ul class="wp-block-list">
+<li><span class="math">\rho = 1</span>: Perfect positive linear relationship.</li>
+
+
+
+<li><span class="math">\rho = -1</span>: Perfect negative linear relationship.</li>
+
+
+
+<li><span class="math">\rho = 0</span>: No linear relationship (uncorrelated).</li>
+</ul>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="law-of-large-numbers-lln">Law of Large Numbers (LLN)</h3>
+
+
+
+<p class="wp-block-paragraph">It says that that the average of a large number of independent samples from a distribution converges to the theoretical expected value of that distribution. </p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">It is the theorem that guarantees that sampling works.</p>
+</blockquote>
+</blockquote>
+
+
+
+<h4 class="wp-block-heading" id="theoretical-development-forms-of-the-law">Theoretical Development: Forms of the Law</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Weak Law of Large Numbers:</strong> This law states that for any arbitrarily small positive number <span class="math">\epsilon</span>, the probability that the sample mean deviates from the true mean by more than <span class="math">\epsilon</span> approaches zero as the sample size <span class="math">N</span> goes to infinity.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\lim_{N \to \infty} P(|\bar{X}_N - \mu| &gt; \epsilon) = 0</span></p>
+
+
+
+<p class="wp-block-paragraph">This is also called <strong>convergence in probability</strong>. It doesn&#8217;t guarantee that for a <em>single</em> long experiment the average will be close to the mean, but that it is overwhelmingly likely to be.</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Strong Law of Large Numbers:</strong> This law makes a much stronger statement. It asserts that, with probability 1, the sample mean will converge to the true mean.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">P(\lim_{N \to \infty} \bar{X}_N = \mu) = 1</span></p>
+
+
+
+<p class="wp-block-paragraph">This is also called <strong>almost sure convergence</strong>. This guarantees that for a single, infinitely long experiment, the sample average <em>will</em> eventually settle down at the true population mean.</p>
+
+
+
+<h4 class="wp-block-heading" id="why-is-this-important-in-ml">Why is this important in ML?</h4>
+
+
+
+<p class="wp-block-paragraph">The LLN is the theoretical justification for <strong>Empirical Risk Minimization</strong>. </p>
+
+
+
+<p class="wp-block-paragraph">When we minimize a loss function on a finite training set, we are computing an empirical average. The LLN gives us confidence that, with enough data, this empirical risk will be a good approximation of the true expected risk over the entire data distribution.</p>
+
+
+
+<h3 class="wp-block-heading" id="central-limit-theorem-clt">Central Limit Theorem (CLT)</h3>
+
+
+
+<h4 class="wp-block-heading" id="foundations">Foundations</h4>
+
+
+
+<ul class="wp-block-list">
+<li><strong>The Question:</strong> The LLN tells us <em>where</em> the sample mean <span class="math">\bar{X}_N</span> is going (it converges to <span class="math">\mu</span>). The CLT tells us <em>how</em> it gets there: it describes the shape of the probability distribution of the sample mean around the true mean for a large but finite <span class="math">N</span>.</li>
+
+
+
+<li><strong>The Setup:</strong> Let <span class="math">X_1, X_2, \dots, X_N</span> be a sequence of i.i.d. random variables with finite mean <span class="math">\mu</span> and finite variance <span class="math">\sigma^2</span>.</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<h4 class="wp-block-heading" id="theoretical-development">Theoretical Development</h4>
+
+
+
+<p class="wp-block-paragraph"><strong>Theorem (Central Limit Theorem):</strong> As the sample size <span class="math">N</span> becomes large, the distribution of the sample mean <span class="math">\bar{X}_N</span> approaches a normal (Gaussian) distribution with mean <span class="math">\mu</span> and variance <span class="math">\sigma^2/N</span>.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\bar{X}_N \approx \mathcal{N}\left(\mu, \frac{\sigma^2}{N}\right)</span></p>
+
+
+
+<p class="wp-block-paragraph">More formally, the standardized version of the sample mean converges in distribution to a standard normal distribution:</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><span class="math">\frac{\bar{X}_N - \mu}{\sigma/\sqrt{N}} \xrightarrow{d} \mathcal{N}(0, 1) \quad \text{as } N \to \infty</span></p>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<h4 class="wp-block-heading" id="why-s-this-so-cool">Why&#8217;s this so cool?</h4>
+
+
+
+<ol class="wp-block-list">
+<li>The CLT is incredibly powerful because it holds true <strong>regardless of the shape of the original distribution of the <span class="math">X_i</span></strong>. Whether the individual variables are from a uniform, Bernoulli, exponential, or any other well-behaved distribution, the distribution of their <em>average</em> will always tend towards a Gaussian bell curve.</li>
+
+
+
+<li>This theorem explains the ubiquity of the Gaussian distribution in nature and science.</li>
+</ol>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">Many complex phenomena can be modeled as the sum or average of many small, independent random effects. <strong>According to the CLT, the distribution of this aggregate phenomenon will be approximately Gaussian, even if the individual effects are not</strong>. For example, measurement error in an instrument is often the sum of many small, independent sources of error, so it is well-modeled by a Gaussian.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Basically, Gaussians are common and this can be exploited.</p>
+</blockquote>
+
+
+
+<h3 class="wp-block-heading" id="sources">Sources</h3>
+
+
+
+<ol class="wp-block-list">
+<li>Mathematics for Machine Learning (<a href="https://mml-book.github.io/">link</a>)</li>
+</ol>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+      </article>
+      <p class="blog-footer"><a href="../">&larr; All blogs</a></p>
+    </main>
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function icon(t) { btn.innerHTML = t === 'dark' ? '☀️' : '🌙'; }
+        icon(document.documentElement.getAttribute('data-theme'));
+        btn.addEventListener('click', function () {
+          var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('theme', t); } catch (e) {}
+          icon(t);
+        });
+      })();
+    </script>
+  </body>
+</html>
